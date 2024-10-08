@@ -8,17 +8,28 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from src.utils import searchSong, random_25
 from src.songs_queue import Songs_Queue
-import youtube_dl
+import yt_dlp as youtube_dl
+
 
 FFMPEG_OPTIONS = {
     'before_options':
     '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-    'options': [
-        'ffmpeg', '-i', './assets/sample.mp4', '-vn', '-f', 'mp3',
-        './assets/sample.mp3'
-    ]
+    'options': ['-vn -filter:a "volume=0.25']
 }
-YDL_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'}
+
+# YDL_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'}
+YDL_OPTIONS = {
+    'format': 'bestaudio/best',
+    'extractaudio': True,
+    'audioformat': 'opus',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'opus',
+        'preferredquality': '192',
+    }],
+    'noplaylist': True
+    }
 
 
 class Songs(commands.Cog):
@@ -76,17 +87,56 @@ class Songs(commands.Cog):
             server = ctx.message.guild
             voice_channel = server.voice_client
             url = searchSong(song_name)
+
+            if voice_channel is None: # If the bot is not connected to any voice channel
+                print("Bot is not connected to any voice channel. Connecting to author's voice channel")
+                if ctx.author.voice is None:
+                    await ctx.send("You are not connected to any voice channel")
+                    return
+                voice_channel = await ctx.author.voice.channel.connect()
+
             async with ctx.typing():
                 with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
                     info = ydl.extract_info(url, download=False)
-                    I_URL = info['formats'][0]['url']
-                    source = await discord.FFmpegOpusAudio.from_probe(
-                        I_URL, **FFMPEG_OPTIONS)
+                    # Add some error checking to ensure info['formats'] is not empty
+                    # if not info['formats']:
+                    #     await ctx.send("No audio formats available for the song")
+                    #     return
+                    # I_URL = info['formats'][0]['url']
+                    # print(f"Extracted URL: {I_URL}")
+                    # source = await discord.FFmpegOpusAudio.from_probe(
+                    #     I_URL, **FFMPEG_OPTIONS)
+
+                    # print(f"Extracted formats: {info['formats']}")
+
+                    if 'formats' not in info or not info['formats']:
+                        await ctx.send("No formats available for the song (1)")
+                        return
+                    
+                    # Get the first audio format available
+                    audio_url = None
+                    for format in info['formats']:
+                        if format.get('acodec') and 'opus' in format['acodec']:
+                            audio_url = format['url']
+                            print(f"Found audio format: {format}")
+                            break
+
+                    if not audio_url:
+                        await ctx.send("No audio formats available for the song (2)")
+                        return
+
+                    print(f"Extracted audio URL: {audio_url}")
+
+                    source = await discord.FFmpegOpusAudio.from_probe(audio_url, **FFMPEG_OPTIONS)
+                    if voice_channel is None:
+                        await ctx.send(f"The bot is not connected to any voice channel. {voice_channel}")
+                        return
                     voice_channel.play(source)
-                    voice_channel.is_playing()
+                    # voice_channel.is_playing()
             await ctx.send('**Now playing:** {}'.format(song_name))
         except Exception as e:
-            await ctx.send("The bot is not connected to a voice channel.")
+            print(f"Encountered error: {e}")
+            await ctx.send("The bot encountered an error while playing the song") #TODO: Remove error from message in release
 
     """
     Helper function to handle empty song queue
