@@ -14,23 +14,33 @@ import yt_dlp as youtube_dl
 FFMPEG_OPTIONS = {
     'before_options':
     '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-    'options': ['-vn -filter:a "volume=0.25']
+    'options': [
+        'ffmpeg', '-i', './assets/sample.mp4', '-vn', '-f', 'mp3',
+        './assets/sample.mp3'
+    ]
 }
+YDL_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'}
 
-# YDL_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'}
-YDL_OPTIONS = {
-    'format': 'bestaudio/best',
-    'extractaudio': True,
-    'audioformat': 'opus',
-    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
-    'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'opus',
-        'preferredquality': '192',
-    }],
-    'noplaylist': True
+def get_audio_sorce(url: str):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'quiet': True,
+        'extract_flat': 'in_playlist',
+        'noplaylist': True,
+        'no_warnings': True,
+        'cookies': '../cookies.txt',
+        'outtmpl': 'downloaded_music/%(title)s.%(ext)s',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
     }
 
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        audio_url = info['url']
+        return discord.FFmpegOpusAudio(audio_url, **FFMPEG_OPTIONS)
 
 class Songs(commands.Cog):
     """
@@ -39,6 +49,23 @@ class Songs(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+
+    @commands.command(name='join', help='To join the voice channel')
+    async def join(self, ctx, channel: discord.VoiceChannel = None):
+        if not channel:
+            try:
+                channel = ctx.author.voice.channel
+            except AttributeError:
+                await ctx.send("No channel to join. Please specify a channel")
+                return
+            
+        if ctx.voice_client:
+            await ctx.voice_client.move_to(channel)
+        else: 
+            await channel.connect()
+        await ctx.send(f"Successfully joined {channel.name} ({channel.id})")
+
 
     """
     Function for handling resume capability
@@ -81,62 +108,24 @@ class Songs(commands.Cog):
     """
 
     async def play_song(self, song_name, ctx):
-        # First stop whatever the bot is playing
-        await self.stop(ctx)
-        try:
-            server = ctx.message.guild
-            voice_channel = server.voice_client
-            url = searchSong(song_name)
+        
+        # Get the song URL
+        url = searchSong(song_name)
+        print(url)
 
-            if voice_channel is None: # If the bot is not connected to any voice channel
-                print("Bot is not connected to any voice channel. Connecting to author's voice channel")
-                if ctx.author.voice is None:
-                    await ctx.send("You are not connected to any voice channel")
-                    return
-                voice_channel = await ctx.author.voice.channel.connect()
+        # Check if bot is connected to a voice channel
+        if not ctx.voice_client:
+            await ctx.send("Bot is not connected to a voice channel")
+            return
+        
+        # Check if the bot is already playing a song, and stop it if it is
+        if ctx.voice_client.is_playing():
+            ctx.voice_client.stop()
 
-            async with ctx.typing():
-                with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-                    info = ydl.extract_info(url, download=False)
-                    # Add some error checking to ensure info['formats'] is not empty
-                    # if not info['formats']:
-                    #     await ctx.send("No audio formats available for the song")
-                    #     return
-                    # I_URL = info['formats'][0]['url']
-                    # print(f"Extracted URL: {I_URL}")
-                    # source = await discord.FFmpegOpusAudio.from_probe(
-                    #     I_URL, **FFMPEG_OPTIONS)
-
-                    # print(f"Extracted formats: {info['formats']}")
-
-                    if 'formats' not in info or not info['formats']:
-                        await ctx.send("No formats available for the song (1)")
-                        return
-                    
-                    # Get the first audio format available
-                    audio_url = None
-                    for format in info['formats']:
-                        if format.get('acodec') and 'opus' in format['acodec']:
-                            audio_url = format['url']
-                            print(f"Found audio format: {format}")
-                            break
-
-                    if not audio_url:
-                        await ctx.send("No audio formats available for the song (2)")
-                        return
-
-                    print(f"Extracted audio URL: {audio_url}")
-
-                    source = await discord.FFmpegOpusAudio.from_probe(audio_url, **FFMPEG_OPTIONS)
-                    if voice_channel is None:
-                        await ctx.send(f"The bot is not connected to any voice channel. {voice_channel}")
-                        return
-                    voice_channel.play(source)
-                    # voice_channel.is_playing()
-            await ctx.send('**Now playing:** {}'.format(song_name))
-        except Exception as e:
-            print(f"Encountered error: {e}")
-            await ctx.send("The bot encountered an error while playing the song") #TODO: Remove error from message in release
+        # Get and play the audio source
+        audio_source = get_audio_sorce(url)
+        ctx.voice_client.play(audio_source)
+        await ctx.send(f"Now playing: {url}")
 
     """
     Helper function to handle empty song queue
@@ -229,8 +218,7 @@ class Songs(commands.Cog):
     Function to display all the songs in the queue
     """
 
-    @commands.command(name='queue',
-                      help='Show active queue of recommendations')
+    @commands.command(name='queue', help='Show active queue of recommendations')
     async def queue(self, ctx):
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
