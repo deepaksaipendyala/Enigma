@@ -32,6 +32,34 @@ def random_25():
     return random_songs
 
 
+def get_full_song_name(song_name, artist_name):
+    """
+    This function returns the full song name, when given the artist and partial song name.
+    It will first search the primary dataset, and if the song is not found, it will search the alternate dataset
+    """
+
+    # Get the songs from the primary dataset
+    all_songs = get_all_songs().filter(["artist_name", "track_name"])
+
+    # Get the song
+    song = all_songs.loc[(all_songs["track_name"].str.contains(song_name, case=False)) & (all_songs["artist_name"].str.contains(artist_name, case=False))]
+
+    if song.empty:
+        # If the song is not found in the primary dataset, search the alternate dataset
+        all_songs_alt = get_all_songs_alternate().filter(["track_name", "artist"])
+
+        song = all_songs_alt.loc[(all_songs_alt["track_name"].str.contains(song_name, case=False)) & (all_songs_alt["artist"].str.contains(artist_name, case=False))]
+
+    # If the song is not found in the alternate dataset, return None
+    if song.empty:
+        return None
+    
+    # Otherwise, just return the first song found
+
+    song_name = song["track_name"].values.tolist()[0]
+    artist_name = song["artist"].values.tolist()[0]
+    return [song_name, artist_name]
+
 def retrieve_song_attributes(songName, artistName):
     """
     This function returns the attributes of the song
@@ -57,15 +85,19 @@ def retrieve_attributes_alternate(songName, artistName):
     This function will retrieve the attributes of the song from the alternate dataset, in the event
     that the song is not found in the main dataset
     """
+    
+    try:
+        # Get the songs from the alternate dataset
+        all_songs_alt = get_all_songs_alternate().filter(["track_name", "artist", "bpm", "nrgy", "dnce", "live", "val", "dur", "acous", "spch", "pop"])
 
-    # Get the songs from the alternate dataset
-    all_songs_alt = get_all_songs_alternate().filter(["track_name", "artist", "bpm", "nrgy", "dnce", "live", "val", "dur", "acous", "spch", "pop"])
+        # Get the attributes of the song
+        song = all_songs_alt.loc[(all_songs_alt["track_name"] == songName) & (all_songs_alt["artist"] == artistName)]
 
-    # Get the attributes of the song
-    song = all_songs_alt.loc[(all_songs_alt["track_name"] == songName) & (all_songs_alt["artist"] == artistName)]
+        # Return the attributes
+        return song.values.tolist()[0][2:]
 
-    # Return the attributes
-    return song.values.tolist()[0][2:]
+    except:
+        return [0]*9
 
 
 def cosine_similarity(songName1, artistName1, songName2, artistName2):
@@ -77,8 +109,26 @@ def cosine_similarity(songName1, artistName1, songName2, artistName2):
     song1 = retrieve_song_attributes(songName1, artistName1)
     song2 = retrieve_song_attributes(songName2, artistName2)
 
-    # Calculate the cosine similarity
-    cos_sim = np.dot(song1, song2) / (np.linalg.norm(song1) * np.linalg.norm(song2))
+    if song1 == [0]*22 or song2 == [0]*22:
+        # Try to get both the songs from the alternate dataset
+        song1 = retrieve_attributes_alternate(songName1, artistName1)
+        song2 = retrieve_attributes_alternate(songName2, artistName2)
+
+        if song1 == [0]*9 or song2 == [0]*9:
+            # If the song is not found in the alternate dataset, return 0
+            return 0
+        
+        # Songs were found in the alternate dataset, we can get the cosine similarity
+
+    # First get the dot product of the two vectors
+    dot = np.dot(song1, song2)
+
+    # Get the magnitude of the two vectors
+    mag1 = np.linalg.norm(song1)
+    mag2 = np.linalg.norm(song2)
+
+    # Get the cosine similarity
+    cos_sim = dot / (mag1 * mag2)
 
     return cos_sim
 

@@ -51,9 +51,9 @@ class CosSimTests(unittest.TestCase):
         artist_name2 = "les paul"
         actual_cosine_similarity = utils.cosine_similarity(song_name1, artist_name1, song_name2, artist_name2)
 
-        expected_cosine_similarity = 0.75
+        expected_cosine_similarity = 0.75044
         
-        self.assertEqual(expected_cosine_similarity, round(actual_cosine_similarity, 2))
+        self.assertEqual(round(expected_cosine_similarity, 2), round(actual_cosine_similarity, 2))
 
     def test_not_found_song(self):
         song_name = "song"
@@ -73,3 +73,60 @@ class CosSimTests(unittest.TestCase):
         actual_song_attributes = utils.retrieve_attributes_alternate(song_name, artist_name)
 
         self.assertEquals(actual_song_attributes, expected_song_attributes)
+
+    def test_one_not_found_song(self):
+        song_name1 = "song"
+        artist_name1 = "artist"
+        song_name2 = "the carioca"
+        artist_name2 = "les paul"
+        actual_cosine_similarity = utils.cosine_similarity(song_name1, artist_name1, song_name2, artist_name2)
+
+        self.assertEqual(actual_cosine_similarity, 0)
+
+    def test_both_not_found_song(self):
+        song_name1 = "song"
+        artist_name1 = "artist"
+        song_name2 = "song"
+        artist_name2 = "artist"
+        actual_cosine_similarity = utils.cosine_similarity(song_name1, artist_name1, song_name2, artist_name2)
+
+        self.assertEqual(actual_cosine_similarity, 0)
+
+    def test_both_found_alternate(self):
+        song_name1 = "Hey, Soul Sister"
+        artist_name1 = "Train"
+        song_name2 = "Baby"
+        artist_name2 = "Justin Bieber"
+        actual_cosine_similarity = utils.cosine_similarity(song_name1, artist_name1, song_name2, artist_name2)
+
+        expected_cosine_similarity = 0.9886360242
+        self.assertEqual(round(actual_cosine_similarity, 4), round(expected_cosine_similarity, 4))
+
+    def test_orthagonal_vectors(self):
+        song_name1 = "TestSong1"
+        artist_name1 = "TestArtist1"
+        song_name2 = "TestSong2"
+        artist_name2 = "TestArtist2"
+
+        song1 = utils.retrieve_attributes_alternate(song_name1, artist_name1)
+        song2 = utils.retrieve_attributes_alternate(song_name2, artist_name2)
+
+        expected_song1 = [1,0,1,0,1,0,1,0,1]
+        expected_song2 = [0,1,0,1,0,1,0,1,0]
+
+        self.assertEqual(song1, expected_song1)
+        self.assertEqual(song2, expected_song2)
+
+        actual_cosine_similarity = utils.cosine_similarity(song_name1, artist_name1, song_name2, artist_name2)
+
+        self.assertEqual(actual_cosine_similarity, 0)
+
+    def test_get_full_song_name(self):
+        song_name = "Hey, Soul"
+        artist_name = "Train"
+        full_song_name = utils.get_full_song_name(song_name, artist_name)
+        expected_song_name = "Hey, Soul Sister"
+        expected_artist_name = "Train"
+
+        self.assertEqual(full_song_name[0], expected_song_name)
+        self.assertEqual(full_song_name[1], expected_artist_name)
