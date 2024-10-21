@@ -38,6 +38,10 @@ def recommend_enhanced(input_songs: list) -> list:
     # Get songs that are similar genres to the input songs
     all_song_attributes = {}
     num_retrieved = 0
+
+    # Randomize the order of the songs
+    all_songs = all_songs.sample(frac=1).reset_index(drop=True)
+
     for index, row in all_songs.iterrows():
         song_name = row["track_name"]
         artist_name = row["artist_name"]
