@@ -57,7 +57,7 @@ plt.show()
 songs_correlation = songs_df[['bpm', 'nrgy', 'dnce', 'dB', 'val', 'acous', 'spch', 'pop']].corr()
 tcc_ceds_music_correlation = tcc_ceds_music_df[['danceability', 'loudness', 'acousticness', 'instrumentalness', 'valence', 'energy', 'sadness', 'feelings']].corr()
 
-# Plot the correlation heatmaps
+# Plot the correlation heatmaps.
 plt.figure(figsize=(16, 6))
 
 plt.subplot(1, 2, 1)
@@ -69,4 +69,20 @@ sns.heatmap(tcc_ceds_music_correlation, annot=True, cmap='coolwarm')
 plt.title('Correlation Matrix for TCC CEDS Music.csv')
 
 plt.tight_layout()
+plt.show()
+
+# 5. Genre Analysis: Visualize the Distribution of Genres.
+plt.figure(figsize=(12, 6))
+tcc_ceds_music_df['genre'].value_counts().plot(kind='bar', color='royalblue', edgecolor='black')
+plt.title('Distribution of Genres in TCC CEDS Music Dataset')
+plt.xlabel('Genre')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+# 6. Scatter Plot for Key Relationships.
+# Relationship between Energy and Danceability in tcc_ceds_music.csv.
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=tcc_ceds_music_df, x='energy', y='danceability', hue='genre', palette='viridis', alpha=0.6)
+plt.title('Energy vs Danceability by Genre')
 plt.show()
