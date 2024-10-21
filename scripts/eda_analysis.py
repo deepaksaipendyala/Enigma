@@ -14,7 +14,7 @@ print(songs_df.isnull().sum())
 print("\nMissing values in tcc_ceds_music.csv:")
 print(tcc_ceds_music_df.isnull().sum())
 
-# 2. Display Summary Statistics. Just to identify outliers - extremely high or low values. 
+# 2. Display Summary Statistics. Just to identify outliers - extremly high or low values. 
 # And to see the difference between the two datasets.
 print("\nSummary statistics for songs.csv:")
 print(songs_df.describe())
@@ -22,10 +22,10 @@ print(songs_df.describe())
 print("\nSummary statistics for tcc_ceds_music.csv:")
 print(tcc_ceds_music_df.describe())
 
-# 3. Visualize Feature Distributions
+# 3. Visualize Feature Distributions.
 plt.figure(figsize=(15, 10))  # width and height in inches.
 
-# Songs.csv Key Features
+# Songs.csv Key Features.
 # Normalize the ranges to 0 and 1.
 songs_df['bpm'] = songs_df['bpm'] / 100
 plt.subplot(2, 3, 1)
@@ -39,7 +39,7 @@ songs_df['val'] = songs_df['val'] / 100
 plt.subplot(2, 3, 3)
 songs_df['val'].plot(kind='hist', bins=30, color='green', edgecolor='black', title='Valence Distribution')
 
-# TCC CEDS Music Key Features
+# TCC CEDS Music Key Features.
 plt.subplot(2, 3, 4)
 tcc_ceds_music_df['danceability'].plot(kind='hist', bins=30, color='purple', edgecolor='black', title='Danceability (TCC CEDS)')
 
@@ -48,6 +48,25 @@ tcc_ceds_music_df['energy'].plot(kind='hist', bins=30, color='red', edgecolor='b
 
 plt.subplot(2, 3, 6)
 tcc_ceds_music_df['acousticness'].plot(kind='hist', bins=30, color='teal', edgecolor='black', title='Acousticness Distribution (TCC CEDS)')
+
+plt.tight_layout()
+plt.show()
+
+# 4. Correlation Analysis
+# Calculate the correlation matrix for both datasets
+songs_correlation = songs_df[['bpm', 'nrgy', 'dnce', 'dB', 'val', 'acous', 'spch', 'pop']].corr()
+tcc_ceds_music_correlation = tcc_ceds_music_df[['danceability', 'loudness', 'acousticness', 'instrumentalness', 'valence', 'energy', 'sadness', 'feelings']].corr()
+
+# Plot the correlation heatmaps
+plt.figure(figsize=(16, 6))
+
+plt.subplot(1, 2, 1)
+sns.heatmap(songs_correlation, annot=True, cmap='coolwarm')
+plt.title('Correlation Matrix for Songs.csv')
+
+plt.subplot(1, 2, 2)
+sns.heatmap(tcc_ceds_music_correlation, annot=True, cmap='coolwarm')
+plt.title('Correlation Matrix for TCC CEDS Music.csv')
 
 plt.tight_layout()
 plt.show()
