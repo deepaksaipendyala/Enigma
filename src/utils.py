@@ -32,6 +32,9 @@ def random_25():
     return random_songs
 
 
+all_songs_attributes = get_all_songs().filter(["artist_name","track_name","dating","violence","world/life","night/time","shake the audience","family/gospel","romantic","communication","obscene","music","movement/places","light/visual perceptions","family/spiritual",'like/girls',"sadness","feelings","danceability","loudness","acousticness","instrumentalness","valence","energy"])
+all_songs_attr_alt = get_all_songs_alternate().filter(["track_name", "artist", "bpm", "nrgy", "dnce", "live", "val", "dur", "acous", "spch", "pop"])
+
 def get_full_song_name(song_name, artist_name):
     """
     This function returns the full song name, when given the artist and partial song name.
@@ -67,7 +70,7 @@ def retrieve_song_attributes(songName, artistName):
     try:
 
         # Get the song attributes from the all_songs dataframe
-        all_songs = get_all_songs().filter(["artist_name","track_name","dating","violence","world/life","night/time","shake the audience","family/gospel","romantic","communication","obscene","music","movement/places","light/visual perceptions","family/spiritual",'like/girls',"sadness","feelings","danceability","loudness","acousticness","instrumentalness","valence","energy"])
+        all_songs = all_songs_attributes
 
         # Get the attributes of the song
         song = all_songs.loc[(all_songs["track_name"] == songName) & (all_songs["artist_name"] == artistName)]
@@ -88,7 +91,7 @@ def retrieve_attributes_alternate(songName, artistName):
     
     try:
         # Get the songs from the alternate dataset
-        all_songs_alt = get_all_songs_alternate().filter(["track_name", "artist", "bpm", "nrgy", "dnce", "live", "val", "dur", "acous", "spch", "pop"])
+        all_songs_alt = all_songs_attr_alt
 
         # Get the attributes of the song
         song = all_songs_alt.loc[(all_songs_alt["track_name"] == songName) & (all_songs_alt["artist"] == artistName)]

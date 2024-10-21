@@ -15,3 +15,13 @@ class EnhancedRecommendTest(unittest.TestCase):
         songs = recommend_enhanced(input_songs)
         print(songs)
         self.assertTrue(len(songs) == 10)
+
+    def test_recommend_enhanced_two_songs(self):
+        """
+        This function tests the enhanced recommendation system
+        """
+        
+        input_songs = [("the carioca", "les paul"), ("cry", "johnnie ray")]
+        songs = recommend_enhanced(input_songs)
+        print(songs)
+        self.assertTrue(len(songs) == 10)

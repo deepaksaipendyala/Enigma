@@ -19,21 +19,35 @@ def recommend_enhanced(input_songs: list) -> list:
 
     # Get the song attributes for the input songs
     input_song_attributes = {}
+    genres = []
     for song in input_songs:
         song_name = song[0]
         artist_name = song[1]
         song_attributes = retrieve_song_attributes(song_name, artist_name)
         if song_attributes is not None:
             input_song_attributes[(song_name, artist_name)] = song_attributes
+        
+        # Get the genre of the song
+        genre = all_songs.loc[(all_songs["track_name"] == song_name) & (all_songs["artist_name"] == artist_name)]["genre"].values.tolist()
+        if len(genre) > 0:
+            genres.append(genre[0])
+
+    # Filter the songs based on the genre of the input songs
+    all_songs = all_songs[all_songs["genre"].isin(genres)]
     
-    # Get the song attributes for all the songs
+    # Get songs that are similar genres to the input songs
     all_song_attributes = {}
+    num_retrieved = 0
     for index, row in all_songs.iterrows():
         song_name = row["track_name"]
         artist_name = row["artist_name"]
         song_attributes = retrieve_song_attributes(song_name, artist_name)
         if song_attributes is not None:
+            num_retrieved += 1
             all_song_attributes[(song_name, artist_name)] = song_attributes
+        
+        if num_retrieved >= 500:
+            break
 
     # Calculate the cosine similarity between the input songs and all the songs. The final similarity score 
     # for each song will be the average of all the cosine similarities between the input songs and the song
@@ -44,11 +58,8 @@ def recommend_enhanced(input_songs: list) -> list:
     for song_name, artist_name in all_song_attributes.keys():
         similarity_score = 0
         for input_song_name, input_artist_name in input_song_attributes.keys():
-            input_song_attributes = input_song_attributes[(input_song_name, input_artist_name)]
-            all_song_attributes = all_song_attributes[(song_name, artist_name)]
-            cosine_similarity = cosine_similarity(input_song_attributes, all_song_attributes)
-            similarity_score += cosine_similarity
-        
+            similarity_score += cosine_similarity(song_name, artist_name, input_song_name, input_artist_name)
+            
         similarity_score /= len(input_song_attributes)
         similarity_scores.append([(song_name, artist_name), similarity_score])
 
