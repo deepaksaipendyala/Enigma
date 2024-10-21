@@ -30,7 +30,7 @@ thread.start()
 load_dotenv('.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 # This can be obtained using ctx.message.author.voice.channel
-VOICE_CHANNEL_ID = 1293317419279843392
+VOICE_CHANNEL_ID = 1296550710544044127
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix='/', intents=intents)
