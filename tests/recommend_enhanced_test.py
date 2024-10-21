@@ -1,5 +1,5 @@
 import unittest
-from src.recommend_enhanced import recommend_enhanced
+from docs.recommend_enhanced import recommend_enhanced
 
 
 class EnhancedRecommendTest(unittest.TestCase):

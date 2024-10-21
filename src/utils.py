@@ -39,6 +39,10 @@ def get_full_song_name(song_name, artist_name):
     """
     This function returns the full song name, when given the artist and partial song name.
     It will first search the primary dataset, and if the song is not found, it will search the alternate dataset
+
+    Parameters:
+        song_name (str): The partial name of the song
+        artist_name (str): The name of the artist
     """
 
     # Get the songs from the primary dataset
@@ -66,6 +70,10 @@ def get_full_song_name(song_name, artist_name):
 def retrieve_song_attributes(songName, artistName):
     """
     This function returns the attributes of the song
+
+    Parameters:
+        songName (str): The name of the song
+        artistName (str): The name of the artist
     """
     try:
 
@@ -87,6 +95,10 @@ def retrieve_attributes_alternate(songName, artistName):
     """
     This function will retrieve the attributes of the song from the alternate dataset, in the event
     that the song is not found in the main dataset
+
+    Parameters:
+        songName (str): The name of the song
+        artistName (str): The name of the artist
     """
     
     try:
@@ -106,6 +118,12 @@ def retrieve_attributes_alternate(songName, artistName):
 def cosine_similarity(songName1, artistName1, songName2, artistName2):
     """
     This function returns the cosine similarity between two vectors, in this case the attributes of the songs
+
+    Parameters:
+        songName1 (str): The name of the first song
+        artistName1 (str): The name of the artist of the first song
+        songName2 (str): The name of the second song
+        artistName2 (str): The name of the artist of the second song
     """
 
     # Get the attributes of the songs

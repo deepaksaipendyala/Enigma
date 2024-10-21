@@ -1,5 +1,11 @@
+"""
+This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.
+"""
+
+
 from src.utils import retrieve_song_attributes, cosine_similarity
 from src.get_all import get_all_songs
+
 
 def recommend_enhanced(input_songs: list) -> list:
     """
