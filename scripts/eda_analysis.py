@@ -14,7 +14,11 @@ print(songs_df.isnull().sum())
 print("\nMissing values in tcc_ceds_music.csv:")
 print(tcc_ceds_music_df.isnull().sum())
 
-# 2. Display Summary Statistics. Just to identify outliers - extremly high or low values. 
+# 2. Check for Duplicates.
+duplicate_songs = tcc_ceds_music_df.duplicated(subset=['track_name', 'artist_name']).sum()
+print(f"Duplicate song-artist pairs: {duplicate_songs}")
+
+# 3. Display Summary Statistics. Just to identify outliers - extremly high or low values. 
 # And to see the difference between the two datasets.
 print("\nSummary statistics for songs.csv:")
 print(songs_df.describe())
@@ -22,7 +26,7 @@ print(songs_df.describe())
 print("\nSummary statistics for tcc_ceds_music.csv:")
 print(tcc_ceds_music_df.describe())
 
-# 3. Visualize Feature Distributions.
+# 4. Visualize Feature Distributions.
 plt.figure(figsize=(15, 10))  # width and height in inches.
 
 # Songs.csv Key Features.
@@ -52,7 +56,7 @@ tcc_ceds_music_df['acousticness'].plot(kind='hist', bins=30, color='teal', edgec
 plt.tight_layout()
 plt.show()
 
-# 4. Correlation Analysis
+# 5. Correlation Analysis
 # Calculate the correlation matrix for both datasets
 songs_correlation = songs_df[['bpm', 'nrgy', 'dnce', 'dB', 'val', 'acous', 'spch', 'pop']].corr()
 tcc_ceds_music_correlation = tcc_ceds_music_df[['danceability', 'loudness', 'acousticness', 'instrumentalness', 'valence', 'energy', 'sadness', 'feelings']].corr()
@@ -71,7 +75,7 @@ plt.title('Correlation Matrix for TCC CEDS Music.csv')
 plt.tight_layout()
 plt.show()
 
-# 5. Genre Analysis: Visualize the Distribution of Genres.
+# 6. Genre Analysis: Visualize the Distribution of Genres.
 plt.figure(figsize=(12, 6))
 tcc_ceds_music_df['genre'].value_counts().plot(kind='bar', color='royalblue', edgecolor='black')
 plt.title('Distribution of Genres in TCC CEDS Music Dataset')
@@ -80,7 +84,7 @@ plt.ylabel('Count')
 plt.xticks(rotation=45)
 plt.show()
 
-# 6. Scatter Plot for Key Relationships.
+# 7. Scatter Plot for Key Relationships.
 # Relationship between Energy and Danceability in tcc_ceds_music.csv.
 plt.figure(figsize=(8, 6))
 sns.scatterplot(data=tcc_ceds_music_df, x='energy', y='danceability', hue='genre', palette='viridis', alpha=0.6)
