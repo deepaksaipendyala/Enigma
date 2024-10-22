@@ -262,12 +262,18 @@ class Songs(commands.Cog):
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             queue, index = songs_queue.return_queue()
-            await ctx.send("Queue of recommendations: ")
+            bot_message = "🎶 **Song Queue:** 🎶 \n"
+            if index != 0:
+                bot_message += "\nAlready Played: "
             for i in range(len(queue)):
-                if i == index:
-                    await ctx.send("Currently Playing: " + queue[i])
-                else:
-                    await ctx.send(queue[i])
+                if i < index:
+                    bot_message += "\n" + "     " + str.title(queue[i])
+                elif i == index:
+                    bot_message += "\n\n🔊 Currently Playing: \n" + "     " + str.title(queue[i])
+                    bot_message += "\n\nIn Queue: "
+                elif i > index:
+                    bot_message += "\n" + str(i - index) + ". " + str.title(queue[i])
+            await ctx.send(bot_message)
 
     @commands.command(name="shuffle", help="To shuffle songs in queue")
     async def shuffle(self, ctx):

@@ -48,7 +48,7 @@ class Songs_Queue():
         if int(idx) < 1 or int(idx) > len(self.queue):
             return -2
         for index, s in enumerate(self.queue):
-            if s == song:
+            if s.upper() == song.upper():
                 curr_idx = index
         if curr_idx != -1:
             element = self.queue.pop(curr_idx)  # Remove the element from the old index
