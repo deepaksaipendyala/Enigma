@@ -184,6 +184,26 @@ class Songs(commands.Cog):
         if not empty_queue:
             await self.play_song(songs_queue.prev_song(), ctx)
 
+    @commands.command(name="move", help="To move a song within a queue")
+    async def move(self, ctx):
+        """
+        Function to move a song within a queue
+        """
+
+        empty_queue = await self.handle_empty_queue(ctx)
+        if not empty_queue:
+            user_message = str(ctx.message.content)
+            song_name = user_message.split(" ", 1)[1].rsplit(" ", 1)[0]
+            idx = user_message.rsplit(" ", 1)[1]
+            ret_val = songs_queue.move_song(song_name, idx)
+            if ret_val == -1:
+                await ctx.send("Song does not exist in the queue.")
+            elif ret_val == -2:
+                await ctx.send("Index not valid for queue.")
+            else:
+                bot_message = song_name + " moved to position " + idx
+                await ctx.send(bot_message)
+
     @commands.command(name="pause", help="This command pauses the song")
     async def pause(self, ctx):
         """

@@ -33,7 +33,7 @@ thread.start()
 load_dotenv(".env")
 TOKEN = os.getenv("DISCORD_TOKEN")
 # This can be obtained using ctx.message.author.voice.channel
-VOICE_CHANNEL_ID = 1293317419279843392
+VOICE_CHANNEL_ID = 1296547951946240115
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix="!", intents=intents)
@@ -48,7 +48,7 @@ async def on_ready():
 
     try:
         print("Loading songs cog")
-        await client.load_extension("src.songs_cog")
+        await client.load_extension("cogs.songs_cog")
         print("Songs cog loaded successfully")
     except Exception as e:
         print(f"Error loading songs cog: {e}")

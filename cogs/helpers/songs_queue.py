@@ -40,6 +40,24 @@ class Songs_Queue():
         return self.queue[val]
 
     """
+    This function moves a song within the queue
+    """
+
+    def move_song(self, song, idx):
+        curr_idx = -1
+        if int(idx) < 1 or int(idx) > len(self.queue):
+            return -2
+        for index, s in enumerate(self.queue):
+            if s == song:
+                curr_idx = index
+        if curr_idx != -1:
+            element = self.queue.pop(curr_idx)  # Remove the element from the old index
+            self.queue.insert(int(idx), element)  # Insert the element at the new index
+            return int(idx)
+        else:
+            return -1
+
+    """
     This function returns the length of the song queue
     """
 
