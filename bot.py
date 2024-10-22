@@ -8,9 +8,10 @@ import os
 from cogs.helpers.get_all import *
 from dotenv import load_dotenv
 from discord.ext import commands
-from cogs.helpers.utils import searchSong
-from cogs.helpers.songs_queue import Songs_Queue
-from cogs.songs_cog import Songs
+
+# from cogs.helpers.utils import searchSong
+# from cogs.helpers.songs_queue import Songs_Queue
+# from cogs.songs_cog import Songs
 import http.server
 import socketserver
 import threading
@@ -33,7 +34,7 @@ thread.start()
 load_dotenv(".env")
 TOKEN = os.getenv("DISCORD_TOKEN")
 # This can be obtained using ctx.message.author.voice.channel
-VOICE_CHANNEL_ID = 1296547951946240115
+# VOICE_CHANNEL_ID = 1293317419279843392
 intents = discord.Intents.all()
 intents.members = True
 client = commands.Bot(command_prefix="!", intents=intents)
@@ -47,16 +48,34 @@ async def on_ready():
     print(f"Bot is ready as {client.user}")
 
     try:
-        print("Loading songs cog")
-        await client.load_extension("cogs.songs_cog")
-        print("Songs cog loaded successfully")
-    except Exception as e:
-        print(f"Error loading songs cog: {e}")
+        print("Loading all cogs")
+        # Get all the files that end in _cog.py
+        for filename in os.listdir("./cogs"):
+            if filename.endswith("_cog.py"):
+                # Load the cog
+                cog_name = filename[:-3]
+                cog_path = f"cogs.{cog_name}"
 
-    voice_channel = client.get_channel(VOICE_CHANNEL_ID)
-    if client.user not in voice_channel.members:
+                await client.load_extension(cog_path)
+        print("Cogs loaded successfully")
+    except Exception as e:
+        print(f"Error loading cog {cog_path}: {e}")
+
+    # By defaul, try to join a voice channel named "General"
+
+    # voice_channel = client.get_channel(VOICE_CHANNEL_ID)
+
+    channel = discord.utils.get(client.get_all_channels(), name="General")
+
+    if channel is not None:
+        channel = channel.id
+        voice_channel = client.get_channel(channel)
+
+    if (channel is not None) and (client.user not in voice_channel.members):
         await voice_channel.connect()
         print("Bot connected to voice channel")
+    else:
+        print("Error connecting to General. See the 'join' command for help.")
 
 
 """
