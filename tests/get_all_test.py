@@ -2,7 +2,7 @@ import unittest
 import warnings
 import sys
 
-from src import get_all
+from cogs.helpers import get_all
 
 warnings.filterwarnings("ignore")
 
@@ -23,5 +23,5 @@ class Tests(unittest.TestCase):
         ts = {"track_name": "Your Love Is My Drug", "genre": "dance pop"}
         songs = get_all.recommend(ts)
         print(songs)
-        #test = {"track_name": "Living For Love", "genre": "dance pop"}
+        # test = {"track_name": "Living For Love", "genre": "dance pop"}
         self.assertTrue(len(songs) == 10)

@@ -1,7 +1,7 @@
 import unittest
 import warnings
 import sys
-from src import utils
+from cogs.helpers import utils
 
 sys.path.append("../")
 warnings.filterwarnings("ignore")
