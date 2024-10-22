@@ -60,7 +60,7 @@ class Songs(commands.Cog):
         self.bot = bot
 
     @commands.command(name="join", help="To join the voice channel")
-    async def join(self, ctx, channel: discord.VoiceChannel = None):
+    async def join(self, ctx, channel: str = commands.parameter(description="The voice channel to join (optional)", default=None)):
         """
         Function for joining the voice channel
 
