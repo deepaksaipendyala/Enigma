@@ -36,7 +36,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 VOICE_CHANNEL_ID = 1293317419279843392
 intents = discord.Intents.all()
 intents.members = True
-client = commands.Bot(command_prefix="/", intents=intents)
+client = commands.Bot(command_prefix="!", intents=intents)
 """
 Function that gets executed once the bot is initialized
 """
