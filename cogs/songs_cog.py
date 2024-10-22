@@ -251,7 +251,7 @@ class Songs(commands.Cog):
         global songs_queue
         recommended_songs = recommend(selected_songs)
         songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue.next_song(), ctx)
+        await self.play_song(songs_queue[songs_queue.current_index], ctx)
 
     @commands.command(name="queue", help="Show active queue of recommendations")
     async def queue(self, ctx):
@@ -262,15 +262,15 @@ class Songs(commands.Cog):
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             queue, index = songs_queue.return_queue()
-            bot_message = "🎶 **Song Queue:** 🎶 \n"
+            bot_message = "🎶 **Song Queue:** 🎶 "
             if index != 0:
-                bot_message += "\nAlready Played: "
+                bot_message += "\n\nAlready Played: "
             for i in range(len(queue)):
                 if i < index:
-                    bot_message += "\n" + "     " + str.title(queue[i])
+                    bot_message += "\n" + str(len(songs_queue.queue) - index + i) + ". " + str.title(queue[i])
                 elif i == index:
                     bot_message += "\n\n🔊 Currently Playing: \n" + "     " + str.title(queue[i])
-                    bot_message += "\n\nIn Queue: "
+                    if index != len(songs_queue.queue) - 1: bot_message += "\n\nUp Next: "
                 elif i > index:
                     bot_message += "\n" + str(i - index) + ". " + str.title(queue[i])
             await ctx.send(bot_message)

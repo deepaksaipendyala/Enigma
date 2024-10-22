@@ -20,11 +20,11 @@ class Songs_Queue():
 
     def next_song(self):
         print(self.queue)
-        if (self.index == len(self.queue)):
-            self.index = 0
-        val = self.index
-        self.current_index = val
-        self.index += 1
+        if (self.current_index == len(self.queue) - 1):
+            self.current_index = 0
+        else:
+            self.current_index += 1
+        val = self.current_index
         return self.queue[val]
 
     """
@@ -32,11 +32,10 @@ class Songs_Queue():
     """
 
     def prev_song(self):
-        self.index -= 1
-        if (self.index <= 0):
-            self.index = len(self.queue) - 1
-        val = self.index
-        self.current_index = val
+        self.current_index -= 1
+        if (self.current_index < 0):
+            self.current_index = len(self.queue) - 1
+        val = self.current_index
         return self.queue[val]
 
     """
@@ -72,7 +71,9 @@ class Songs_Queue():
         return (self.queue, self.current_index)
 
     def shuffle_queue(self):
+        element = self.queue.pop(self.current_index)
         shuffle(self.queue)
+        self.queue.insert(self.current_index, element)
 
     def add_to_queue(self, song_name):
         self.queue.append(song_name)
