@@ -5,7 +5,7 @@ This file contains some functions that get the help string for each command, and
 from discord.ext import commands
 
 
-class Helper(commands.cog):
+class Helper(commands.Cog):
     """
     Get the help strings for each command, and reply to the user
     """
@@ -30,6 +30,6 @@ class Helper(commands.cog):
         )
 
 
-def setup(bot):
+async def setup(bot):
     """Add the file to the bot"""
-    bot.add_cog(Helper(bot))
+    await bot.add_cog(Helper(bot))

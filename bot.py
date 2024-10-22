@@ -1,5 +1,5 @@
 """
-dThis file is the main entry point of the bot
+This file is the main entry point of the bot
 """
 
 from multiprocessing.util import debug
@@ -47,19 +47,19 @@ Function that gets executed once the bot is initialized
 async def on_ready():
     print(f"Bot is ready as {client.user}")
 
-    try:
-        print("Loading all cogs")
-        # Get all the files that end in _cog.py
-        for filename in os.listdir("./cogs"):
-            if filename.endswith("_cog.py"):
-                # Load the cog
-                cog_name = filename[:-3]
-                cog_path = f"cogs.{cog_name}"
-
+    
+    print("Loading all cogs")
+    # Get all the files that end in _cog.py
+    for filename in os.listdir("./cogs"):
+        if filename.endswith("_cog.py"):
+            # Load the cog
+            cog_name = filename[:-3]
+            cog_path = f"cogs.{cog_name}"
+            try:
                 await client.load_extension(cog_path)
-        print("Cogs loaded successfully")
-    except Exception as e:
-        print(f"Error loading cog {cog_path}: {e}")
+                print(f"{cog_name} loaded successfully")
+            except Exception as e:
+                print(f"Error loading cog {cog_path}: {e}")
 
     # By defaul, try to join a voice channel named "General"
 
