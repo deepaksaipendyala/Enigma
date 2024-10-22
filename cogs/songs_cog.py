@@ -106,7 +106,12 @@ class Songs(commands.Cog):
 
         user_message = str(ctx.message.content)
         song_name = user_message.split(" ", 1)[1]
-        await self.play_song(song_name, ctx)
+        if 'songs_queue' not in globals():
+            global songs_queue
+            songs_queue = Songs_Queue([song_name])
+        else:
+            songs_queue.queue[songs_queue.current_index] = song_name
+        await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
 
     @commands.command(name="stop", help="Stops the song")
     async def stop(self, ctx):
@@ -216,6 +221,18 @@ class Songs(commands.Cog):
         else:
             await ctx.send("The bot is not playing anything at the moment.")
 
+    @commands.command(name="replay", help="This command replays the current song")
+    async def replay(self, ctx):
+        """
+        Function to restart the current song in queue
+        """
+
+        voice_client = ctx.message.guild.voice_client
+        if voice_client.is_playing():
+            voice_client.stop()
+        await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
+        
+
     @commands.command(
         name="poll_old",
         help="Generate a poll to create some recommendations. This is the old version",
@@ -251,7 +268,7 @@ class Songs(commands.Cog):
         global songs_queue
         recommended_songs = recommend(selected_songs)
         songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue[songs_queue.current_index], ctx)
+        await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
 
     @commands.command(name="queue", help="Show active queue of recommendations")
     async def queue(self, ctx):
@@ -294,7 +311,12 @@ class Songs(commands.Cog):
 
         user_message = str(ctx.message.content)
         song_name = user_message.split(" ", 1)[1]
-        songs_queue.add_to_queue(song_name)
+        if 'songs_queue' not in globals():
+            global songs_queue
+            songs_queue = Songs_Queue([song_name])
+            await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
+        else:
+            songs_queue.add_to_queue(song_name)
         await ctx.send("Song added to queue")
 
 
