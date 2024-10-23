@@ -59,7 +59,7 @@ plt.show()
 # 5. Correlation Analysis
 # Calculate the correlation matrix for both datasets
 songs_correlation = songs_df[['bpm', 'nrgy', 'dnce', 'dB', 'val', 'acous', 'spch', 'pop']].corr()
-tcc_ceds_music_correlation = tcc_ceds_music_df[['danceability', 'loudness', 'acousticness', 'instrumentalness', 'valence', 'energy', 'sadness', 'feelings']].corr()
+tcc_ceds_music_correlation = tcc_ceds_music_df[['danceability', 'loudness', 'acousticness', 'instrumentalness', 'valence', 'energy', 'sadness', 'feelings', 'romantic']].corr()
 
 # Plot the correlation heatmaps.
 plt.figure(figsize=(16, 6))
@@ -87,6 +87,9 @@ plt.show()
 # 7. Scatter Plot for Key Relationships.
 # Relationship between Energy and Danceability in tcc_ceds_music.csv.
 plt.figure(figsize=(8, 6))
-sns.scatterplot(data=tcc_ceds_music_df, x='energy', y='danceability', hue='genre', palette='viridis', alpha=0.6)
-plt.title('Energy vs Danceability by Genre')
+sns.scatterplot(data=tcc_ceds_music_df, x='energy', y='danceability', hue='energy', 
+                          palette='viridis', alpha=0.6, legend=None)
+plt.title('Energy vs Danceability')
+plt.xlabel('Energy')
+plt.ylabel('Danceability')
 plt.show()

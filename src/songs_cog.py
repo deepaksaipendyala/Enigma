@@ -2,6 +2,7 @@
 This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
 /next_song for playing next song and so on
 """
+import asyncio
 import discord
 from src.get_all import *
 from dotenv import load_dotenv
@@ -252,11 +253,77 @@ class Songs(commands.Cog):
         songs_queue.add_to_queue(song_name)
         await ctx.send("Song added to queue")
 
+    @commands.command(name='mood_recommend', help='Songs based on your mood or activity')
+    async def mood_recommend(self, ctx):
+        # Send an embed message with mood options.
+        mood_options = {
+            '😊': 'happy',
+            '😢': 'sad',
+            '🎉': 'party',
+            '😌': 'chill',
+            '❤️': 'Romantic',
+        }
+
+        # Create an embed message with the options.
+        mood_embed = discord.Embed(
+            title="Choose Your Mood",
+            description="React with the corresponding emoji to select your mood:\n\n"
+                        "😊 - Happy\n"
+                        "😢 - Sad\n"
+                        "🎉 - Party\n"
+                        "😌 - Chill\n"
+                        "❤️ - Romantic",
+            color=discord.Color.blue()
+        )
+
+        # Send the embed message and add reaction options.
+        message = await ctx.send(embed=mood_embed)
+        for emoji in mood_options:
+            await message.add_reaction(emoji)
+
+        # Function to check if the reaction is one of the valid ones.
+        def check(reaction, user):
+            return user == ctx.message.author and str(reaction.emoji) in mood_options
+
+        try:
+            # Wait for a single reaction from the user.
+            reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+            selected_mood = mood_options[str(reaction.emoji)]
+
+            # Confirm the selected mood to the user.
+            await ctx.send(f"You selected: {selected_mood.capitalize()}")
+
+            # Remove all reactions to prevent further selections.
+            await message.clear_reactions()
+
+        except asyncio.TimeoutError:
+            await ctx.send("You took too long to respond! Please try again.")
+            return
+
+        # Define mood filters based on EDA analysis.
+        mood_map = {
+            'happy': {'valence': (0.7, 1.0), 'energy': (0.5, 1.0)},
+            'sad': {'sadness': (0.5, 1), 'valence': (0.0, 0.3), 'energy': (0.2, 0.5)},
+            'party': {'danceability': (0.7, 1.0), 'valence': (0.6, 1.0), 'energy': (0.6, 1.0)},
+            'chill': {'acousticness': (0.6, 1.0), 'energy': (0.1, 0.5)},
+            'Romantic': {'romantic': (0.5, 1.0), 'valence': (0.2, 0.5)},
+        }
+
+        filters = mood_map[selected_mood]
+        recommended_songs = get_recommended_songs_based_on_mood(filters)
+
+        if not recommended_songs:
+            await ctx.send("No songs found for the selected mood.")
+            return
+
+        # Add recommendations to queue and play.
+        global songs_queue
+        songs_queue = Songs_Queue(recommended_songs)
+        await self.play_song(songs_queue.next_song(), ctx)
+
 
 """
     Function to add the cog to the bot
 """
-
-
 async def setup(client):
     await client.add_cog(Songs(client))

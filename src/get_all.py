@@ -62,3 +62,27 @@ def recommend(input_songs):
         selected_list.extend(random.sample(song_names_filtered, extra_songs))
         output = selected_list.copy()
     return output
+
+
+def get_recommended_songs_based_on_mood(filters):
+    """
+    Filter the dataset based on the provided filter ranges for mood.
+    The filters parameter is expected to be a dictionary with keys as feature names and values as a tuple of (min, max).
+    """
+    # Load the dataset.
+    tcc_ceds_music_df = pd.read_csv('.\\data\\tcc_ceds_music.csv')
+
+    # Start with the dataset and filter it based on the ranges provided in the filters
+    filtered_df = tcc_ceds_music_df.copy()
+    
+    for feature, (min_val, max_val) in filters.items():
+        if feature in filtered_df.columns:
+            filtered_df = filtered_df[(filtered_df[feature] >= min_val) & (filtered_df[feature] <= max_val)]
+
+    # If there are no results, return an empty list
+    if filtered_df.empty:
+        return []
+    
+    # Extract the 'track_name' and 'artist_name' as the recommended songs
+    recommended_songs = filtered_df['track_name'].head(20).tolist()
+    return recommended_songs
