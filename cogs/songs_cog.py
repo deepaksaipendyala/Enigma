@@ -10,6 +10,7 @@ from discord.ext import commands
 from cogs.helpers.utils import searchSong, random_25
 from cogs.helpers.songs_queue import Songs_Queue
 import yt_dlp as youtube_dl
+import asyncio
 
 
 FFMPEG_OPTIONS = {
@@ -55,6 +56,8 @@ class Songs(commands.Cog):
     """
     Cog for bot that handles all commands related to songs
     """
+
+    manually_stopped = False
 
     def __init__(self, bot):
         self.bot = bot
@@ -121,6 +124,8 @@ class Songs(commands.Cog):
 
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
+            global manually_stopped
+            manually_stopped = True
             voice_client.stop()
         else:
             await ctx.send("The bot is not playing anything at the moment.")
@@ -136,6 +141,7 @@ class Songs(commands.Cog):
         # Get the song URL
         url = searchSong(song_name)
         print(url)
+        global manually_stopped
 
         # Check if bot is connected to a voice channel
         if not ctx.voice_client:
@@ -144,12 +150,20 @@ class Songs(commands.Cog):
 
         # Check if the bot is already playing a song, and stop it if it is
         if ctx.voice_client.is_playing():
+            manually_stopped = True
             ctx.voice_client.stop()
 
         # Get and play the audio source
         audio_source = get_audio_sorce(url)
-        ctx.voice_client.play(audio_source)
+        ctx.voice_client.play(audio_source, after=lambda e: self.handle_play_next(ctx))
         await ctx.send(f"Now playing: {url}")
+        manually_stopped = False
+    
+    def handle_play_next(self, ctx):
+        global manually_stopped
+        if not manually_stopped:
+            asyncio.run_coroutine_threadsafe(self.play_song(songs_queue.next_song(), ctx), self.bot.loop)
+
 
     async def handle_empty_queue(self, ctx):
         """
@@ -174,7 +188,7 @@ class Songs(commands.Cog):
         """
         Function to play the next song in the queue
         """
-
+        
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             await self.play_song(songs_queue.next_song(), ctx)
@@ -184,7 +198,7 @@ class Songs(commands.Cog):
         """
         Function to play the previous song in the queue
         """
-
+        
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             await self.play_song(songs_queue.prev_song(), ctx)
@@ -217,7 +231,7 @@ class Songs(commands.Cog):
 
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
-            await voice_client.pause()
+            voice_client.pause()
         else:
             await ctx.send("The bot is not playing anything at the moment.")
 
