@@ -1,6 +1,6 @@
 import pytest
 import unittest
-from src.songs_cog import *
+from cogs.songs_cog import *
 import warnings
 import sys
 
@@ -14,7 +14,9 @@ class Test_Songs_Cog(unittest.TestCase):
 
     async def test_resume(self):
         result = await Songs.resume()
-        assert result == "The bot was not playing anything before this. Use play command"
+        assert (
+            result == "The bot was not playing anything before this. Use play command"
+        )
 
     async def test_stop(self):
         result = await Songs.stop()
@@ -26,7 +28,10 @@ class Test_Songs_Cog(unittest.TestCase):
 
     async def test_handle_empty_queue(self):
         result = await Songs.handle_empty_queue()
-        assert result == "No recommendations present. First generate recommendations using /poll"
+        assert (
+            result
+            == "No recommendations present. First generate recommendations using /poll"
+        )
 
     async def test_pause(self):
         result = await Songs.pause()

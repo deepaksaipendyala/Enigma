@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>src.songs_cog API documentation</title>
 <meta name="description" content="This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
-/next_song for playing next song and so on" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+/next_song for playing next song and so on">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -25,205 +28,6 @@
 <section id="section-intro">
 <p>This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
 /next_song for playing next song and so on</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
-/next_song for playing next song and so on
-&#34;&#34;&#34;
-import discord
-from src.get_all import *
-from dotenv import load_dotenv
-from discord.ext import commands
-from src.utils import searchSong, random_25
-from src.songs_queue import Songs_Queue
-import youtube_dl
-
-FFMPEG_OPTIONS = {
-    &#39;before_options&#39;: &#39;-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5&#39;, &#39;options&#39;: &#39;-vn&#39;}
-YDL_OPTIONS = {&#39;format&#39;: &#39;bestaudio/best&#39;, &#39;noplaylist&#39;: &#39;True&#39;}
-
-
-class Songs(commands.Cog):
-    &#34;&#34;&#34;
-    Cog for bot that handles all commands related to songs
-    &#34;&#34;&#34;
-
-    def __init__(self, bot):
-        self.bot = bot
-
-    &#34;&#34;&#34;
-    Function for handling resume capability
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;resume&#39;, help=&#39;Resumes the song&#39;)
-    async def resume(self, ctx):
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_paused():
-            await voice_client.resume()
-        else:
-            await ctx.send(&#34;The bot was not playing anything before this. Use play command&#34;)
-
-    &#34;&#34;&#34;
-    Function for playing a custom song
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;play_custom&#39;, help=&#39;To play custom song&#39;)
-    async def play_custom(self, ctx):
-        user_message = str(ctx.message.content)
-        song_name = user_message.split(&#39; &#39;, 1)[1]
-        await self.play_song(song_name, ctx)
-
-    &#34;&#34;&#34;
-    Function to stop playing the music
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;stop&#39;, help=&#39;Stops the song&#39;)
-    async def stop(self, ctx):
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            voice_client.stop()
-        else:
-            await ctx.send(&#34;The bot is not playing anything at the moment.&#34;)
-
-    &#34;&#34;&#34;
-    Helper function for playing song on the voice channel
-    &#34;&#34;&#34;
-    async def play_song(self, song_name, ctx):
-        # First stop whatever the bot is playing
-        await self.stop(ctx)
-        try:
-            server = ctx.message.guild
-            voice_channel = server.voice_client
-            url = searchSong(song_name)
-            async with ctx.typing():
-                with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-                    info = ydl.extract_info(url, download=False)
-                    I_URL = info[&#39;formats&#39;][0][&#39;url&#39;]
-                    source = await discord.FFmpegOpusAudio.from_probe(I_URL, **FFMPEG_OPTIONS)
-                    voice_channel.play(source)
-                    voice_channel.is_playing()
-            await ctx.send(&#39;**Now playing:** {}&#39;.format(song_name))
-        except Exception as e:
-            await ctx.send(&#34;The bot is not connected to a voice channel.&#34;)
-
-    &#34;&#34;&#34;
-    Helper function to handle empty song queue
-    &#34;&#34;&#34;
-    async def handle_empty_queue(self, ctx):
-        try:
-            songs_queue
-        except NameError:
-            await ctx.send(&#34;No recommendations present. First generate recommendations using /poll&#34;)
-            return True
-        if songs_queue.get_len() == 0:
-            await ctx.send(&#34;No recommendations present. First generate recommendations using /poll&#34;)
-            return True
-        return False
-
-    &#34;&#34;&#34;
-    Function to play the next song in the queue
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;next_song&#39;, help=&#39;To play next song in queue&#39;)
-    async def next_song(self, ctx):
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.next_song(), ctx)
-
-    &#34;&#34;&#34;
-    Function to play the previous song in the queue
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;prev_song&#39;, help=&#39;To play prev song in queue&#39;)
-    async def play(self, ctx):
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.prev_song(), ctx)
-
-    &#34;&#34;&#34;
-    Function to pause the music that is playing
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;pause&#39;, help=&#39;This command pauses the song&#39;)
-    async def pause(self, ctx):
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            await voice_client.pause()
-        else:
-            await ctx.send(&#34;The bot is not playing anything at the moment.&#34;)
-
-    &#34;&#34;&#34;
-    Function to generate poll for playing the recommendations
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;poll&#39;, help=&#39;Poll for recommendation&#39;)
-    async def poll(self, ctx):
-        reactions = [&#39;👍&#39;, &#39;👎&#39;]
-        selected_songs = []
-        count = 0
-        bot_message = &#34;Select song preferences by reaction &#39;👍&#39; or &#39;👎&#39; to the choices. \nSelect 3 songs&#34;
-        await ctx.send(bot_message)
-        ten_random_songs = random_25()
-        for ele in zip(ten_random_songs[&#34;title&#34;], ten_random_songs[&#34;artist&#34;]):
-            bot_message = str(ele[0]) + &#34; By &#34; + str(ele[1])
-            description = []
-            poll_embed = discord.Embed(
-                title=bot_message, color=0x31FF00, description=&#39;&#39;.join(description))
-            react_message = await ctx.send(embed=poll_embed)
-            for reaction in reactions[:len(reactions)]:
-                await react_message.add_reaction(reaction)
-            res, user = await self.bot.wait_for(&#39;reaction_add&#39;)
-            if (res.emoji == u&#39;👍&#39;):
-                selected_songs.append(str(ele[0]))
-                count += 1
-            if (count == 3):
-                bot_message = &#34;Selected songs are : &#34; + \
-                    &#39; , &#39;.join(selected_songs)
-                await ctx.send(bot_message)
-                break
-        global songs_queue
-        recommended_songs = recommend(selected_songs)
-        songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue.next_song(), ctx)
-
-    &#34;&#34;&#34;
-    Function to display all the songs in the queue
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;queue&#39;, help=&#39;Show active queue of recommendations&#39;)
-    async def queue(self, ctx):
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            queue, index = songs_queue.return_queue()
-            await ctx.send(&#34;Queue of recommendations: &#34;)
-            for i in range(len(queue)):
-                if i == index:
-                    await ctx.send(&#34;Currently Playing: &#34; + queue[i])
-                else:
-                    await ctx.send(queue[i])
-
-    &#34;&#34;&#34;
-    Function to shuffle songs in the queue
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;shuffle&#39;, help=&#39;To shuffle songs in queue&#39;)
-    async def shuffle(self, ctx):
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            songs_queue.shuffle_queue()
-            await ctx.send(&#34;Playlist shuffled &#34;)
-
-    &#34;&#34;&#34;
-    Function to add custom song to the queue
-    &#34;&#34;&#34;
-    @commands.command(name=&#39;add_song&#39;, help=&#39;To add custom song to the queue&#39;)
-    async def add_song(self, ctx):
-        user_message = str(ctx.message.content)
-        song_name = user_message.split(' ', 1)[1]
-        songs_queue.add_to_queue(song_name)
-        await ctx.send(&#34;Song added to queue &#34;)
-
-
-&#34;&#34;&#34;
-    Function to add the cog to the bot
-&#34;&#34;&#34;
-async def setup(client):
-    await client.add_cog(Songs(client))</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -232,18 +36,19 @@ async def setup(client):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.songs_cog.setup"><code class="name flex">
-<span>async def <span class="ident">setup</span></span>(<span>client)</span>
+<dt id="src.songs_cog.get_audio_sorce"><code class="name flex">
+<span>def <span class="ident">get_audio_sorce</span></span>(<span>url: str)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">async def setup(client):
-    await client.add_cog(Songs(client))</code></pre>
-</details>
+</dd>
+<dt id="src.songs_cog.setup"><code class="name flex">
+<span>async def <span class="ident">setup</span></span>(<span>client: discord.client.Client)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to add the cog to the bot</p>
+<h2 id="parameters">Parameters</h2>
+<p>client (discord.Client): The bot client</p></div>
 </dd>
 </dl>
 </section>
@@ -268,117 +73,169 @@ async def setup(client):
     def __init__(self, bot):
         self.bot = bot
 
-    &#34;&#34;&#34;
-    Function for handling resume capability
-    &#34;&#34;&#34;
+
+    @commands.command(name=&#39;join&#39;, help=&#39;To join the voice channel&#39;)
+    async def join(self, ctx, channel: discord.VoiceChannel = None):
+        &#34;&#34;&#34;
+        Function for joining the voice channel
+
+        Parameters:
+            channel (discord.VoiceChannel): The voice channel to join
+        &#34;&#34;&#34;
+
+        if not channel:
+            try:
+                channel = ctx.author.voice.channel
+            except AttributeError:
+                await ctx.send(&#34;No channel to join. Please specify a channel&#34;)
+                return
+            
+        if ctx.voice_client:
+            await ctx.voice_client.move_to(channel)
+        else: 
+            await channel.connect()
+        await ctx.send(f&#34;Successfully joined {channel.name} ({channel.id})&#34;)
+
+
     @commands.command(name=&#39;resume&#39;, help=&#39;Resumes the song&#39;)
     async def resume(self, ctx):
+        &#34;&#34;&#34;
+        Function for handling resume capability
+        &#34;&#34;&#34;
+        
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_paused():
             await voice_client.resume()
         else:
-            await ctx.send(&#34;The bot was not playing anything before this. Use play command&#34;)
+            await ctx.send(
+                &#34;The bot was not playing anything before this. Use play command&#34;
+            )
 
-    &#34;&#34;&#34;
-    Function for playing a custom song
-    &#34;&#34;&#34;
+
     @commands.command(name=&#39;play_custom&#39;, help=&#39;To play custom song&#39;)
     async def play_custom(self, ctx):
+        &#34;&#34;&#34;
+        Function for playing a custom song
+        &#34;&#34;&#34;
+
         user_message = str(ctx.message.content)
         song_name = user_message.split(&#39; &#39;, 1)[1]
         await self.play_song(song_name, ctx)
 
-    &#34;&#34;&#34;
-    Function to stop playing the music
-    &#34;&#34;&#34;
+
     @commands.command(name=&#39;stop&#39;, help=&#39;Stops the song&#39;)
     async def stop(self, ctx):
+        &#34;&#34;&#34;
+        Function to stop playing the music
+        &#34;&#34;&#34;
+        
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
             voice_client.stop()
         else:
             await ctx.send(&#34;The bot is not playing anything at the moment.&#34;)
 
-    &#34;&#34;&#34;
-    Helper function for playing song on the voice channel
-    &#34;&#34;&#34;
-    async def play_song(self, song_name, ctx):
-        # First stop whatever the bot is playing
-        await self.stop(ctx)
-        try:
-            server = ctx.message.guild
-            voice_channel = server.voice_client
-            url = searchSong(song_name)
-            async with ctx.typing():
-                with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-                    info = ydl.extract_info(url, download=False)
-                    I_URL = info[&#39;formats&#39;][0][&#39;url&#39;]
-                    source = await discord.FFmpegOpusAudio.from_probe(I_URL, **FFMPEG_OPTIONS)
-                    voice_channel.play(source)
-                    voice_channel.is_playing()
-            await ctx.send(&#39;**Now playing:** {}&#39;.format(song_name))
-        except Exception as e:
-            await ctx.send(&#34;The bot is not connected to a voice channel.&#34;)
 
-    &#34;&#34;&#34;
-    Helper function to handle empty song queue
-    &#34;&#34;&#34;
+    async def play_song(self, song_name, ctx):
+        &#34;&#34;&#34;
+        Helper function for playing song on the voice channel
+
+        Parameters:
+            song_name (str): The name of the song to play
+        &#34;&#34;&#34;
+        
+        # Get the song URL
+        url = searchSong(song_name)
+        print(url)
+
+        # Check if bot is connected to a voice channel
+        if not ctx.voice_client:
+            await ctx.send(&#34;Bot is not connected to a voice channel&#34;)
+            return
+        
+        # Check if the bot is already playing a song, and stop it if it is
+        if ctx.voice_client.is_playing():
+            ctx.voice_client.stop()
+
+        # Get and play the audio source
+        audio_source = get_audio_sorce(url)
+        ctx.voice_client.play(audio_source)
+        await ctx.send(f&#34;Now playing: {url}&#34;)
+
+
     async def handle_empty_queue(self, ctx):
+        &#34;&#34;&#34;
+        Helper function to handle empty song queue
+        &#34;&#34;&#34;
         try:
             songs_queue
         except NameError:
-            await ctx.send(&#34;No recommendations present. First generate recommendations using /poll&#34;)
+            await ctx.send(
+                &#34;No recommendations present. First generate recommendations using /poll&#34;
+            )
             return True
         if songs_queue.get_len() == 0:
-            await ctx.send(&#34;No recommendations present. First generate recommendations using /poll&#34;)
+            await ctx.send(
+                &#34;No recommendations present. First generate recommendations using /poll&#34;
+            )
             return True
         return False
 
-    &#34;&#34;&#34;
-    Function to play the next song in the queue
-    &#34;&#34;&#34;
+
     @commands.command(name=&#39;next_song&#39;, help=&#39;To play next song in queue&#39;)
     async def next_song(self, ctx):
+        &#34;&#34;&#34;
+        Function to play the next song in the queue
+        &#34;&#34;&#34;
+        
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             await self.play_song(songs_queue.next_song(), ctx)
 
-    &#34;&#34;&#34;
-    Function to play the previous song in the queue
-    &#34;&#34;&#34;
+
     @commands.command(name=&#39;prev_song&#39;, help=&#39;To play prev song in queue&#39;)
     async def play(self, ctx):
+        &#34;&#34;&#34;
+        Function to play the previous song in the queue
+        &#34;&#34;&#34;
+        
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             await self.play_song(songs_queue.prev_song(), ctx)
 
-    &#34;&#34;&#34;
-    Function to pause the music that is playing
-    &#34;&#34;&#34;
+
     @commands.command(name=&#39;pause&#39;, help=&#39;This command pauses the song&#39;)
     async def pause(self, ctx):
+        &#34;&#34;&#34;
+        Function to pause the music that is playing
+        &#34;&#34;&#34;
+        
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
             await voice_client.pause()
         else:
             await ctx.send(&#34;The bot is not playing anything at the moment.&#34;)
 
-    &#34;&#34;&#34;
-    Function to generate poll for playing the recommendations
-    &#34;&#34;&#34;
+
     @commands.command(name=&#39;poll&#39;, help=&#39;Poll for recommendation&#39;)
     async def poll(self, ctx):
+        &#34;&#34;&#34;
+        Function to generate poll for playing the recommendations
+        &#34;&#34;&#34;
+
         reactions = [&#39;👍&#39;, &#39;👎&#39;]
         selected_songs = []
         count = 0
         bot_message = &#34;Select song preferences by reaction &#39;👍&#39; or &#39;👎&#39; to the choices. \nSelect 3 songs&#34;
         await ctx.send(bot_message)
         ten_random_songs = random_25()
-        for ele in zip(ten_random_songs[&#34;title&#34;], ten_random_songs[&#34;artist&#34;]):
+        for ele in zip(ten_random_songs[&#34;track_name&#34;],
+                       ten_random_songs[&#34;artist&#34;]):
             bot_message = str(ele[0]) + &#34; By &#34; + str(ele[1])
             description = []
-            poll_embed = discord.Embed(
-                title=bot_message, color=0x31FF00, description=&#39;&#39;.join(description))
+            poll_embed = discord.Embed(title=bot_message,
+                                       color=0x31FF00,
+                                       description=&#39;&#39;.join(description))
             react_message = await ctx.send(embed=poll_embed)
             for reaction in reactions[:len(reactions)]:
                 await react_message.add_reaction(reaction)
@@ -396,11 +253,13 @@ async def setup(client):
         songs_queue = Songs_Queue(recommended_songs)
         await self.play_song(songs_queue.next_song(), ctx)
 
-    &#34;&#34;&#34;
-    Function to display all the songs in the queue
-    &#34;&#34;&#34;
+
     @commands.command(name=&#39;queue&#39;, help=&#39;Show active queue of recommendations&#39;)
     async def queue(self, ctx):
+        &#34;&#34;&#34;
+        Function to display all the songs in the queue
+        &#34;&#34;&#34;
+
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             queue, index = songs_queue.return_queue()
@@ -410,25 +269,30 @@ async def setup(client):
                     await ctx.send(&#34;Currently Playing: &#34; + queue[i])
                 else:
                     await ctx.send(queue[i])
-    &#34;&#34;&#34;
-    Function to shuffle songs in the queue
-    &#34;&#34;&#34;
+
+
     @commands.command(name=&#39;shuffle&#39;, help=&#39;To shuffle songs in queue&#39;)
     async def shuffle(self, ctx):
+        &#34;&#34;&#34;
+        Function to shuffle songs in the queue
+        &#34;&#34;&#34;
+        
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
             songs_queue.shuffle_queue()
-            await ctx.send(&#34;Playlist shuffled &#34;)
-    
-    &#34;&#34;&#34;
-    Function to add custom song to the queue
-    &#34;&#34;&#34;
+            await ctx.send(&#34;Playlist shuffled&#34;)
+
+
     @commands.command(name=&#39;add_song&#39;, help=&#39;To add custom song to the queue&#39;)
     async def add_song(self, ctx):
+        &#34;&#34;&#34;
+        Function to add custom song to the queue
+        &#34;&#34;&#34;
+        
         user_message = str(ctx.message.content)
-        song_name = user_message.split(' ', 1)[1]
+        song_name = user_message.split(&#39; &#39;, 1)[1]
         songs_queue.add_to_queue(song_name)
-        await ctx.send(&#34;Song added to queue &#34;)</code></pre>
+        await ctx.send(&#34;Song added to queue&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -436,6 +300,14 @@ async def setup(client):
 </ul>
 <h3>Class variables</h3>
 <dl>
+<dt id="src.songs_cog.Songs.add_song"><code class="name">var <span class="ident">add_song</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.songs_cog.Songs.join"><code class="name">var <span class="ident">join</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="src.songs_cog.Songs.next_song"><code class="name">var <span class="ident">next_song</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -464,15 +336,11 @@ async def setup(client):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.stop"><code class="name">var <span class="ident">stop</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt id="src.songs_cog.Songs.shuffle"><code class="name">var <span class="ident">shuffle</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.add_song"><code class="name">var <span class="ident">add_song</span></code></dt>
+<dt id="src.songs_cog.Songs.stop"><code class="name">var <span class="ident">stop</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -483,50 +351,15 @@ async def setup(client):
 <span>async def <span class="ident">handle_empty_queue</span></span>(<span>self, ctx)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">async def handle_empty_queue(self, ctx):
-    try:
-        songs_queue
-    except NameError:
-        await ctx.send(&#34;No recommendations present. First generate recommendations using /poll&#34;)
-        return True
-    if songs_queue.get_len() == 0:
-        await ctx.send(&#34;No recommendations present. First generate recommendations using /poll&#34;)
-        return True
-    return False</code></pre>
-</details>
+<div class="desc"><p>Helper function to handle empty song queue</p></div>
 </dd>
 <dt id="src.songs_cog.Songs.play_song"><code class="name flex">
 <span>async def <span class="ident">play_song</span></span>(<span>self, song_name, ctx)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">async def play_song(self, song_name, ctx):
-    # First stop whatever the bot is playing
-    await self.stop(ctx)
-    try:
-        server = ctx.message.guild
-        voice_channel = server.voice_client
-        url = searchSong(song_name)
-        async with ctx.typing():
-            with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-                info = ydl.extract_info(url, download=False)
-                I_URL = info[&#39;formats&#39;][0][&#39;url&#39;]
-                source = await discord.FFmpegOpusAudio.from_probe(I_URL, **FFMPEG_OPTIONS)
-                voice_channel.play(source)
-                voice_channel.is_playing()
-        await ctx.send(&#39;**Now playing:** {}&#39;.format(song_name))
-    except Exception as e:
-        await ctx.send(&#34;The bot is not connected to a voice channel.&#34;)</code></pre>
-</details>
+<div class="desc"><p>Helper function for playing song on the voice channel</p>
+<h2 id="parameters">Parameters</h2>
+<p>song_name (str): The name of the song to play</p></div>
 </dd>
 </dl>
 </dd>
@@ -534,7 +367,6 @@ async def setup(client):
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -546,6 +378,7 @@ async def setup(client):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="src.songs_cog.get_audio_sorce" href="#src.songs_cog.get_audio_sorce">get_audio_sorce</a></code></li>
 <li><code><a title="src.songs_cog.setup" href="#src.songs_cog.setup">setup</a></code></li>
 </ul>
 </li>
@@ -554,7 +387,9 @@ async def setup(client):
 <li>
 <h4><code><a title="src.songs_cog.Songs" href="#src.songs_cog.Songs">Songs</a></code></h4>
 <ul class="two-column">
+<li><code><a title="src.songs_cog.Songs.add_song" href="#src.songs_cog.Songs.add_song">add_song</a></code></li>
 <li><code><a title="src.songs_cog.Songs.handle_empty_queue" href="#src.songs_cog.Songs.handle_empty_queue">handle_empty_queue</a></code></li>
+<li><code><a title="src.songs_cog.Songs.join" href="#src.songs_cog.Songs.join">join</a></code></li>
 <li><code><a title="src.songs_cog.Songs.next_song" href="#src.songs_cog.Songs.next_song">next_song</a></code></li>
 <li><code><a title="src.songs_cog.Songs.pause" href="#src.songs_cog.Songs.pause">pause</a></code></li>
 <li><code><a title="src.songs_cog.Songs.play" href="#src.songs_cog.Songs.play">play</a></code></li>
@@ -563,9 +398,8 @@ async def setup(client):
 <li><code><a title="src.songs_cog.Songs.poll" href="#src.songs_cog.Songs.poll">poll</a></code></li>
 <li><code><a title="src.songs_cog.Songs.queue" href="#src.songs_cog.Songs.queue">queue</a></code></li>
 <li><code><a title="src.songs_cog.Songs.resume" href="#src.songs_cog.Songs.resume">resume</a></code></li>
-<li><code><a title="src.songs_cog.Songs.stop" href="#src.songs_cog.Songs.stop">stop</a></code></li>
 <li><code><a title="src.songs_cog.Songs.shuffle" href="#src.songs_cog.Songs.shuffle">shuffle</a></code></li>
-<li><code><a title="src.songs_cog.Songs.add_song" href="#src.songs_cog.Songs.add_song">add_song</a></code></li>
+<li><code><a title="src.songs_cog.Songs.stop" href="#src.songs_cog.Songs.stop">stop</a></code></li>
 </ul>
 </li>
 </ul>
@@ -574,7 +408,7 @@ async def setup(client):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

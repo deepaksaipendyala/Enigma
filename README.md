@@ -55,44 +55,20 @@ If you want to get added to the music server on discord to test the bot, drop an
 
 <h1> ⚒️ Installation Procedure </h1>
 
-
-## 1. Prerequisites 
-
-  * Install FFMPEG from [FFMPEG builds](https://www.gyan.dev/ffmpeg/builds), extract it and add it to your path [How to add FFMPEG to Path](https://www.thewindowsclub.com/how-to-install-ffmpeg-on-windows-10#:~:text=Add%20FFmpeg%20to%20Windows%20path%20using%20Environment%20variables&text=In%20the%20Environment%20Variables%20window,bin%5C%E2%80%9D%20and%20click%20OK.)
-
-## 2. Running Code
-
-First, clone the repository and cd into the folder:
-
-```
-$ git clone git@github.com:rahulgautam21/Enigma.git
-$ cd Enigma
-```
-
-### Create a .env file with the discord token info: DISCORD_TOKEN=#SECRET_TOKEN#
-### Join the discord channel of the bot [Discord Channel of bot](https://discord.com/channels/1017135653315686490/1017135653789646850) and connect to the voice channel.
-
-```
-$ pip install -r requirements.txt
-$ python bot.py 
-```
-
-You can now use the discord bot to give music recommendations! Use /help to see all functionalities of bot.
+See the installation instructions listed in [`Install`](INSTALL.md)
 
 <h1> 🚀 Demo </h1>
-
 
 https://user-images.githubusercontent.com/20087273/194780603-f163caf6-2c9e-4d74-8fbd-c93f30e8935a.mp4
 
 <h1> 🚀 Demo 2 - Group 17 </h1>
 
-
 https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-af2e-a6eead2ccea3.mp4
-
 
 <h1>📍RoadMap </h1>
 
 What We've Done:
+
 1. Created a Discord Bot via the Discord Developer Portal.
 2. Incorporated a [dataset](https://www.kaggle.com/datasets/leonardopena/top-spotify-songs-from-20102019-by-year) to our application.
 3. Added functionalities to the Discord bot (explained in the [Features](https://github.com/rahulgautam21/Enigma/blob/main/README.md) section above.
@@ -101,24 +77,22 @@ What We've Done:
 6. Extend the application to be deployed online (via a website or an application).
 7. Alternatively, use [this](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019) as the primary data source to make better recommendations.
 8. Added some more functionality to the discord bot:
-    * Add a custom song to the queue
-    * Shuffle songs within the queue
+    - Add a custom song to the queue
+    - Shuffle songs within the queue
 
 What We've Yet To Do:
+
 1. Make the song recommendations more sophisticated by using content-based recommendor systems.
 2. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
 3. Use web scraping and EDA to get a better database for the discord bot.
 4. Add some more functionality to the discord bot:
-    * Move a song within a queue or to the top of the queue
-    * Jump to a specific song in the queue
-    * Replay the song (instead of going to the next song and then coming back to the previous song)
-
-
+    - Move a song within a queue or to the top of the queue
+    - Jump to a specific song in the queue
+    - Replay the song (instead of going to the next song and then coming back to the previous song)
 
 <h1>📖 Documentation</h1>
 
-Documentation for the code available at - <a href="https://saswat123.github.io/Enigma/">Enigma Docs</a>  
-
+Documentation for the code available at - <a href="https://saswat123.github.io/Enigma/">Enigma Docs</a>
 
 <h1> 👥 Contributors <a name="Contributors"></a> </h1>
 

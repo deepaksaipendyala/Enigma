@@ -3,7 +3,7 @@ import warnings
 import sys
 
 sys.path.append("../")
-from src.songs_queue import Songs_Queue
+from cogs.helpers.songs_queue import Songs_Queue
 
 warnings.filterwarnings("ignore")
 

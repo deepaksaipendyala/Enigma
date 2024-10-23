@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>src.songs_queue API documentation</title>
-<meta name="description" content="This file is responsible for maintaining the song queue">
+<title>src.recommend_enhanced API documentation</title>
+<meta name="description" content="This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -22,126 +22,31 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.songs_queue</code></h1>
+<h1 class="title">Module <code>src.recommend_enhanced</code></h1>
 </header>
 <section id="section-intro">
-<p>This file is responsible for maintaining the song queue</p>
+<p>This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.</p>
 </section>
 <section>
 </section>
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.songs_queue.Songs_Queue"><code class="flex name class">
-<span>class <span class="ident">Songs_Queue</span></span>
-<span>(</span><span>song_names)</span>
+<dt id="src.recommend_enhanced.recommend_enhanced"><code class="name flex">
+<span>def <span class="ident">recommend_enhanced</span></span>(<span>input_songs: list) ‑> list</span>
 </code></dt>
 <dd>
-<div class="desc"><p>This class is responsible for maintaining the song queue</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Songs_Queue():
-    &#34;&#34;&#34;
-    This class is responsible for maintaining the song queue
-    &#34;&#34;&#34;
-
-    def __init__(self, song_names):
-        self.queue = song_names
-        self.index = 0
-        self.current_index = 0
-
-    &#34;&#34;&#34;
-    This function returns the next song in the queue
-    &#34;&#34;&#34;
-
-    def next_song(self):
-        print(self.queue)
-        if (self.index == len(self.queue)):
-            self.index = 0
-        val = self.index
-        self.current_index = val
-        self.index += 1
-        return self.queue[val]
-
-    &#34;&#34;&#34;
-    This function returns the previous song in the queue
-    &#34;&#34;&#34;
-
-    def prev_song(self):
-        self.index -= 1
-        if (self.index &lt;= 0):
-            self.index = len(self.queue) - 1
-        val = self.index
-        self.current_index = val
-        return self.queue[val]
-
-    &#34;&#34;&#34;
-    This function returns the length of the song queue
-    &#34;&#34;&#34;
-
-    def get_len(self):
-        return len(self.queue)
-
-    &#34;&#34;&#34;
-    This function returns song queue and the current index of the song that is playing
-    &#34;&#34;&#34;
-
-    def return_queue(self):
-        return (self.queue, self.current_index)
-
-    def shuffle_queue(self):
-        shuffle(self.queue)
-
-    def add_to_queue(self, song_name):
-        self.queue.append(song_name)</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="src.songs_queue.Songs_Queue.add_to_queue"><code class="name flex">
-<span>def <span class="ident">add_to_queue</span></span>(<span>self, song_name)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.songs_queue.Songs_Queue.get_len"><code class="name flex">
-<span>def <span class="ident">get_len</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.songs_queue.Songs_Queue.next_song"><code class="name flex">
-<span>def <span class="ident">next_song</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.songs_queue.Songs_Queue.prev_song"><code class="name flex">
-<span>def <span class="ident">prev_song</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.songs_queue.Songs_Queue.return_queue"><code class="name flex">
-<span>def <span class="ident">return_queue</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.songs_queue.Songs_Queue.shuffle_queue"><code class="name flex">
-<span>def <span class="ident">shuffle_queue</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
+<div class="desc"><p>This function returns recommended songs based on the songs that the user selected.
+It uses the cosine similarity to recommend songs. It will return a list of 10 songs that are the most
+similar to the input songs.</p>
+<h2 id="parameters">Parameters</h2>
+<p>input_songs (list): List of songs that the user selected. Each song is a tuple with the song name and the artist name.</p></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -154,19 +59,9 @@ hljs.highlightAll();
 <li><code><a title="src" href="index.html">src</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="src.songs_queue.Songs_Queue" href="#src.songs_queue.Songs_Queue">Songs_Queue</a></code></h4>
-<ul class="two-column">
-<li><code><a title="src.songs_queue.Songs_Queue.add_to_queue" href="#src.songs_queue.Songs_Queue.add_to_queue">add_to_queue</a></code></li>
-<li><code><a title="src.songs_queue.Songs_Queue.get_len" href="#src.songs_queue.Songs_Queue.get_len">get_len</a></code></li>
-<li><code><a title="src.songs_queue.Songs_Queue.next_song" href="#src.songs_queue.Songs_Queue.next_song">next_song</a></code></li>
-<li><code><a title="src.songs_queue.Songs_Queue.prev_song" href="#src.songs_queue.Songs_Queue.prev_song">prev_song</a></code></li>
-<li><code><a title="src.songs_queue.Songs_Queue.return_queue" href="#src.songs_queue.Songs_Queue.return_queue">return_queue</a></code></li>
-<li><code><a title="src.songs_queue.Songs_Queue.shuffle_queue" href="#src.songs_queue.Songs_Queue.shuffle_queue">shuffle_queue</a></code></li>
-</ul>
-</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.recommend_enhanced.recommend_enhanced" href="#src.recommend_enhanced.recommend_enhanced">recommend_enhanced</a></code></li>
 </ul>
 </li>
 </ul>
