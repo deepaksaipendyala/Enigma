@@ -4,7 +4,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import time
 
 # Spotify authentication.
-client_credentials_manager = SpotifyClientCredentials(client_id='87f0fd217127470e8d55171d92e5cd33', client_secret='6094043b04f14d4a98600f76be162838')
+client_credentials_manager = SpotifyClientCredentials(client_id='your_client_id', client_secret='your_secret')
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def fetch_spotify_popularity(song_name, artist_name):
