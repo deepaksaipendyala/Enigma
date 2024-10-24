@@ -84,9 +84,9 @@ class Songs_Queue():
                 if index != self.current_index: 
                     return self.queue.pop(index)
                 else:
-                    return -2
+                    self.queue.pop(index)
+                    self.current_index -= 1
+                    if (self.current_index < 0):
+                        self.current_index = len(self.queue) - 1
+                    return index
         return -1
-
-
-    def clear_queue(self):
-        self = None

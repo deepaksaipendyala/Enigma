@@ -105,3 +105,17 @@ def test_move_song_3():
     sq = Songs_Queue(song_names)
     result = sq.move_song("Magic", 1)
     assert result == -1
+
+def test_remove_song_1():
+    song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
+    sq = Songs_Queue(song_names)
+    sq.remove_from_queue("Secrets")
+    assert sq.queue == ["TiK ToK", "Baby", "Marry You", "Telephone"]
+    sq.remove_from_queue("Baby")
+    assert sq.queue == ["TiK ToK", "Marry You", "Telephone"]
+
+def test_remove_song_2():
+    song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
+    sq = Songs_Queue(song_names)
+    result = sq.remove_from_queue("Magic")
+    assert result == -1
