@@ -74,23 +74,31 @@ class Songs(commands.Cog):
 
         if not channel_name:
             try:
-                channel_name = ctx.author.voice.channel
+                channel = ctx.author.voice.channel
             except AttributeError:
                 await ctx.send("No channel to join. Please specify a channel")
+                return    
+
+        # Get the voice channel object
+        channel = discord.utils.get(ctx.guild.voice_channels, name=channel_name)
+
+        # Check if the bot is already connected to that channel
+        if channel: 
+            # get the current voice client for the bot in the guild
+            bot_channel = discord.utils.get(ctx.bot.voice_clients, guild=channel.guild)
+            if bot_channel and bot_channel.channel.name == channel.name:
+                await ctx.send(f"Already connected to {channel_name}")
                 return
-
-        if ctx.voice_client:
-            await ctx.voice_client.move_to(channel_name)
+            else:
+                try:
+                    await bot_channel.move_to(channel)
+                    await ctx.send(f"Connected to {channel_name}")
+                except Exception as e:
+                    await ctx.send(f"Error connecting to {channel_name}: {e}")
         else:
-            # Find the channel in ctx.guild.voice_channels with the same name as channel
+            await ctx.send(f"Channel {channel_name} not found")
+            return
 
-            for voice_channel in ctx.guild.voice_channels:
-                if voice_channel.name == channel:
-                    channel = voice_channel
-                    break
-
-            await channel.connect()
-        await ctx.send(f"Successfully joined {channel_name.name} ({channel_name.id})")
 
     @commands.command(name="resume", help="Resumes the song")
     async def resume(self, ctx):
