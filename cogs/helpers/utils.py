@@ -29,6 +29,14 @@ def random_25():
     random_songs = (all_songs.sample(frac=1).groupby("genre").head(1)).sample(25)
     return random_songs
 
+def random_n(n: int):
+    """
+    This function returns random n songs for generating the poll for the user
+    """
+    songs = get_all_songs()
+    random_songs = (songs.sample(frac=1).reset_index(drop=True)).sample(n)
+    return random_songs
+
 
 all_songs_attributes = get_all_songs().filter(
     [

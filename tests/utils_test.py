@@ -2,12 +2,13 @@ import unittest
 import warnings
 import sys
 from cogs.helpers import utils
+import numpy as np
 
 sys.path.append("../")
 warnings.filterwarnings("ignore")
 
 
-class Tests(unittest.TestCase):
+class TestUtils:
 
     # For testing the searchSong() method. Given a song name as input, should return the youtube link.
     def test_searchSong(self):
@@ -21,6 +22,33 @@ class Tests(unittest.TestCase):
     def test_random_25(self):
         random_songs = utils.random_25()
         self.assertTrue(len(random_songs) == 25)
+
+    def test_random_n(self):
+        """
+        Test a function to get a number of random songs
+        """
+        n = 10
+        random_songs = utils.random_n(n)
+        self.assertTrue(len(random_songs) == n)
+
+    def test_random_n_max(self):
+        """
+        Test a function to get a number of random songs with n = length of the larger dataset
+        """
+        n = len(utils.all_songs_attributes)
+        random_songs = utils.random_n(n)
+        self.assertTrue(len(random_songs) == n)
+    
+    def test_random_n_several_times(self):
+        """
+        Test a function to get a number of random songs with different values of n
+        """
+
+        # Test the function with a number between 1 and 500 10 times
+        for i in range(10):
+            n = np.random.randint(1, len(utils.all_songs_attributes))
+            random_songs = utils.random_n(n)
+            self.assertTrue(len(random_songs) == n)
 
 
 class CosSimTests(unittest.TestCase):
