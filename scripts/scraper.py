@@ -2,9 +2,16 @@ import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import time
+import os
+from dotenv import load_dotenv
+
+# Load environment variables.
+load_dotenv(".env")
+CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
 # Spotify authentication.
-client_credentials_manager = SpotifyClientCredentials(client_id='your_client_id', client_secret='your_secret')
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def fetch_spotify_popularity(song_name, artist_name):
