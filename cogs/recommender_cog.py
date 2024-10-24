@@ -4,9 +4,12 @@ and then recommend songs based on the preferences using the enhanced recommender
 """
 
 import discord
+import random
+import asyncio
 from discord.ext import commands
 from cogs.helpers import utils
 from cogs.helpers.recommend_enhanced import recommend_enhanced as recommend
+from cogs.helpers.songs_queue import Songs_Queue
 
 
 class Recommender(commands.Cog):
@@ -19,6 +22,9 @@ class Recommender(commands.Cog):
         self.bot = bot
         self.message_id = None
         self.command_msg_id = None
+
+        # Get the queue instance
+        self.queue = Songs_Queue()
 
         self.emoji_list = [
             "1️⃣",
@@ -33,6 +39,12 @@ class Recommender(commands.Cog):
             "🔟"
         ]
 
+
+    def random_color(self):
+        """
+        Function to get a random color for the embed message
+        """
+        return discord.Colour.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
     @commands.command(name="poll", help="Provides the user with a poll of 10 randoms songs from the dataset to choose from. Used in conjunction witht the !recommend command")
     async def poll(self, ctx):
@@ -68,7 +80,7 @@ class Recommender(commands.Cog):
 
         ads = [""]
         # Send the poll message
-        embedded_message = discord.Embed(title="Song Poll", description = poll_message + ads[0], color=0xab0505)
+        embedded_message = discord.Embed(title="Song Poll", description = poll_message + ads[0], color=self.random_color())
         message = await ctx.send(embed=embedded_message)
 
         # Add the reactions to the message
@@ -115,7 +127,7 @@ class Recommender(commands.Cog):
         self.message_id = None
         self.command_msg_id = None
 
-        embedded_message = discord.Embed(title="Chosen Songs", description = choose_message, color=0xe07d26)
+        embedded_message = discord.Embed(title="Chosen Songs", description = choose_message, color=self.random_color())
         await ctx.send(embed=embedded_message)
 
         # Get the user preferences as a list of tuples
@@ -129,18 +141,48 @@ class Recommender(commands.Cog):
         for song, artist in recommendations:
             recommend_message += f"**{song} *by* {artist}**\n"
 
-        embedded_message = discord.Embed(title="Recommendations", description = recommend_message, color=0x0dd649)
+        embedded_message = discord.Embed(title="Recommendations", description = recommend_message, color=self.random_color())
         await ctx.send(embed=embedded_message)
 
         # ask if the user wants to add the recommended songs to the queue
-        await ctx.send("Would you like to add the recommended songs to the queue? (yes/no)")
+        add_message = "Would you like to add the recommended songs to the queue? React with the corresponding emoji to add the songs to the end of the queue, clear the queue and add the songs, or cancel the operation."
 
+        add_message += f"\n\n{self.emoji_list[0]} **Add to the end of the queue**"
+        add_message += f"\n{self.emoji_list[1]} **Clear the queue and add the songs**"
+        add_message += f"\n{self.emoji_list[2]} **Cancel**"
+
+        embedded_message = discord.Embed(title="Add Recommendations to Queue", description = add_message, color=self.random_color())
+        message = await ctx.send(embed=embedded_message)
+
+        # Add the reactions to the message
+        for reaction in self.emoji_list[:3]:
+            await message.add_reaction(reaction)
+
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in self.emoji_list[:3]
         # wait for the user's response
+        try:
+            reaction, user = await ctx.bot.wait_for('reaction_add', timeout = 60.0, check=check)
 
-
-        # TODO: add the recommended songs to the queue
-
-
+            if reaction.emoji == self.emoji_list[0]:
+                # Add the songs to the end of the queue
+                await ctx.send("Adding the songs to the end of the queue.")
+                self.queue.add_to_queue(recommendations)
+                await ctx.send(f"Songs added to the queue. Current queue: {self.queue.queue}\nStart playback with the !start command.")
+            elif reaction.emoji == self.emoji_list[1]:
+                # Clear the queue and add the songs
+                await ctx.send("Clearing the queue and adding the songs.")
+                self.queue.clear()
+                self.queue.add_to_queue(recommendations)
+                await ctx.send(f"Songs added to the queue. Current queue: {self.queue.queue}\nStart playback with the !start command.")
+            elif reaction.emoji == self.emoji_list[2]:
+                # Cancel the operation
+                await ctx.send("Operation cancelled.")
+            else:
+                await ctx.send("Invalid reaction. Please run the command again.")
+        except asyncio.TimeoutError:
+            await ctx.send("You did not respond in time. Please run the command again.")
+            return
 
 
 async def setup(bot):

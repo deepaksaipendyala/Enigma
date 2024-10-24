@@ -164,3 +164,9 @@ class Queue(commands.Cog):
             await self.stop(ctx)
         songs_queue = None
         await ctx.send("Queue cleared.")
+
+
+async def setup(bot):
+    """Add the cog to the bot"""
+
+    await bot.add_cog(Queue(bot))

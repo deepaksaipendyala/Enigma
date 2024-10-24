@@ -73,18 +73,18 @@ class Songs(commands.Cog):
         Helper function to handle empty song queue
         """
 
-        if songs_queue.get_len() == 0:
+        if self.songs_queue.get_len() == 0:
             await ctx.send(
                 "No recommendations present. First generate recommendations using /poll or /mood."
             )
             return True
         return False
     
-    #TODO: update queue implementation
+
     def handle_play_next(self, ctx):
         global manually_stopped
         if not manually_stopped:
-            asyncio.run_coroutine_threadsafe(self.play_song(songs_queue.next_song(), ctx), self.bot.loop)
+            asyncio.run_coroutine_threadsafe(self.play_song(self.songs_queue.next_song(), ctx), self.bot.loop)
 
     async def play_song(self, song_name, ctx):
         """
@@ -177,6 +177,18 @@ class Songs(commands.Cog):
             )
 
 
+    @commands.command(name="start", help="Starts playing the current song in the queue")
+    async def start(self, ctx):
+        """
+        Function for starting the song
+        """
+
+        if self.songs_queue.get_len() == 0:
+            await ctx.send("No songs in the queue. Please add songs to the queue")
+            return
+
+        await self.play_song(self.songs_queue.current_song(), ctx)
+
     @commands.command(
         name="play",
         aliases=["play_song"],
@@ -195,7 +207,7 @@ class Songs(commands.Cog):
         self.songs_queue.clear()
         self.songs_queue.add_to_queue(song)
         
-        await self.play_song(songs_queue.current_song, ctx)
+        await self.play_song(self.songs_queue.current_song, ctx)
 
 
     @commands.command(name="pause", help="This command pauses the song")

@@ -45,9 +45,26 @@ class Songs_Queue(metaclass=Singleton):
         self._index = 0
 
 
+    def get_song_at_index(self, idx):
+        """
+        This function returns the song at the given index in the queue. Returns the song as a string in format "<Song Name> by <Artist Name>"
+
+        Parameters:
+            idx(int): The index of the song in the queue
+
+        Returns:
+            str: The song at the given index in the queue, or -1 if the index is out of bounds
+        """
+
+        if idx < 0 or idx >= len(self.queue):
+            return -1
+        song = self.queue[idx]
+        return f"{song[0]} by {song[1]}"
+
+
     def current_song(self):
         """Return the current song."""
-        return self._queue[self._index]
+        return self.get_song_at_index(self._index)
 
 
     def next_song(self):
@@ -61,7 +78,7 @@ class Songs_Queue(metaclass=Singleton):
         else:
             self._index += 1
         val = self._index
-        return self.queue[val]
+        return self.get_song_at_index(val)
 
 
     def prev_song(self):
@@ -73,7 +90,7 @@ class Songs_Queue(metaclass=Singleton):
         if (self._index < 0):
             self._index = len(self.queue) - 1
         val = self._index
-        return self.queue[val]
+        return self.get_song_at_index(val)
 
 
     def move_song(self, song_name, idx):
