@@ -6,7 +6,7 @@ and then recommend songs based on the preferences using the enhanced recommender
 import discord
 from discord.ext import commands
 from cogs.helpers import utils
-import emoji
+from cogs.helpers.recommend_enhanced import recommend_enhanced as recommend
 
 
 class Recommender(commands.Cog):
@@ -17,6 +17,8 @@ class Recommender(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.message_id = None
+        self.command_msg_id = None
 
         self.emoji_list = [
             "1️⃣",
@@ -37,6 +39,16 @@ class Recommender(commands.Cog):
         """
         Function to poll the user for their preferences
         """
+
+        # Delete the previous poll message and command message if it exists
+        if self.message_id and self.command_msg_id:
+            try:
+                message = await ctx.fetch_message(self.message_id)
+                await message.delete()
+                command_msg = await ctx.fetch_message(self.command_msg_id)
+                await command_msg.delete()
+            except Exception as e:
+                print(e)
         
         # Get 10 random songs from the dataset, and store them in the class variable
         self.songs = utils.random_n(10).filter(["track_name", "artist_name"]).reset_index(drop=True)
@@ -48,7 +60,7 @@ class Recommender(commands.Cog):
             emoji_icon = self.emoji_list[index]
 
             # Add the song to the poll message
-            poll_message += f"{emoji_icon} {song['track_name']} by {song['artist_name']}\n"
+            poll_message += f"{emoji_icon} **{song['track_name']} *by* {song['artist_name']}**\n"
 
         # Add instructions to the poll message
         poll_message += "\n*If you don't like any of the songs, you may run the command again to get new songs*\n"
@@ -63,14 +75,15 @@ class Recommender(commands.Cog):
         for reaction in self.emoji_list[:len(self.emoji_list)]:
             await message.add_reaction(reaction)
 
-        # Store the message id
+        # Store the interaction
         self.message_id = message.id
+        self.command_msg_id = ctx.message.id
 
         # await ctx.send("Choose a song(s) by reacting with the corresponding emoji, or if you don't like any of the songs, run the command again.")
         # await ctx.send("Once you have chosen your songs, run the !recommend command to get your recommendations")
 
-    
-    @commands.command(name="recommend", help="Recommends songs based on the user's preferences. Must first call the !poll command")
+
+    @commands.command(name="recommend", aliases=["get_songs"], help="Recommends songs based on the user's preferences. Must first call the !poll command")
     async def recommend(self, ctx):
         """
         Function to recommend songs based on the user's preferences
@@ -96,10 +109,38 @@ class Recommender(commands.Cog):
             choose_message = "You have not chosen any songs. Please react to the poll message with the corresponding emoji to choose a song."
         else:
             for song in preferences:
-                choose_message += f"***{song['track_name']}* by *{song['artist_name']}***\n"
+                choose_message += f"**{song['track_name']} *by* {song['artist_name']}**\n"
 
-        embedded_message = discord.Embed(title="Chosen Songs", description = choose_message, color=0x0dd649)
+        # Clear the message reference
+        self.message_id = None
+        self.command_msg_id = None
+
+        embedded_message = discord.Embed(title="Chosen Songs", description = choose_message, color=0xe07d26)
         await ctx.send(embed=embedded_message)
+
+        # Get the user preferences as a list of tuples
+        user_input = [(song["track_name"], song["artist_name"]) for song in preferences]
+        
+        # Get the recommendations
+        recommendations = recommend(user_input)
+
+        # Send the recommendations to the user
+        recommend_message = "Here are some songs you may like based on your preferences:\n\n"
+        for song, artist in recommendations:
+            recommend_message += f"**{song} *by* {artist}**\n"
+
+        embedded_message = discord.Embed(title="Recommendations", description = recommend_message, color=0x0dd649)
+        await ctx.send(embed=embedded_message)
+
+        # ask if the user wants to add the recommended songs to the queue
+        await ctx.send("Would you like to add the recommended songs to the queue? (yes/no)")
+
+        # wait for the user's response
+
+
+        # TODO: add the recommended songs to the queue
+
+
 
 
 async def setup(bot):

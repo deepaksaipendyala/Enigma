@@ -13,7 +13,7 @@ def recommend_enhanced(input_songs: list) -> list:
     similar to the input songs.
 
     Parameters:
-        input_songs (list): List of songs that the user selected. Each song is a tuple with the song name and the artist name.
+        input_songs (list): List of songs that the user selected. Format as (<track_name>, <artist_name>).
     """
 
     # Get all songs
