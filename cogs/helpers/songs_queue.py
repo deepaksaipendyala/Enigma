@@ -42,12 +42,12 @@ class Songs_Queue():
     This function moves a song within the queue
     """
 
-    def move_song(self, song, idx):
+    def move_song(self, song_name, idx):
         curr_idx = -1
-        if int(idx) < 1 or int(idx) > len(self.queue):
+        if int(idx) < 1 or int(idx) > len(self.queue) - 1:
             return -2
         for index, s in enumerate(self.queue):
-            if s.upper() == song.upper():
+            if s.upper() == song_name.upper():
                 curr_idx = index
         if curr_idx != -1:
             element = self.queue.pop(curr_idx)  # Remove the element from the old index
@@ -77,3 +77,16 @@ class Songs_Queue():
 
     def add_to_queue(self, song_name):
         self.queue.append(song_name)
+    
+    def remove_from_queue(self, song_name):
+        for index, s in enumerate(self.queue):
+            if s.upper() == song_name.upper():
+                if index != self.current_index: 
+                    return self.queue.pop(index)
+                else:
+                    return -2
+        return -1
+
+
+    def clear_queue(self):
+        self = None

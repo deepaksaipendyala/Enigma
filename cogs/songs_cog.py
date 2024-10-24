@@ -121,7 +121,8 @@ class Songs(commands.Cog):
             )
 
     @commands.command(
-        name="play_song",
+        name="play",
+        aliases=["play_song"],
         help="To play user defined song, does not need to be in the database.",
     )
     async def play_custom(self, ctx):
@@ -205,7 +206,7 @@ class Songs(commands.Cog):
             return True
         return False
 
-    @commands.command(name="next_song", help="To play next song in queue")
+    @commands.command(name="skip", aliases=["next, next_song"], help="To play next song in queue")
     async def next_song(self, ctx):
         """
         Function to play the next song in the queue
@@ -215,7 +216,7 @@ class Songs(commands.Cog):
         if not empty_queue:
             await self.play_song(songs_queue.next_song(), ctx)
 
-    @commands.command(name="prev_song", aliases=["prev"], help="To play prev song in queue")
+    @commands.command(name="prev", aliases=["prev_song"], help="To play previous song in queue")
     async def play(self, ctx):
         """
         Function to play the previous song in the queue
@@ -339,7 +340,7 @@ class Songs(commands.Cog):
             songs_queue.shuffle_queue()
             await ctx.send("Playlist shuffled")
 
-    @commands.command(name="add_song", help="To add custom song to the queue")
+    @commands.command(name="add", aliases = ["add_song"], help="To add custom song to the queue")
     async def add_song(self, ctx):
         """
         Function to add custom song to the queue
@@ -355,8 +356,36 @@ class Songs(commands.Cog):
             songs_queue.add_to_queue(song_name)
         await ctx.send("Song added to queue")
 
+    @commands.command(name="remove", aliases = ["remove_song"], help="To remove a song from the queue")
+    async def add_song(self, ctx):
+        """
+        Function to remove a song from the queue
+        """
+
+        user_message = str(ctx.message.content)
+        song_name = user_message.split(" ", 1)[1]
+        self.handle_empty_queue()
+        result = songs_queue.remove_from_queue(song_name)
+        if result == -1:
+            await ctx.send("Song does not exist in the queue.")
+        elif result == -2:
+            await ctx.send("Current song can not be removed.")
+        else:
+            await ctx.send("Song added to queue.")
     
-    @commands.command(name='mood_recommend', help='Songs based on your mood or activity')
+    @commands.command(name="clear", aliases = ["clear_queue"], help="To clear all song in the queue")
+    async def add_song(self, ctx):
+        """
+        Function to remove a song from the queue
+        """
+
+        str(ctx.message.content)
+        await self.stop()
+        songs_queue.clear_queue()
+        await ctx.send("Queue cleared.")
+
+    
+    @commands.command(name='mood', help='Recommend songs based on your mood or activity')
     async def mood_recommend(self, ctx):
         # Send an embed message with mood options.
         mood_options = {
@@ -422,7 +451,7 @@ class Songs(commands.Cog):
         # Add recommendations to queue and play.
         global songs_queue
         songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue.next_song(), ctx)
+        await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
 
 
 async def setup(client: discord.Client):
