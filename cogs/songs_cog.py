@@ -64,7 +64,7 @@ class Songs(commands.Cog):
         self.bot = bot
 
     @commands.command(name="join", help="To join the voice channel")
-    async def join(self, ctx, channel: str = commands.parameter(description="The voice channel to join (optional)", default=None)):
+    async def join(self, ctx, channel_name: str = commands.parameter(description="The voice channel to join (optional)", default=None)):
         """
         Function for joining the voice channel
 
@@ -72,15 +72,15 @@ class Songs(commands.Cog):
             channel (discord.VoiceChannel): The voice channel to join
         """
 
-        if not channel:
+        if not channel_name:
             try:
-                channel = ctx.author.voice.channel
+                channel_name = ctx.author.voice.channel
             except AttributeError:
                 await ctx.send("No channel to join. Please specify a channel")
                 return
 
         if ctx.voice_client:
-            await ctx.voice_client.move_to(channel)
+            await ctx.voice_client.move_to(channel_name)
         else:
             # Find the channel in ctx.guild.voice_channels with the same name as channel
 
@@ -90,7 +90,7 @@ class Songs(commands.Cog):
                     break
 
             await channel.connect()
-        await ctx.send(f"Successfully joined {channel.name} ({channel.id})")
+        await ctx.send(f"Successfully joined {channel_name.name} ({channel_name.id})")
 
     @commands.command(name="resume", help="Resumes the song")
     async def resume(self, ctx):
