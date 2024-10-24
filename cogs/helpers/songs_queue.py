@@ -21,21 +21,33 @@ class Songs_Queue(metaclass=Singleton):
     """
 
     def __init__(self):
-        """Create a new instance of the Songs_Queue class, with an initially empty queue."""
+        """Get the instance of Songs_Queue, or create a new one if there is no instance. 
+        A new instance will have an empty queue so songs must be added using the add_to_queue method.
+        """
         self._queue = []
-        self.current_index = 0
+        self._index = 0
 
 
     @property
     def queue(self):
         """Return the current queue."""
         return self._queue
+    
+    @property
+    def index(self):
+        """Return the current index."""
+        return self._index
 
 
     def clear(self):
         """Clear the current queue."""
         self._queue.clear()
-        self.current_index = 0
+        self._index = 0
+
+
+    def current_song(self):
+        """Return the current song."""
+        return self._queue[self._index]
 
 
     def next_song(self):
@@ -44,11 +56,11 @@ class Songs_Queue(metaclass=Singleton):
         """
         
         print(self.queue)
-        if (self.current_index == len(self.queue) - 1):
-            self.current_index = 0
+        if (self._index == len(self.queue) - 1):
+            self._index = 0
         else:
-            self.current_index += 1
-        val = self.current_index
+            self._index += 1
+        val = self._index
         return self.queue[val]
 
 
@@ -57,10 +69,10 @@ class Songs_Queue(metaclass=Singleton):
         This function returns the previous song in the queue
         """
 
-        self.current_index -= 1
-        if (self.current_index < 0):
-            self.current_index = len(self.queue) - 1
-        val = self.current_index
+        self._index -= 1
+        if (self._index < 0):
+            self._index = len(self.queue) - 1
+        val = self._index
         return self.queue[val]
 
 
@@ -96,16 +108,16 @@ class Songs_Queue(metaclass=Singleton):
         This function returns song queue and the current index of the song that is playing
         """
         
-        return (self.queue, self.current_index)
+        return (self.queue, self._index)
 
 
     def shuffle_queue(self):
         """
         This function shuffles the song queue
         """
-        element = self.queue.pop(self.current_index)
+        element = self.queue.pop(self._index)
         shuffle(self.queue)
-        self.queue.insert(self.current_index, element)
+        self.queue.insert(self._index, element)
 
 
     def add_to_queue(self, song_name: str|list[str]):
@@ -135,12 +147,18 @@ class Songs_Queue(metaclass=Singleton):
 
         for index, s in enumerate(self.queue):
             if s.upper() == song_name.upper():
-                if index != self.current_index: 
+                if index != self.index: 
                     return self.queue.pop(index)
+                elif index == 0:
+                    # If the song to be removed is the first song in the queue
+                    self.queue.pop(index)
+                    if (self._index == len(self.queue)):
+                        self._index = 0
+                    return index
                 else:
                     self.queue.pop(index)
-                    self.current_index -= 1
-                    if (self.current_index < 0):
-                        self.current_index = len(self.queue) - 1
+                    self._index -= 1
+                    if (self._index < 0):
+                        self._index = len(self.queue) - 1
                     return index
         return -1
