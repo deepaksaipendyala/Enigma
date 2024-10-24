@@ -19,16 +19,16 @@ class Recommender(commands.Cog):
         self.bot = bot
 
         self.emoji_list = [
-            emoji.emojize("::one::"),
-            emoji.emojize("::two::"),
-            emoji.emojize("::three::"),
-            emoji.emojize("::four::"),
-            emoji.emojize("::five::"),
-            emoji.emojize("::six::"),
-            emoji.emojize("::seven::"),
-            emoji.emojize("::eight::"),
-            emoji.emojize("::nine::"),
-            emoji.emojize("::ten::"),
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+            "🔟"
         ]
 
 
@@ -39,7 +39,7 @@ class Recommender(commands.Cog):
         """
         
         # Get 10 random songs from the dataset, and store them in the class variable
-        self.songs = utils.random_n(10).filter(["song_name", "artist_name"])
+        self.songs = utils.random_n(10).filter(["track_name", "artist_name"]).reset_index(drop=True)
 
         # Create the poll message
         poll_message = "Please react to this message with your preferences:\n\n"
@@ -48,15 +48,16 @@ class Recommender(commands.Cog):
             emoji_icon = self.emoji_list[index]
 
             # Add the song to the poll message
-            poll_message += f"{emoji_icon} {song['song_name']} by {song['artist_name']}\n"
+            poll_message += f"{emoji_icon} {song['track_name']} by {song['artist_name']}\n"
 
+        ads = [""]
         # Send the poll message
-        embedded_message = discord.Embed(title="Song Poll", description=poll_message, color=0x83BAE3)
+        embedded_message = discord.Embed(title="Song Poll", description=poll_message + ads[0], color=0x83BAE3)
         message = await ctx.send(embed=embedded_message)
 
         # Add the reactions to the message
-        for index in range(10):
-            await message.add_reaction(self.emoji_list[index])
+        for reaction in self.emoji_list[:len(self.emoji_list)]:
+            await message.add_reaction(reaction)
 
 
 async def setup(bot):
