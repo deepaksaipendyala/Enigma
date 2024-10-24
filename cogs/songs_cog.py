@@ -89,9 +89,15 @@ class Songs(commands.Cog):
             if bot_channel and bot_channel.channel.name == channel.name:
                 await ctx.send(f"Already connected to {channel_name}")
                 return
-            else:
+            elif bot_channel:
                 try:
                     await bot_channel.move_to(channel)
+                    await ctx.send(f"Connected to {channel_name}")
+                except Exception as e:
+                    await ctx.send(f"Error connecting to {channel_name}: {e}")
+            else:
+                try:
+                    await channel.connect()
                     await ctx.send(f"Connected to {channel_name}")
                 except Exception as e:
                     await ctx.send(f"Error connecting to {channel_name}: {e}")
