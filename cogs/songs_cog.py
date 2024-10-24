@@ -357,7 +357,7 @@ class Songs(commands.Cog):
         await ctx.send("Song added to queue")
 
     @commands.command(name="remove", aliases = ["remove_song"], help="To remove a song from the queue")
-    async def add_song(self, ctx):
+    async def remove_song(self, ctx):
         """
         Function to remove a song from the queue
         """
@@ -374,7 +374,7 @@ class Songs(commands.Cog):
             await ctx.send("Song added to queue.")
     
     @commands.command(name="clear", aliases = ["clear_queue"], help="To clear all song in the queue")
-    async def add_song(self, ctx):
+    async def clear(self, ctx):
         """
         Function to remove a song from the queue
         """
