@@ -215,7 +215,7 @@ class Songs(commands.Cog):
         if not empty_queue:
             await self.play_song(songs_queue.next_song(), ctx)
 
-    @commands.command(name="prev_song", help="To play prev song in queue")
+    @commands.command(name="prev_song", aliases=["prev"], help="To play prev song in queue")
     async def play(self, ctx):
         """
         Function to play the previous song in the queue
