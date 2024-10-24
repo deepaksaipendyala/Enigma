@@ -82,6 +82,13 @@ class Songs(commands.Cog):
         if ctx.voice_client:
             await ctx.voice_client.move_to(channel)
         else:
+            # Find the channel in ctx.guild.voice_channels with the same name as channel
+
+            for voice_channel in ctx.guild.voice_channels:
+                if voice_channel.name == channel:
+                    channel = voice_channel
+                    break
+
             await channel.connect()
         await ctx.send(f"Successfully joined {channel.name} ({channel.id})")
 
