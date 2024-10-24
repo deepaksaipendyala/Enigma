@@ -364,24 +364,28 @@ class Songs(commands.Cog):
 
         user_message = str(ctx.message.content)
         song_name = user_message.split(" ", 1)[1]
-        self.handle_empty_queue()
+        await self.handle_empty_queue(ctx)
+        current_index = songs_queue.current_index
         result = songs_queue.remove_from_queue(song_name)
         if result == -1:
             await ctx.send("Song does not exist in the queue.")
-        elif result == -2:
-            await ctx.send("Current song can not be removed.")
+        elif result == current_index:
+            await self.stop(ctx)
+            if songs_queue.get_len() != 0:
+                self.handle_play_next(ctx)
+            await ctx.send("Song removed from queue.")
         else:
-            await ctx.send("Song added to queue.")
+            await ctx.send("Song removed from queue.")
     
-    @commands.command(name="clear", aliases = ["clear_queue"], help="To clear all song in the queue")
-    async def clear(self, ctx):
+    @commands.command(name="clear", aliases = ["clear_queue"], help="To clear all songs in the queue")
+    async def clear_queue(self, ctx):
         """
         Function to remove a song from the queue
         """
-
-        str(ctx.message.content)
-        await self.stop()
-        songs_queue.clear_queue()
+        voice_client = ctx.message.guild.voice_client
+        if voice_client.is_playing():
+            await self.stop(ctx)
+        songs_queue = None
         await ctx.send("Queue cleared.")
 
     
