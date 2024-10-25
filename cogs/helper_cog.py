@@ -13,7 +13,7 @@ class Helper(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="showCommands", help="Shows all the commands available")
+    @commands.command(name="showCommands", aliases=["show"], help="Shows all the commands available")
     async def show_commands(self, ctx):
         """Prints all the commands available to the user"""
 

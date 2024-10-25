@@ -37,15 +37,15 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 # VOICE_CHANNEL_ID = 1293317419279843392
 intents = discord.Intents.all()
 intents.members = True
-client = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 """
 Function that gets executed once the bot is initialized
 """
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f"Bot is ready as {client.user}")
+    print(f"Bot is ready as {bot.user}")
 
     
     print("Loading all cogs")
@@ -56,7 +56,7 @@ async def on_ready():
             cog_name = filename[:-3]
             cog_path = f"cogs.{cog_name}"
             try:
-                await client.load_extension(cog_path)
+                await bot.load_extension(cog_path)
                 print(f"{cog_name} loaded successfully")
             except Exception as e:
                 print(f"Error loading cog {cog_path}: {e}")
@@ -65,15 +65,18 @@ async def on_ready():
 
     # voice_channel = client.get_channel(VOICE_CHANNEL_ID)
 
-    channel = discord.utils.get(client.get_all_channels(), name="General")
+    channel = discord.utils.get(bot.get_all_channels(), name="General")
 
     if channel is not None:
-        channel = channel.id
-        voice_channel = client.get_channel(channel)
-
-    if (channel is not None) and (client.user not in voice_channel.members):
-        await voice_channel.connect()
-        print("Bot connected to voice channel")
+        bot_channel = discord.utils.get(bot.voice_clients, guild=channel.guild)
+        if bot_channel and bot_channel.name == channel.name:
+            print(f"Bot already connected to {bot_channel.name}")
+        else:
+            try:
+                await channel.connect()
+                print(f"Bot connected to voice channel: {channel.name}")
+            except Exception as e:
+                print(f"Error connecting to voice channel: {e}")
     else:
         print("Error connecting to General. See the 'join' command for help.")
 
@@ -83,16 +86,16 @@ Function that is executed once any message is received by the bot
 """
 
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
 
     if message.channel.name == "general":
-        await client.process_commands(message)
+        await bot.process_commands(message)
 
 
 """
 Start the bot
 """
-client.run(TOKEN)
+bot.run(TOKEN)

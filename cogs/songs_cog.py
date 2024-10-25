@@ -6,51 +6,42 @@ This file is responsible for all bot commands regarding songs such /poll for gen
 import asyncio
 import discord
 from cogs.helpers.get_all import *
-from dotenv import load_dotenv
 from discord.ext import commands
 from cogs.helpers.utils import searchSong, random_25
 from cogs.helpers.songs_queue import Songs_Queue
 import yt_dlp as youtube_dl
-import asyncio
 
 
-FFMPEG_OPTIONS = {
-    "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
-    "options": [
-        "ffmpeg",
-        "-i",
-        "./assets/sample.mp4",
-        "-vn",
-        "-f",
-        "mp3",
-        "./assets/sample.mp3",
-    ],
+FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5','options': '-vn -filter:a "volume=0.25"'}
+
+YDL_OPTIONS = {
+    'format': 'bestaudio/best',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'restrictfilenames': True,
+    'noplaylist': True,
+    'nocheckcertificate': True,
+    'ignoreerrors': False,
+    'logtostderr': False,
+    'quiet': True,
+    'no_warnings': True,
+    'default_search': 'auto',
+    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
 }
-YDL_OPTIONS = {"format": "bestaudio/best", "noplaylist": "True"}
+
+ytdl = youtube_dl.YoutubeDL(YDL_OPTIONS)
 
 
-def get_audio_sorce(url: str):
-    ydl_opts = {
-        "format": "bestaudio/best",
-        "quiet": True,
-        "extract_flat": "in_playlist",
-        "noplaylist": True,
-        "no_warnings": True,
-        "cookies": "../cookies.txt",
-        "outtmpl": "downloaded_music/%(title)s.%(ext)s",
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "192",
-            }
-        ],
-    }
+async def get_audio_sorce(url: str, *, loop=None, stream=False):
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        audio_url = info["url"]
-        return discord.FFmpegOpusAudio(audio_url, **FFMPEG_OPTIONS)
+    loop = loop or asyncio.get_event_loop()
+    data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
+
+    if "entries" in data:
+        data = data["entries"][0]
+
+    filename = data["url"] if stream else youtube_dl.prepare_filename(data)
+    print(f"filename: {filename}")
+    return (discord.FFmpegOpusAudio(filename, **FFMPEG_OPTIONS), data)
 
 
 class Songs(commands.Cog):
@@ -58,78 +49,20 @@ class Songs(commands.Cog):
     Cog for bot that handles all commands related to songs
     """
 
-    manually_stopped = False
+    
 
     def __init__(self, bot):
         self.bot = bot
+        self.manually_stopped = False
+        # Initialize the songs queue
+        self.songs_queue = Songs_Queue()
 
-    @commands.command(name="join", help="To join the voice channel")
-    async def join(self, ctx, channel: str = commands.parameter(description="The voice channel to join (optional)", default=None)):
-        """
-        Function for joining the voice channel
 
-        Parameters:
-            channel (discord.VoiceChannel): The voice channel to join
-        """
+    #-----------Helper Functions-----------#
 
-        if not channel:
-            try:
-                channel = ctx.author.voice.channel
-            except AttributeError:
-                await ctx.send("No channel to join. Please specify a channel")
-                return
-
-        if ctx.voice_client:
-            await ctx.voice_client.move_to(channel)
-        else:
-            await channel.connect()
-        await ctx.send(f"Successfully joined {channel.name} ({channel.id})")
-
-    @commands.command(name="resume", help="Resumes the song")
-    async def resume(self, ctx):
-        """
-        Function for handling resume capability
-        """
-
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_paused():
-            await voice_client.resume()
-        else:
-            await ctx.send(
-                "The bot was not playing anything before this. Use play command"
-            )
-
-    @commands.command(
-        name="play_song",
-        help="To play user defined song, does not need to be in the database.",
-    )
-    async def play_custom(self, ctx):
-        """
-        Function for playing a custom song
-        """
-
-        user_message = str(ctx.message.content)
-        song_name = user_message.split(" ", 1)[1]
-        if 'songs_queue' not in globals():
-            global songs_queue
-            songs_queue = Songs_Queue([song_name])
-        else:
-            songs_queue.queue[songs_queue.current_index] = song_name
-        await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
-
-    @commands.command(name="stop", help="Stops the song")
-    async def stop(self, ctx):
-        """
-        Function to stop playing the music
-        """
-
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            global manually_stopped
-            manually_stopped = True
-            voice_client.stop()
-        else:
-            await ctx.send("The bot is not playing anything at the moment.")
+    def handle_play_next(self, ctx):
+        if not self.manually_stopped and not ctx.voice_client.is_playing():
+            asyncio.run_coroutine_threadsafe(self.play_song(self.songs_queue.next_song(), ctx), self.bot.loop)
 
     async def play_song(self, song_name, ctx):
         """
@@ -142,87 +75,141 @@ class Songs(commands.Cog):
         # Get the song URL
         url = searchSong(song_name)
         print(url)
-        global manually_stopped
 
-        # Check if bot is connected to a voice channel
-        if not ctx.voice_client:
+        bot_client = None
+
+        # Get the voice client for the guild
+        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+        
+        if not voice_client:
             await ctx.send("Bot is not connected to a voice channel")
             return
 
         # Check if the bot is already playing a song, and stop it if it is
-        if ctx.voice_client.is_playing():
-            manually_stopped = True
-            ctx.voice_client.stop()
+        if voice_client.is_playing():
+            self.manually_stopped = True
+            voice_client.stop()
 
         # Get and play the audio source
-        audio_source = get_audio_sorce(url)
-        ctx.voice_client.play(audio_source, after=lambda e: self.handle_play_next(ctx))
-        await ctx.send(f"Now playing: {url}")
-        manually_stopped = False
-    
-    def handle_play_next(self, ctx):
-        global manually_stopped
-        if not manually_stopped:
-            asyncio.run_coroutine_threadsafe(self.play_song(songs_queue.next_song(), ctx), self.bot.loop)
+        # audio_source = get_audio_sorce(url)
+        # ctx.voice_client.play(audio_source, after=lambda e: self.handle_play_next(ctx), )
 
-
-    async def handle_empty_queue(self, ctx):
-        """
-        Helper function to handle empty song queue
-        """
-        try:
-            songs_queue
-        except NameError:
-            await ctx.send(
-                "No recommendations present. First generate recommendations using /poll"
-            )
-            return True
-        if songs_queue.get_len() == 0:
-            await ctx.send(
-                "No recommendations present. First generate recommendations using /poll"
-            )
-            return True
-        return False
-
-    @commands.command(name="next_song", help="To play next song in queue")
-    async def next_song(self, ctx):
-        """
-        Function to play the next song in the queue
-        """
-        
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.next_song(), ctx)
-
-    @commands.command(name="prev_song", help="To play prev song in queue")
-    async def play(self, ctx):
-        """
-        Function to play the previous song in the queue
-        """
-        
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.prev_song(), ctx)
-
-    @commands.command(name="move", help="To move a song within a queue")
-    async def move(self, ctx):
-        """
-        Function to move a song within a queue
-        """
-
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            user_message = str(ctx.message.content)
-            song_name = user_message.split(" ", 1)[1].rsplit(" ", 1)[0]
-            idx = user_message.rsplit(" ", 1)[1]
-            ret_val = songs_queue.move_song(song_name, idx)
-            if ret_val == -1:
-                await ctx.send("Song does not exist in the queue.")
-            elif ret_val == -2:
-                await ctx.send("Index not valid for queue.")
+        async with ctx.typing():
+            print("Getting audio source")
+            player, data = await get_audio_sorce(url, loop=self.bot.loop, stream=True)
+            print(f"Starting playback of {data['title']}")
+            voice_client.play(player, after=lambda e: print(f"player error {e}") if e else self.handle_play_next(ctx)) #
+            
+            if not ctx.voice_client.is_playing():
+                print ("Playback error")
             else:
-                bot_message = song_name + " moved to position " + idx
-                await ctx.send(bot_message)
+                print("Playing")
+
+        await ctx.send(f"Now playing: {url}")
+        self.manually_stopped = False
+
+
+    #-----------Commands-----------#
+
+
+    @commands.command(name="join", help="To join the voice channel")
+    async def join(self, ctx, channel_name: str = commands.parameter(description="The voice channel to join (optional)", default=None)):
+        """
+        Function for joining the voice channel
+
+        Parameters:
+            channel (discord.VoiceChannel): The voice channel to join
+        """
+
+        if not channel_name:
+            try:
+                channel = ctx.author.voice.channel
+            except AttributeError:
+                await ctx.send("No channel to join. Please specify a channel")
+                return    
+
+        # Get the voice channel object
+        channel = discord.utils.get(ctx.guild.voice_channels, name=channel_name)
+
+        # Check if the bot is already connected to that channel
+        if channel: 
+            # get the current voice client for the bot in the guild
+            bot_channel = discord.utils.get(ctx.bot.voice_clients, guild=channel.guild)
+            if bot_channel and bot_channel.channel.name == channel.name:
+                await ctx.send(f"Already connected to {channel_name}")
+                return
+            elif bot_channel:
+                try:
+                    await bot_channel.move_to(channel)
+                    await ctx.send(f"Connected to {channel_name}")
+                except Exception as e:
+                    await ctx.send(f"Error connecting to {channel_name}: {e}")
+            else:
+                try:
+                    await channel.connect()
+                    await ctx.send(f"Connected to {channel_name}")
+                except Exception as e:
+                    await ctx.send(f"Error connecting to {channel_name}: {e}")
+        else:
+            await ctx.send(f"Channel {channel_name} not found")
+            return
+
+
+    @commands.command(name="resume", help="Resumes the song")
+    async def resume(self, ctx):
+        """
+        Function for handling resume capability
+        """
+
+        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+        if voice_client.is_paused():
+            await voice_client.resume()
+        else:
+            await ctx.send(
+                "The bot was not playing anything before this. Use play command"
+            )
+
+
+    @commands.command(name="start", help="Starts playing the current song in the queue")
+    async def start(self, ctx):
+        """
+        Function for starting the song
+        """
+
+        if self.songs_queue.get_len() == 0:
+            await ctx.send("No songs in the queue. Please add songs to the queue")
+            return
+
+        await self.play_song(self.songs_queue.current_song(), ctx)
+
+    @commands.command(
+        name="play",
+        aliases=["play_song"],
+        help="To play user defined song, does not need to be in the database.",
+    )
+    async def play_custom(self, ctx, song_name: str = commands.parameter(description="The name of the song to play"), artist_name: str = commands.parameter(description="The name of the artist of the song")):
+        """
+        Function for playing a custom song. PLaying a custom song will clear the queue and begin playing the custom song
+        """
+
+        # Check that a song was provided
+        if not song_name:
+            await ctx.send("Please provide a song to play")
+            return
+        
+        if not artist_name:
+            await ctx.send("Please provide an artist name")
+            return
+        
+        song = (song_name, artist_name)
+
+        self.songs_queue.clear()
+        self.songs_queue.add_to_queue(song)
+        
+        current_song = self.songs_queue.current_song()
+        print(f"Current song: {current_song}")
+        await self.play_song(current_song, ctx)
+
 
     @commands.command(name="pause", help="This command pauses the song")
     async def pause(self, ctx):
@@ -232,21 +219,64 @@ class Songs(commands.Cog):
 
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
+            await ctx.send("Pausing")
             voice_client.pause()
         else:
             await ctx.send("The bot is not playing anything at the moment.")
 
+
+    @commands.command(name="stop", help="Stops the song")
+    async def stop(self, ctx):
+        """
+        Function to stop playing the music
+        """
+
+        voice_client = ctx.message.guild.voice_client
+        if voice_client.is_playing():
+            self.manually_stopped = True
+            voice_client.stop()
+        else:
+            await ctx.send("The bot is not playing anything at the moment.")
+
+
+        #TODO: update queue implementation
+
+
+    @commands.command(name="skip", aliases=["next, next_song"], help="To play next song in queue")
+    async def next_song(self, ctx):
+        """
+        Function to play the next song in the queue
+        """
+        
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        if not empty_queue:
+            await self.play_song(self.songs_queue.next_song(), ctx)
+
+
+    @commands.command(name="prev", aliases=["prev_song"], help="To play previous song in queue")
+    async def prev(self, ctx):
+        """
+        Function to play the previous song in the queue
+        """
+        
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        if not empty_queue:
+            await self.play_song(self.songs_queue.prev_song(), ctx)
+
+
+    #TODO: update queue implementation
     @commands.command(name="replay", help="This command replays the current song")
     async def replay(self, ctx):
         """
         Function to restart the current song in queue
         """
-
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            voice_client.stop()
-        await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
         
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        voice_client = ctx.message.guild.voice_client
+        if not empty_queue and voice_client.is_playing():
+            voice_client.stop()
+        await self.play_song(self.songs_queue.current_song, ctx)
+
 
     @commands.command(
         name="poll_old",
@@ -254,7 +284,7 @@ class Songs(commands.Cog):
     )
     async def poll(self, ctx):
         """
-        Function to generate poll for playing the recommendations
+        Function to generate poll for playing the recommendations. Clears the queue and adds the recommendations
         """
 
         reactions = ["👍", "👎"]
@@ -280,62 +310,15 @@ class Songs(commands.Cog):
                 bot_message = "Selected songs are : " + " , ".join(selected_songs)
                 await ctx.send(bot_message)
                 break
-        global songs_queue
+        
+        # Add recommendations to queue and play.
         recommended_songs = recommend(selected_songs)
-        songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
-
-    @commands.command(name="queue", help="Show active queue of recommendations")
-    async def queue(self, ctx):
-        """
-        Function to display all the songs in the queue
-        """
-
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            queue, index = songs_queue.return_queue()
-            bot_message = "🎶 **Song Queue:** 🎶 "
-            if index != 0:
-                bot_message += "\n\nAlready Played: "
-            for i in range(len(queue)):
-                if i < index:
-                    bot_message += "\n" + str(len(songs_queue.queue) - index + i) + ". " + str.title(queue[i])
-                elif i == index:
-                    bot_message += "\n\n🔊 Currently Playing: \n" + "     " + str.title(queue[i])
-                    if index != len(songs_queue.queue) - 1: bot_message += "\n\nUp Next: "
-                elif i > index:
-                    bot_message += "\n" + str(i - index) + ". " + str.title(queue[i])
-            await ctx.send(bot_message)
-
-    @commands.command(name="shuffle", help="To shuffle songs in queue")
-    async def shuffle(self, ctx):
-        """
-        Function to shuffle songs in the queue
-        """
-
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            songs_queue.shuffle_queue()
-            await ctx.send("Playlist shuffled")
-
-    @commands.command(name="add_song", help="To add custom song to the queue")
-    async def add_song(self, ctx):
-        """
-        Function to add custom song to the queue
-        """
-
-        user_message = str(ctx.message.content)
-        song_name = user_message.split(" ", 1)[1]
-        if 'songs_queue' not in globals():
-            global songs_queue
-            songs_queue = Songs_Queue([song_name])
-            await self.play_song(songs_queue.queue[songs_queue.current_index], ctx)
-        else:
-            songs_queue.add_to_queue(song_name)
-        await ctx.send("Song added to queue")
+        self.songs_queue.clear()
+        self.songs_queue.add_to_queue(recommended_songs)
+        await self.play_song(self.songs_queue.current_song(), ctx)
 
     
-    @commands.command(name='mood_recommend', help='Songs based on your mood or activity')
+    @commands.command(name='mood', help='Recommend songs based on your mood or activity')
     async def mood_recommend(self, ctx):
         # Send an embed message with mood options.
         mood_options = {
@@ -399,9 +382,9 @@ class Songs(commands.Cog):
             return
 
         # Add recommendations to queue and play.
-        global songs_queue
-        songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue.next_song(), ctx)
+        self.songs_queue.clear()
+        self.songs_queue.add_to_queue(recommended_songs)
+        await self.play_song(self.songs_queue.current_song(), ctx)
 
 
 async def setup(client: discord.Client):
