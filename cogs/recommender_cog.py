@@ -101,6 +101,11 @@ class Recommender(commands.Cog):
         Function to recommend songs based on the user's preferences
         """
 
+        # Check if the user has run the poll command
+        if not self.message_id:
+            await ctx.send("Please run the !poll command first to choose your preferences.")
+            return
+
         # Get the message
         message = await ctx.fetch_message(self.message_id)
 

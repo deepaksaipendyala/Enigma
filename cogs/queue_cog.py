@@ -14,31 +14,7 @@ class Queue(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.queue = Songs_Queue()
-
-
-        #TODO: update queue implementation
-    @commands.command(name="skip", aliases=["next, next_song"], help="To play next song in queue")
-    async def next_song(self, ctx):
-        """
-        Function to play the next song in the queue
-        """
-        
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.next_song(), ctx)
-
-
-    #TODO: update queue implementation
-    @commands.command(name="prev", aliases=["prev_song"], help="To play previous song in queue")
-    async def play(self, ctx):
-        """
-        Function to play the previous song in the queue
-        """
-        
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.prev_song(), ctx)
+        self.songs_queue = Songs_Queue()
 
 
     #TODO: update queue implementation
@@ -62,25 +38,10 @@ class Queue(commands.Cog):
                 bot_message = song_name + " moved to position " + idx
                 await ctx.send(bot_message)
 
-    
-    #TODO: update queue implementation
-    @commands.command(name="replay", help="This command replays the current song")
-    async def replay(self, ctx):
-        """
-        Function to restart the current song in queue
-        """
-
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            voice_client.stop()
-        await self.play_song(songs_queue.queue[songs_queue._index], ctx)
-        
-
-    
 
     #TODO: update queue implementation
     @commands.command(name="queue", help="Show active queue of recommendations")
-    async def queue(self, ctx):
+    async def songs_queue(self, ctx):
         """
         Function to display all the songs in the queue
         """

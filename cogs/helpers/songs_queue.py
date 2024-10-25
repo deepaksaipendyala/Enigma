@@ -37,6 +37,19 @@ class Songs_Queue(metaclass=Singleton):
     def index(self):
         """Return the current index."""
         return self._index
+    
+
+    async def handle_empty_queue(self, ctx):
+        """
+        Helper function to handle empty song queue
+        """
+
+        if self.get_len() == 0:
+            await ctx.send(
+                "No recommendations present. First generate recommendations using /poll or /mood."
+            )
+            return True
+        return False
 
 
     def clear(self):

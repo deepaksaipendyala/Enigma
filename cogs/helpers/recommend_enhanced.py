@@ -13,7 +13,7 @@ def recommend_enhanced(input_songs: list) -> list:
     similar to the input songs.
 
     Parameters:
-        input_songs (list): List of songs that the user selected. Format as (<track_name>, <artist_name>).
+        input_songs (list): List of songs that the user selected. Format as (track_name, artist_name).
     """
 
     # Get all songs
