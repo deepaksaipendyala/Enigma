@@ -2,9 +2,16 @@ import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import time
+import os
+from dotenv import load_dotenv
+
+# Load environment variables.
+load_dotenv(".env")
+CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
 # Spotify authentication.
-client_credentials_manager = SpotifyClientCredentials(client_id='your_client_id', client_secret='your_secret')
+client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def fetch_spotify_popularity(song_name, artist_name):
@@ -21,19 +28,33 @@ def fetch_spotify_popularity(song_name, artist_name):
 # Load dataset.
 songs_df = pd.read_csv('.\\data\\tcc_ceds_music.csv')
 
-# Create a new column to store the popularity.
-songs_df['popularity'] = None
+try:
+    intermidiate_df = pd.read_csv('tcc_ceds_music_with_popularity.csv')
+    idx = intermidiate_df.shape[0]
+    print(f"Continue from previous index {idx}.")
+    songs_df = pd.concat([intermidiate_df, songs_df.iloc[idx:]]).reset_index(drop=True)
+except FileNotFoundError:
+    print("Starting from scratch.")
+    songs_df['popularity'] = None
+
+if 'popularity' not in songs_df.columns:
+    songs_df['popularity'] = None
 
 # Iterate over each song and fetch popularity.
 for idx, row in songs_df.iterrows():
-    song_name = row['track_name']
-    artist_name = row['artist_name']
-    popularity = fetch_spotify_popularity(song_name, artist_name)
-    print(f'Music: {row["track_name"]} Artist: {row["artist_name"]} {popularity}')
-    songs_df.at[idx, 'popularity'] = popularity
+     if pd.isna(row['popularity']):
+        song_name = row['track_name']
+        artist_name = row['artist_name']
+        popularity = fetch_spotify_popularity(song_name, artist_name)
+        print(f'Music: {row["track_name"]} Artist: {row["artist_name"]} {popularity}')
+        songs_df.at[idx, 'popularity'] = popularity
 
-    # To avoid hitting rate limits, sleep for a bit between requests.
-    time.sleep(1)
+        # Save intermediate results(every new 10 row).
+        if idx % 10 == 0:
+            songs_df.to_csv('tcc_ceds_music_with_popularity.csv', index=False)
+
+        # To avoid hitting rate limits, sleep for a bit between requests.
+        time.sleep(1)
 
 # Save the updated dataset with popularity.
 songs_df.to_csv('tcc_ceds_music_with_popularity.csv', index=False)
