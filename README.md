@@ -18,9 +18,8 @@
 [![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/NCSU-CSC-510-F2024/Enigma/issues)
 [![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/NCSU-CSC-510-F2024/Enigma/pulls)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
-
-<!-- [![Formatting python code](https://github.com/rahulgautam21/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/rahulgautam21/Enigma/actions/workflows/code-formatter.yml) -->
-
+[![style: autopep8](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/autopep8.yml/badge.svg)](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/autopep8.yml)
+[![Test status](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/run-tests.yml/badge.svg?event=push)](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/run-tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/NCSU-CSC-510-F2024/Enigma/badge.svg?branch=main)](https://coveralls.io/github/NCSU-CSC-510-F2024/Enigma?branch=main)
 
 </div>
