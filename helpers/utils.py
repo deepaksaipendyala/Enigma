@@ -26,8 +26,10 @@ def random_25():
     This function returns random 25 songs for generating the poll for the user
     """
 
-    random_songs = (all_songs.sample(frac=1).groupby("genre").head(1)).sample(25)
+    random_songs = (all_songs.sample(
+        frac=1).groupby("genre").head(1)).sample(25)
     return random_songs
+
 
 def random_n(n: int):
     """
@@ -104,7 +106,8 @@ def get_full_song_name(song_name, artist_name):
 
     if song.empty:
         # If the song is not found in the primary dataset, search the alternate dataset
-        all_songs_alt = get_all_songs_alternate().filter(["track_name", "artist"])
+        all_songs_alt = get_all_songs_alternate().filter(
+            ["track_name", "artist"])
 
         song = all_songs_alt.loc[
             (all_songs_alt["track_name"].str.contains(song_name, case=False))

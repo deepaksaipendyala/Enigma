@@ -4,7 +4,8 @@ from helpers import utils
 def test_retrieve_song_attributes():
     song_name = "i believe"
     artist_name = "frankie laine"
-    actual_song_attributes = utils.retrieve_song_attributes(song_name, artist_name)
+    actual_song_attributes = utils.retrieve_song_attributes(
+        song_name, artist_name)
     expected_song_attributes = [
         0.0355371338259024,
         0.09677674227829695,
@@ -52,13 +53,15 @@ def test_cosine_similarity():
 
     expected_cosine_similarity = 0.75044
 
-    assert round(expected_cosine_similarity, 2) == round(actual_cosine_similarity, 2)
+    assert round(expected_cosine_similarity, 2) == round(
+        actual_cosine_similarity, 2)
 
 
 def test_not_found_song():
     song_name = "song"
     artist_name = "artist"
-    actual_song_attributes = utils.retrieve_song_attributes(song_name, artist_name)
+    actual_song_attributes = utils.retrieve_song_attributes(
+        song_name, artist_name)
 
     expected_song_attributes = [0] * 22
 
@@ -71,7 +74,8 @@ def test_retrieve_attributes_alternate():
     artist_name = "Train"
     expected_song_attributes = [97, 89, 67, 8, 80, 217, 19, 4, 83]
 
-    actual_song_attributes = utils.retrieve_attributes_alternate(song_name, artist_name)
+    actual_song_attributes = utils.retrieve_attributes_alternate(
+        song_name, artist_name)
 
     assert actual_song_attributes == expected_song_attributes
 
@@ -110,7 +114,8 @@ def test_both_found_alternate():
     )
 
     expected_cosine_similarity = 0.9886360242
-    assert round(actual_cosine_similarity, 4) == round(expected_cosine_similarity, 4)
+    assert round(actual_cosine_similarity, 4) == round(
+        expected_cosine_similarity, 4)
 
 
 def test_orthagonal_vectors():

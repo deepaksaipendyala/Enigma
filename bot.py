@@ -47,7 +47,6 @@ Function that gets executed once the bot is initialized
 async def on_ready():
     print(f"Bot is ready as {bot.user}")
 
-    
     print("Loading all cogs")
     # Get all the files that end in _cog.py
     for filename in os.listdir("./cogs"):

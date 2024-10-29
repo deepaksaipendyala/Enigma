@@ -11,7 +11,7 @@ def filtered_songs():
     """
     This function returns songs and their track_name, artist, year and genre.
     """
-    
+
     all_songs = pd.read_csv("./data/songs.csv")
     all_songs = all_songs.filter(["track_name", "artist", "year", "genre"])
     return all_songs
@@ -82,15 +82,16 @@ def get_recommended_songs_based_on_mood(filters):
 
     # Start with the dataset and filter it based on the ranges provided in the filters
     filtered_df = tcc_ceds_music_df.copy()
-    
+
     for feature, (min_val, max_val) in filters.items():
         if feature in filtered_df.columns:
-            filtered_df = filtered_df[(filtered_df[feature] >= min_val) & (filtered_df[feature] <= max_val)]
+            filtered_df = filtered_df[(filtered_df[feature] >= min_val) & (
+                filtered_df[feature] <= max_val)]
 
     # If there are no results, return an empty list
     if filtered_df.empty:
         return []
-    
+
     # Extract the 'track_name' and 'artist_name' as the recommended songs
     recommended_songs = filtered_df['track_name'].head(20).tolist()
     return recommended_songs

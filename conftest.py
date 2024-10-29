@@ -17,6 +17,7 @@ from os.path import abspath
 root_dir = d(d(abspath("test/test_bot.py")))
 sys.path.append(root_dir)
 
+
 @pytest_asyncio.fixture
 async def bot():
     """
@@ -42,9 +43,10 @@ async def bot():
                 print(f"{cog_name} loaded successfully")
             except Exception as e:
                 print(f"Error loading cog {cog_path}: {e}")
-    
+
     await bot._async_setup_hook()
-    dpytest.configure(bot, ["Testing"], ["general"], ["General"], ["member1", "member2"])
+    dpytest.configure(bot, ["Testing"], ["general"], [
+                      "General"], ["member1", "member2"])
 
     yield bot
 

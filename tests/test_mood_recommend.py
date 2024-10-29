@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from cogs.songs_cog import get_recommended_songs_based_on_mood
 
+
 class TestSongsCog(unittest.TestCase):
 
     @patch('pandas.read_csv')
@@ -36,7 +37,8 @@ class TestSongsCog(unittest.TestCase):
         mock_read_csv.return_value = mock_data
 
         # Define filter for sad mood.
-        filters = {'sadness': (0.5, 1), 'valence': (0.0, 0.3), 'energy': (0.2, 0.5)}
+        filters = {'sadness': (0.5, 1), 'valence': (
+            0.0, 0.3), 'energy': (0.2, 0.5)}
 
         result = get_recommended_songs_based_on_mood(filters)
 
