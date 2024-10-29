@@ -5,10 +5,10 @@ This file is responsible for all bot commands regarding songs such /poll for gen
 
 import asyncio
 import discord
-from cogs.helpers.get_all import *
+from helpers.get_all import *
 from discord.ext import commands
-from cogs.helpers.utils import searchSong, random_25
-from cogs.helpers.songs_queue import Songs_Queue
+from helpers.utils import searchSong, random_25
+from helpers.songs_queue import Songs_Queue
 import yt_dlp as youtube_dl
 
 

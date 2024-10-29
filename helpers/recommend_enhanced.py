@@ -2,8 +2,8 @@
 This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.
 """
 
-from cogs.helpers.utils import retrieve_song_attributes, cosine_similarity
-from cogs.helpers.get_all import get_all_songs
+from helpers.utils import retrieve_song_attributes, cosine_similarity
+from helpers.get_all import get_all_songs
 
 
 def recommend_enhanced(input_songs: list) -> list:
