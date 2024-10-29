@@ -72,6 +72,9 @@ class Songs_Queue(metaclass=Singleton):
         if idx < 0 or idx >= len(self.queue):
             return -1
         song = self.queue[idx]
+        artist = song[1]
+        if artist == "Unknown":
+            return song[0]
         return f"{song[0]} by {song[1]}"
 
 
@@ -115,7 +118,8 @@ class Songs_Queue(metaclass=Singleton):
         if int(idx) < 1 or int(idx) > len(self.queue) - 1:
             return -2
         for index, s in enumerate(self.queue):
-            if s.upper() == song_name.upper():
+            title = s[0]
+            if title.upper() == song_name.upper():
                 curr_idx = index
         if curr_idx != -1:
             element = self.queue.pop(curr_idx)  # Remove the element from the old index
@@ -150,7 +154,7 @@ class Songs_Queue(metaclass=Singleton):
         self.queue.insert(self._index, element)
 
 
-    def add_to_queue(self, song_name: str|list[str]):
+    def add_to_queue(self, songs: str|list[str]):
         """
         This function adds a song to the queue
 
@@ -158,10 +162,17 @@ class Songs_Queue(metaclass=Singleton):
             song_name(str | list[str]): The name of the song to be added to the queue, or a list of song names to be added to the queue
         """
 
-        if isinstance(song_name, list):
-            self.queue.extend(song_name)
+        if isinstance(songs, list) and not isinstance(songs, tuple):
+            for song in songs:
+                if isinstance(song, tuple):
+                    self.queue.append(song)
+                else:
+                    self.queue.append((song, "Unknown"))
         else:
-            self.queue.append(song_name)
+            if (isinstance(songs, tuple)):
+                self.queue.append(songs)
+            else:
+                self.queue.append((songs, "Unknown"))
 
 
     def remove_from_queue(self, song_name):
@@ -175,8 +186,10 @@ class Songs_Queue(metaclass=Singleton):
             int: The index of the song that was removed from the queue, or -1 if the song was not found in the queue
         """
 
-        for index, s in enumerate(self.queue):
-            if s.upper() == song_name.upper():
+        for index, song in enumerate(self.queue):
+            title = song[0]
+            artist = song[1]
+            if title.upper() == song_name.upper():
                 if index != self.index: 
                     return self.queue.pop(index)
                 elif index == 0:

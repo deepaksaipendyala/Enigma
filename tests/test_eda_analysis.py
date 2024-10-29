@@ -15,11 +15,11 @@ class TestEdaAnalysis(unittest.TestCase):
             'bpm': [100, 200]
         })
         
-        songs_df = pd.read_csv('.\\data\\songs.csv')
+        songs_df = pd.read_csv('./data/songs.csv')
         
         self.assertFalse(songs_df.empty)
         self.assertEqual(len(songs_df), 2)
-        mock_read_csv.assert_called_with('.\\data\\songs.csv')
+        mock_read_csv.assert_called_with('./data/songs.csv')
 
     def test_missing_values_identification(self):
         # Setup.

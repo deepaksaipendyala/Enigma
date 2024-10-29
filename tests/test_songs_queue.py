@@ -102,7 +102,7 @@ def test_return_queue():
     sq.clear()
     sq.add_to_queue(song_names)
     result = sq.return_queue()
-    expectedResult = (song_names, 0)
+    expectedResult = ([("a", "Unknown"), ("b", "Unknown"), ("c", "Unknown"), ("d", "Unknown")], 0)
     assert result == expectedResult
 
 
@@ -112,7 +112,7 @@ def test_return_queue_2():
     sq.clear()
     sq.add_to_queue(song_names)
     result = sq.return_queue()
-    expectedResult = (song_names, 0)
+    expectedResult = ([("TiK ToK", "Unknown"), ("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown"), ("Secrets", "Unknown")], 0)
     assert result == expectedResult
 
 def test_shuffle_queue():
@@ -122,19 +122,19 @@ def test_shuffle_queue():
     sq.add_to_queue(song_names)
 
     sq.shuffle_queue()
-    assert sq.queue[sq._index] == "TiK ToK"
+    assert sq.queue[sq._index][0] == "TiK ToK"
     sq.shuffle_queue()
-    assert sq.queue[sq._index] == "TiK ToK"
+    assert sq.queue[sq._index][0] == "TiK ToK"
     result = sq.next_song()
     sq.shuffle_queue()
-    assert sq.queue[sq._index] == result
+    assert sq.queue[sq._index][0] == result
     sq.shuffle_queue()
-    assert sq.queue[sq._index] == result
+    assert sq.queue[sq._index][0] == result
     result = sq.next_song()
     sq.shuffle_queue()
-    assert sq.queue[sq._index] == result
+    assert sq.queue[sq._index][0] == result
     sq.shuffle_queue()
-    assert sq.queue[sq._index] == result
+    assert sq.queue[sq._index][0] == result
 
 def test_move_song_1():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
@@ -142,7 +142,7 @@ def test_move_song_1():
     sq.clear()
     sq.add_to_queue(song_names)
     sq.move_song("Secrets", 1)
-    assert sq.queue == ["TiK ToK", "Secrets", "Baby", "Marry You", "Telephone"]
+    assert sq.queue == [("TiK ToK", "Unknown"), ("Secrets", "Unknown"), ("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown")]
 
 def test_move_song_2():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
@@ -168,9 +168,9 @@ def test_remove_song_1():
     sq.clear()
     sq.add_to_queue(song_names)
     sq.remove_from_queue("Secrets")
-    assert sq.queue == ["TiK ToK", "Baby", "Marry You", "Telephone"]
+    assert sq.queue == [("TiK ToK", "Unknown"), ("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown")]
     sq.remove_from_queue("Baby")
-    assert sq.queue == ["TiK ToK", "Marry You", "Telephone"]
+    assert sq.queue == [("TiK ToK", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown")]
 
 def test_remove_song_2():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
@@ -189,4 +189,4 @@ def test_remove_song_3():
     
     assert result == 0
     assert sq.index == 0
-    assert sq.queue == ["Baby", "Marry You", "Telephone", "Secrets"]
+    assert sq.queue == [("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown"), ("Secrets", "Unknown")]

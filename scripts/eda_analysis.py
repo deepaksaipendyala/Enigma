@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load the datasets.
-songs_df = pd.read_csv('.\\data\\songs.csv')
-tcc_ceds_music_df = pd.read_csv('.\\data\\tcc_ceds_music.csv')
+songs_df = pd.read_csv('./data/songs.csv')
+tcc_ceds_music_df = pd.read_csv('./data/tcc_ceds_music.csv')
 
 def main():
     # 1. Check for Missing Values in each column.
