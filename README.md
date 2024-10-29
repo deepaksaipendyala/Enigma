@@ -16,7 +16,7 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![GitHub contributors](https://img.shields.io/badge/contributors-4-green)](https://github.com/NCSU-CSC-510-F2024/Enigma/graphs/contributors)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/NCSU-CSC-510-F2024/Enigma)
-[![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/NCSU-CSC-510-F2024/Enigma/pulls)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/NCSU-CSC-510-F2024/Enigma)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
 [![style: autopep8](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/code-formatter.yml)
 [![Test status](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/run-tests.yml/badge.svg?event=push)](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/run-tests.yml)
