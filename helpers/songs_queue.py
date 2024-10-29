@@ -46,7 +46,7 @@ class Songs_Queue(metaclass=Singleton):
 
         if self.get_len() == 0:
             await ctx.send(
-                "No recommendations present. First generate recommendations using /poll or /mood."
+                "No recommendations present. First generate recommendations using !poll or !mood."
             )
             return True
         return False

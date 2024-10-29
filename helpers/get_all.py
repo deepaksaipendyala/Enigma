@@ -78,7 +78,7 @@ def get_recommended_songs_based_on_mood(filters):
     The filters parameter is expected to be a dictionary with keys as feature names and values as a tuple of (min, max).
     """
     # Load the dataset.
-    tcc_ceds_music_df = pd.read_csv('.\\data\\tcc_ceds_music.csv')
+    tcc_ceds_music_df = pd.read_csv('./data/tcc_ceds_music.csv')
 
     # Start with the dataset and filter it based on the ranges provided in the filters
     filtered_df = tcc_ceds_music_df.copy()

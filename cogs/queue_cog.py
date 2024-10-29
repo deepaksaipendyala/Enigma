@@ -124,7 +124,7 @@ class Queue(commands.Cog):
         if voice_client.is_playing():
             ctx.command = self.bot.get_command("stop")
             await self.bot.invoke(ctx)
-        self.songs_queue = None
+        self.songs_queue._queue = []
         await ctx.send("Queue cleared.")
 
 

@@ -5,7 +5,7 @@ This file is the main entry point of the bot
 from multiprocessing.util import debug
 import discord
 import os
-from cogs.helpers.get_all import *
+from helpers.get_all import *
 from dotenv import load_dotenv
 from discord.ext import commands
 
