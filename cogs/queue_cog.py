@@ -6,6 +6,7 @@ from discord.ext import commands
 from helpers.songs_queue import Songs_Queue
 import asyncio
 
+
 class Queue(commands.Cog):
     """
     This class handles generating a queue, and subsequent queue commands
@@ -15,8 +16,8 @@ class Queue(commands.Cog):
         self.bot = bot
         self.songs_queue = Songs_Queue()
 
+    # TODO: update queue implementation
 
-    #TODO: update queue implementation
     @commands.command(name="move", help="To move a song within a queue")
     async def move(self, ctx):
         """
@@ -37,8 +38,8 @@ class Queue(commands.Cog):
                 bot_message = song_name + " moved to position " + idx
                 await ctx.send(bot_message)
 
+    # TODO: update queue implementation
 
-    #TODO: update queue implementation
     @commands.command(name="queue", help="Show active queue of recommendations")
     async def songs_queue(self, ctx):
         """
@@ -53,15 +54,23 @@ class Queue(commands.Cog):
                 bot_message += "\n\nAlready Played: "
             for i in range(len(queue)):
                 if i < index:
-                    bot_message += "\n" + str(len(self.songs_queue.queue) - index + i) + ". " + str.title(queue[i][0])# + " by " + str.title(queue[i][1])
+                    # + " by " + str.title(queue[i][1])
+                    bot_message += "\n" + \
+                        str(len(self.songs_queue.queue) - index + i) + \
+                        ". " + str.title(queue[i][0])
                 elif i == index:
-                    bot_message += "\n\n🔊 Currently Playing: \n" + "     " + str.title(queue[i][0])# + " by " + str.title(queue[i][1])
-                    if index != len(self.songs_queue.queue) - 1: bot_message += "\n\nUp Next: "
+                    bot_message += "\n\n🔊 Currently Playing: \n" + "     " + \
+                        str.title(
+                            queue[i][0])  # + " by " + str.title(queue[i][1])
+                    if index != len(self.songs_queue.queue) - 1:
+                        bot_message += "\n\nUp Next: "
                 elif i > index:
-                    bot_message += "\n" + str(i - index) + ". " + str.title(queue[i][0])# + " by " + str.title(queue[i][1])
+                    # + " by " + str.title(queue[i][1])
+                    bot_message += "\n" + \
+                        str(i - index) + ". " + str.title(queue[i][0])
             await ctx.send(bot_message)
 
-    #TODO: update queue implementation
+    # TODO: update queue implementation
     @commands.command(name="shuffle", help="To shuffle songs in queue")
     async def shuffle(self, ctx):
         """
@@ -73,8 +82,8 @@ class Queue(commands.Cog):
             self.songs_queue.shuffle_queue()
             await ctx.send("Playlist shuffled")
 
-    #TODO: update queue implementation
-    @commands.command(name="add", aliases = ["add_song"], help="To add custom song to the queue")
+    # TODO: update queue implementation
+    @commands.command(name="add", aliases=["add_song"], help="To add custom song to the queue")
     async def add_song(self, ctx):
         """
         Function to add custom song to the queue
@@ -88,8 +97,8 @@ class Queue(commands.Cog):
             await self.bot.invoke(ctx)
         await ctx.send("Song added to queue")
 
-    #TODO: update queue implementation
-    @commands.command(name="remove", aliases = ["remove_song"], help="To remove a song from the queue")
+    # TODO: update queue implementation
+    @commands.command(name="remove", aliases=["remove_song"], help="To remove a song from the queue")
     async def remove_song(self, ctx):
         """
         Function to remove a song from the queue
@@ -112,10 +121,10 @@ class Queue(commands.Cog):
             await ctx.send("Song removed from queue.")
         else:
             await ctx.send("Song removed from queue.")
-    
 
-    #TODO: update queue implementation
-    @commands.command(name="clear", aliases = ["clear_queue"], help="To clear all songs in the queue")
+    # TODO: update queue implementation
+
+    @commands.command(name="clear", aliases=["clear_queue"], help="To clear all songs in the queue")
     async def clear_queue(self, ctx):
         """
         Function to remove a song from the queue

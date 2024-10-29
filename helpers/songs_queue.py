@@ -4,14 +4,17 @@ This file is responsible for maintaining the song queue
 from random import shuffle
 
 # Make a singleton class for the song queue
+
+
 class Singleton(type):
     """A metaclass that creates a Singleton base type when called."""
-    _instances= {}
+    _instances = {}
 
     def __call__(cls, *args, **kwargs):
         """Create a new instance of the class if it does not exist."""
         if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super(
+                Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
 
@@ -27,17 +30,15 @@ class Songs_Queue(metaclass=Singleton):
         self._queue = []
         self._index = 0
 
-
     @property
     def queue(self):
         """Return the current queue."""
         return self._queue
-    
+
     @property
     def index(self):
         """Return the current index."""
         return self._index
-    
 
     async def handle_empty_queue(self, ctx):
         """
@@ -51,12 +52,10 @@ class Songs_Queue(metaclass=Singleton):
             return True
         return False
 
-
     def clear(self):
         """Clear the current queue."""
         self._queue.clear()
         self._index = 0
-
 
     def get_song_at_index(self, idx):
         """
@@ -77,17 +76,15 @@ class Songs_Queue(metaclass=Singleton):
             return song[0]
         return f"{song[0]} by {song[1]}"
 
-
     def current_song(self):
         """Return the current song."""
         return self.get_song_at_index(self._index)
-
 
     def next_song(self):
         """
         This function returns the next song in the queue
         """
-        
+
         print(self.queue)
         if (self._index == len(self.queue) - 1):
             self._index = 0
@@ -95,7 +92,6 @@ class Songs_Queue(metaclass=Singleton):
             self._index += 1
         val = self._index
         return self.get_song_at_index(val)
-
 
     def prev_song(self):
         """
@@ -107,7 +103,6 @@ class Songs_Queue(metaclass=Singleton):
             self._index = len(self.queue) - 1
         val = self._index
         return self.get_song_at_index(val)
-
 
     def move_song(self, song_name, idx):
         """
@@ -122,12 +117,13 @@ class Songs_Queue(metaclass=Singleton):
             if title.upper() == song_name.upper():
                 curr_idx = index
         if curr_idx != -1:
-            element = self.queue.pop(curr_idx)  # Remove the element from the old index
-            self.queue.insert(int(idx), element)  # Insert the element at the new index
+            # Remove the element from the old index
+            element = self.queue.pop(curr_idx)
+            # Insert the element at the new index
+            self.queue.insert(int(idx), element)
             return int(idx)
         else:
             return -1
-
 
     def get_len(self):
         """
@@ -136,14 +132,12 @@ class Songs_Queue(metaclass=Singleton):
 
         return len(self.queue)
 
-
     def return_queue(self):
         """
         This function returns song queue and the current index of the song that is playing
         """
-        
-        return (self.queue, self._index)
 
+        return (self.queue, self._index)
 
     def shuffle_queue(self):
         """
@@ -153,8 +147,7 @@ class Songs_Queue(metaclass=Singleton):
         shuffle(self.queue)
         self.queue.insert(self._index, element)
 
-
-    def add_to_queue(self, songs: str|list[str]):
+    def add_to_queue(self, songs: str | list[str]):
         """
         This function adds a song to the queue
 
@@ -174,7 +167,6 @@ class Songs_Queue(metaclass=Singleton):
             else:
                 self.queue.append((songs, "Unknown"))
 
-
     def remove_from_queue(self, song_name):
         """
         This function removes a song from the queue
@@ -190,7 +182,7 @@ class Songs_Queue(metaclass=Singleton):
             title = song[0]
             artist = song[1]
             if title.upper() == song_name.upper():
-                if index != self.index: 
+                if index != self.index:
                     return self.queue.pop(index)
                 elif index == 0:
                     # If the song to be removed is the first song in the queue

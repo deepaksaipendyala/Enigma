@@ -1,8 +1,8 @@
+from helpers.songs_queue import Songs_Queue
 import warnings
 import sys
 
 sys.path.append("../")
-from helpers.songs_queue import Songs_Queue
 
 warnings.filterwarnings("ignore")
 
@@ -20,6 +20,7 @@ def test_singleton():
 
     assert sq1 == sq2
     assert sq1.queue == sq2.queue
+
 
 def test_current_song():
     song_names = ["a", "b", "c", "d"]
@@ -41,6 +42,7 @@ def test_current_song_2():
     sq.remove_from_queue("TiK ToK")
     result = sq.current_song()
     assert "Baby" == result
+
 
 def test_next_song():
     song_names = ["a", "b", "c", "d"]
@@ -102,7 +104,8 @@ def test_return_queue():
     sq.clear()
     sq.add_to_queue(song_names)
     result = sq.return_queue()
-    expectedResult = ([("a", "Unknown"), ("b", "Unknown"), ("c", "Unknown"), ("d", "Unknown")], 0)
+    expectedResult = ([("a", "Unknown"), ("b", "Unknown"),
+                      ("c", "Unknown"), ("d", "Unknown")], 0)
     assert result == expectedResult
 
 
@@ -112,8 +115,10 @@ def test_return_queue_2():
     sq.clear()
     sq.add_to_queue(song_names)
     result = sq.return_queue()
-    expectedResult = ([("TiK ToK", "Unknown"), ("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown"), ("Secrets", "Unknown")], 0)
+    expectedResult = ([("TiK ToK", "Unknown"), ("Baby", "Unknown"), ("Marry You",
+                      "Unknown"), ("Telephone", "Unknown"), ("Secrets", "Unknown")], 0)
     assert result == expectedResult
+
 
 def test_shuffle_queue():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
@@ -136,13 +141,16 @@ def test_shuffle_queue():
     sq.shuffle_queue()
     assert sq.queue[sq._index][0] == result
 
+
 def test_move_song_1():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
     sq = Songs_Queue()
     sq.clear()
     sq.add_to_queue(song_names)
     sq.move_song("Secrets", 1)
-    assert sq.queue == [("TiK ToK", "Unknown"), ("Secrets", "Unknown"), ("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown")]
+    assert sq.queue == [("TiK ToK", "Unknown"), ("Secrets", "Unknown"),
+                        ("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown")]
+
 
 def test_move_song_2():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
@@ -154,6 +162,7 @@ def test_move_song_2():
     result = sq.move_song("Secrets", 5)
     assert result == -2
 
+
 def test_move_song_3():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
     sq = Songs_Queue()
@@ -162,15 +171,19 @@ def test_move_song_3():
     result = sq.move_song("Magic", 1)
     assert result == -1
 
+
 def test_remove_song_1():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
     sq = Songs_Queue()
     sq.clear()
     sq.add_to_queue(song_names)
     sq.remove_from_queue("Secrets")
-    assert sq.queue == [("TiK ToK", "Unknown"), ("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown")]
+    assert sq.queue == [("TiK ToK", "Unknown"), ("Baby", "Unknown"),
+                        ("Marry You", "Unknown"), ("Telephone", "Unknown")]
     sq.remove_from_queue("Baby")
-    assert sq.queue == [("TiK ToK", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown")]
+    assert sq.queue == [("TiK ToK", "Unknown"),
+                        ("Marry You", "Unknown"), ("Telephone", "Unknown")]
+
 
 def test_remove_song_2():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
@@ -180,13 +193,15 @@ def test_remove_song_2():
     result = sq.remove_from_queue("Magic")
     assert result == -1
 
+
 def test_remove_song_3():
     song_names = ["TiK ToK", "Baby", "Marry You", "Telephone", "Secrets"]
     sq = Songs_Queue()
     sq.clear()
     sq.add_to_queue(song_names)
     result = sq.remove_from_queue("TiK ToK")
-    
+
     assert result == 0
     assert sq.index == 0
-    assert sq.queue == [("Baby", "Unknown"), ("Marry You", "Unknown"), ("Telephone", "Unknown"), ("Secrets", "Unknown")]
+    assert sq.queue == [("Baby", "Unknown"), ("Marry You", "Unknown"),
+                        ("Telephone", "Unknown"), ("Secrets", "Unknown")]

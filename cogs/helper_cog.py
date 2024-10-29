@@ -26,7 +26,7 @@ class Helper(commands.Cog):
 
         # Print all the commands
         await ctx.send(
-            f"```To run any of the following commands, type: {self.bot.command_prefix}command_name\n" 
+            f"```To run any of the following commands, type: {self.bot.command_prefix}command_name\n"
             "To get help on a specific command, type: !help command_name```"
         )
 
