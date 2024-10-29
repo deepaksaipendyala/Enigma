@@ -1,4 +1,4 @@
-from cogs.helpers.recommend_enhanced import recommend_enhanced
+from helpers.recommend_enhanced import recommend_enhanced
 
 
 def test_recommend_enhanced_one_song():

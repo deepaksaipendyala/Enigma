@@ -4,7 +4,7 @@ A cog that handles the queue commands for the bot.
 
 import discord
 from discord.ext import commands
-from cogs.helpers.songs_queue import Songs_Queue
+from helpers.songs_queue import Songs_Queue
 import asyncio
 
 class Queue(commands.Cog):
