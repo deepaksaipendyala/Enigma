@@ -1,4 +1,4 @@
-from helpers.songs_queue import Songs_Queue
+from cogs.helpers.songs_queue import Songs_Queue
 import warnings
 import sys
 

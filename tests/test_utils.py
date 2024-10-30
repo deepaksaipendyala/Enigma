@@ -1,6 +1,6 @@
 import warnings
 import sys
-from helpers import utils
+from cogs.helpers import utils
 import numpy as np
 
 sys.path.append("../")

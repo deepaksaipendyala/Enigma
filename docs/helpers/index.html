@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>cogs API documentation</title>
+<title>cogs.helpers API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -22,38 +22,29 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>cogs</code></h1>
+<h1 class="title">Module <code>cogs.helpers</code></h1>
 </header>
 <section id="section-intro">
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt><code class="name"><a title="cogs.helper_cog" href="helper_cog.html">cogs.helper_cog</a></code></dt>
+<dt><code class="name"><a title="cogs.helpers.get_all" href="get_all.html">cogs.helpers.get_all</a></code></dt>
 <dd>
-<div class="desc"><p>This file contains some functions that get the help string for each command, and return it to the user</p></div>
+<div class="desc"><p>This file is responsible for handling all data operations such as showing songs that the user can select.
+Recommendation of songs filtering operations …</p></div>
 </dd>
-<dt><code class="name"><a title="cogs.helpers" href="helpers/index.html">cogs.helpers</a></code></dt>
+<dt><code class="name"><a title="cogs.helpers.recommend_enhanced" href="recommend_enhanced.html">cogs.helpers.recommend_enhanced</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.</p></div>
 </dd>
-<dt><code class="name"><a title="cogs.ping_cog" href="ping_cog.html">cogs.ping_cog</a></code></dt>
+<dt><code class="name"><a title="cogs.helpers.songs_queue" href="songs_queue.html">cogs.helpers.songs_queue</a></code></dt>
 <dd>
-<div class="desc"><p>A simple cog that pings the bot to check if it is online</p></div>
+<div class="desc"><p>This file is responsible for maintaining the song queue</p></div>
 </dd>
-<dt><code class="name"><a title="cogs.queue_cog" href="queue_cog.html">cogs.queue_cog</a></code></dt>
+<dt><code class="name"><a title="cogs.helpers.utils" href="utils.html">cogs.helpers.utils</a></code></dt>
 <dd>
-<div class="desc"><p>A cog that handles the queue commands for the bot.</p></div>
-</dd>
-<dt><code class="name"><a title="cogs.recommender_cog" href="recommender_cog.html">cogs.recommender_cog</a></code></dt>
-<dd>
-<div class="desc"><p>This file contains the recommender system for the bot. It will be used to poll the users for their preferences,
-and then recommend songs based on the …</p></div>
-</dd>
-<dt><code class="name"><a title="cogs.songs_cog" href="songs_cog.html">cogs.songs_cog</a></code></dt>
-<dd>
-<div class="desc"><p>This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
-/next_song for playing next song and so on</p></div>
+<div class="desc"><p>This file is responsible for all the helper functions that are used</p></div>
 </dd>
 </dl>
 </section>
@@ -69,14 +60,17 @@ and then recommend songs based on the …</p></div>
 <ul></ul>
 </div>
 <ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="cogs" href="../index.html">cogs</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="cogs.helper_cog" href="helper_cog.html">cogs.helper_cog</a></code></li>
-<li><code><a title="cogs.helpers" href="helpers/index.html">cogs.helpers</a></code></li>
-<li><code><a title="cogs.ping_cog" href="ping_cog.html">cogs.ping_cog</a></code></li>
-<li><code><a title="cogs.queue_cog" href="queue_cog.html">cogs.queue_cog</a></code></li>
-<li><code><a title="cogs.recommender_cog" href="recommender_cog.html">cogs.recommender_cog</a></code></li>
-<li><code><a title="cogs.songs_cog" href="songs_cog.html">cogs.songs_cog</a></code></li>
+<li><code><a title="cogs.helpers.get_all" href="get_all.html">cogs.helpers.get_all</a></code></li>
+<li><code><a title="cogs.helpers.recommend_enhanced" href="recommend_enhanced.html">cogs.helpers.recommend_enhanced</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue" href="songs_queue.html">cogs.helpers.songs_queue</a></code></li>
+<li><code><a title="cogs.helpers.utils" href="utils.html">cogs.helpers.utils</a></code></li>
 </ul>
 </li>
 </ul>

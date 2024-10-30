@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>src.get_all API documentation</title>
-<meta name="description" content="This file is responsible for handling all data operations such as showing songs that the user can select.
-Recommendation of songs filtering operations …">
+<title>cogs.helper_cog API documentation</title>
+<meta name="description" content="This file contains some functions that get the help string for each command, and return it to the user">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -23,11 +22,10 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.get_all</code></h1>
+<h1 class="title">Module <code>cogs.helper_cog</code></h1>
 </header>
 <section id="section-intro">
-<p>This file is responsible for handling all data operations such as showing songs that the user can select.
-Recommendation of songs filtering operations etc.</p>
+<p>This file contains some functions that get the help string for each command, and return it to the user</p>
 </section>
 <section>
 </section>
@@ -36,33 +34,67 @@ Recommendation of songs filtering operations etc.</p>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.get_all.filtered_songs"><code class="name flex">
-<span>def <span class="ident">filtered_songs</span></span>(<span>)</span>
+<dt id="cogs.helper_cog.setup"><code class="name flex">
+<span>async def <span class="ident">setup</span></span>(<span>bot)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>This function returns songs and their track_name, artist, year and genre.</p></div>
-</dd>
-<dt id="src.get_all.get_all_songs"><code class="name flex">
-<span>def <span class="ident">get_all_songs</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>This function returns all songs in the dataset. Uses tcc_ceds_music.csv</p></div>
-</dd>
-<dt id="src.get_all.get_all_songs_alternate"><code class="name flex">
-<span>def <span class="ident">get_all_songs_alternate</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>This function returns all songs in the alternate dataset. Uses songs.csv</p></div>
-</dd>
-<dt id="src.get_all.recommend"><code class="name flex">
-<span>def <span class="ident">recommend</span></span>(<span>input_songs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>This function returns recommended songs based on the songs that the user selected.</p></div>
+<div class="desc"><p>Add the file to the bot</p></div>
 </dd>
 </dl>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="cogs.helper_cog.Helper"><code class="flex name class">
+<span>class <span class="ident">Helper</span></span>
+<span>(</span><span>bot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the help strings for each command, and reply to the user</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Helper(commands.Cog):
+    &#34;&#34;&#34;
+    Get the help strings for each command, and reply to the user
+    &#34;&#34;&#34;
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name=&#34;showCommands&#34;, aliases=[&#34;show&#34;], help=&#34;Shows all the commands available&#34;)
+    async def show_commands(self, ctx):
+        &#34;&#34;&#34;Prints all the commands available to the user&#34;&#34;&#34;
+
+        # Get all the commands
+        all_commands = []
+
+        for cog_name, cog in self.bot.cogs.items():
+            for command in cog.get_commands():
+                all_commands.append(command.name)
+
+        # Print all the commands
+        await ctx.send(
+            f&#34;```To run any of the following commands, type: {self.bot.command_prefix}command_name\n&#34;
+            &#34;To get help on a specific command, type: !help command_name```&#34;
+        )
+
+        await ctx.send(f&#34;```All commands:\n\n{&#39;, &#39;.join(all_commands)}```&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>discord.ext.commands.cog.Cog</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="cogs.helper_cog.Helper.show_commands"><code class="name">var <span class="ident">show_commands</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -72,15 +104,22 @@ Recommendation of songs filtering operations etc.</p>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src" href="index.html">src</a></code></li>
+<li><code><a title="cogs" href="index.html">cogs</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.get_all.filtered_songs" href="#src.get_all.filtered_songs">filtered_songs</a></code></li>
-<li><code><a title="src.get_all.get_all_songs" href="#src.get_all.get_all_songs">get_all_songs</a></code></li>
-<li><code><a title="src.get_all.get_all_songs_alternate" href="#src.get_all.get_all_songs_alternate">get_all_songs_alternate</a></code></li>
-<li><code><a title="src.get_all.recommend" href="#src.get_all.recommend">recommend</a></code></li>
+<li><code><a title="cogs.helper_cog.setup" href="#cogs.helper_cog.setup">setup</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cogs.helper_cog.Helper" href="#cogs.helper_cog.Helper">Helper</a></code></h4>
+<ul class="">
+<li><code><a title="cogs.helper_cog.Helper.show_commands" href="#cogs.helper_cog.Helper.show_commands">show_commands</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>cogs.recommender_cog API documentation</title>
+<meta name="description" content="This file contains the recommender system for the bot. It will be used to poll the users for their preferences,
+and then recommend songs based on the …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>cogs.recommender_cog</code></h1>
+</header>
+<section id="section-intro">
+<p>This file contains the recommender system for the bot. It will be used to poll the users for their preferences,
+and then recommend songs based on the preferences using the enhanced recommender system</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="cogs.recommender_cog.setup"><code class="name flex">
+<span>async def <span class="ident">setup</span></span>(<span>bot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to setup the recommender cog</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="cogs.recommender_cog.Recommender"><code class="flex name class">
+<span>class <span class="ident">Recommender</span></span>
+<span>(</span><span>bot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class contains the commands to poll the user,
+then recommend songs based on the user's preferences</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Recommender(commands.Cog):
+    &#34;&#34;&#34;
+    This class contains the commands to poll the user,
+    then recommend songs based on the user&#39;s preferences
+    &#34;&#34;&#34;
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.message_id = None
+        self.command_msg_id = None
+
+        # Get the queue instance
+        self.queue = Songs_Queue()
+
+        self.emoji_list = [
+            &#34;1️⃣&#34;,
+            &#34;2️⃣&#34;,
+            &#34;3️⃣&#34;,
+            &#34;4️⃣&#34;,
+            &#34;5️⃣&#34;,
+            &#34;6️⃣&#34;,
+            &#34;7️⃣&#34;,
+            &#34;8️⃣&#34;,
+            &#34;9️⃣&#34;,
+            &#34;🔟&#34;
+        ]
+
+    def random_color(self):
+        &#34;&#34;&#34;
+        Function to get a random color for the embed message
+        &#34;&#34;&#34;
+        return discord.Colour.from_rgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
+    @commands.command(name=&#34;poll&#34;, help=&#34;Provides the user with a poll of 10 randoms songs from the dataset to choose from. Used in conjunction witht the !recommend command&#34;)
+    async def poll(self, ctx):
+        &#34;&#34;&#34;
+        Function to poll the user for their preferences
+        &#34;&#34;&#34;
+
+        # Delete the previous poll message and command message if it exists
+        if self.message_id and self.command_msg_id:
+            try:
+                message = await ctx.fetch_message(self.message_id)
+                await message.delete()
+                command_msg = await ctx.fetch_message(self.command_msg_id)
+                await command_msg.delete()
+            except Exception as e:
+                print(e)
+
+        # Get 10 random songs from the dataset, and store them in the class variable
+        self.songs = utils.random_n(10).filter(
+            [&#34;track_name&#34;, &#34;artist_name&#34;]).reset_index(drop=True)
+
+        # Create the poll message
+        poll_message = &#34;Please react to this message with your preferences:\n\n&#34;
+        for index, song in self.songs.iterrows():
+            # Get the emoji icon for the index
+            emoji_icon = self.emoji_list[index]
+
+            # Add the song to the poll message
+            poll_message += f&#34;{emoji_icon} **{song[&#39;track_name&#39;]} *by* {song[&#39;artist_name&#39;]}**\n&#34;
+
+        # Add instructions to the poll message
+        poll_message += &#34;\n*If you don&#39;t like any of the songs, you may run the command again to get new songs*\n&#34;
+        poll_message += &#34;\n**Once you have chosen your songs, run the !recommend command to get your recommendations**&#34;
+
+        ads = [&#34;&#34;]
+        # Send the poll message
+        embedded_message = discord.Embed(
+            title=&#34;Song Poll&#34;, description=poll_message + ads[0], color=self.random_color())
+        message = await ctx.send(embed=embedded_message)
+
+        # Add the reactions to the message
+        for reaction in self.emoji_list[:len(self.emoji_list)]:
+            await message.add_reaction(reaction)
+
+        # Store the interaction
+        self.message_id = message.id
+        self.command_msg_id = ctx.message.id
+
+        # await ctx.send(&#34;Choose a song(s) by reacting with the corresponding emoji, or if you don&#39;t like any of the songs, run the command again.&#34;)
+        # await ctx.send(&#34;Once you have chosen your songs, run the !recommend command to get your recommendations&#34;)
+
+    @commands.command(name=&#34;recommend&#34;, aliases=[&#34;get_songs&#34;], help=&#34;Recommends songs based on the user&#39;s preferences. Must first call the !poll command&#34;)
+    async def recommend(self, ctx):
+        &#34;&#34;&#34;
+        Function to recommend songs based on the user&#39;s preferences
+        &#34;&#34;&#34;
+
+        # Check if the user has run the poll command
+        if not self.message_id:
+            await ctx.send(&#34;Please run the !poll command first to choose your preferences.&#34;)
+            return
+
+        # Get the message
+        message = await ctx.fetch_message(self.message_id)
+
+        # Get the reactions
+        reactions = message.reactions
+
+        # Get the user&#39;s preferences
+        preferences = []
+        for reaction in reactions:
+            if reaction.count &gt; 1:
+                # if there is more than one reaction on a reaction, then the user has reacted to it, so add the corresponding song to the preferences
+                index = self.emoji_list.index(reaction.emoji)
+                preferences.append(self.songs.iloc[index])
+
+        # Send the user the chosen songs
+        choose_message = &#34;You have chosen the following songs:\n\n&#34;
+        if not preferences:
+            choose_message = &#34;You have not chosen any songs. Please react to the poll message with the corresponding emoji to choose a song.&#34;
+        else:
+            for song in preferences:
+                choose_message += f&#34;**{song[&#39;track_name&#39;]} *by* {song[&#39;artist_name&#39;]}**\n&#34;
+
+        # Clear the message reference
+        self.message_id = None
+        self.command_msg_id = None
+
+        embedded_message = discord.Embed(
+            title=&#34;Chosen Songs&#34;, description=choose_message, color=self.random_color())
+        await ctx.send(embed=embedded_message)
+
+        # Get the user preferences as a list of tuples
+        user_input = [(song[&#34;track_name&#34;], song[&#34;artist_name&#34;])
+                      for song in preferences]
+
+        # Get the recommendations
+        recommendations = recommend(user_input)
+
+        # Send the recommendations to the user
+        recommend_message = &#34;Here are some songs you may like based on your preferences:\n\n&#34;
+        for song, artist in recommendations:
+            recommend_message += f&#34;**{song} *by* {artist}**\n&#34;
+
+        embedded_message = discord.Embed(
+            title=&#34;Recommendations&#34;, description=recommend_message, color=self.random_color())
+        await ctx.send(embed=embedded_message)
+
+        # ask if the user wants to add the recommended songs to the queue
+        add_message = &#34;Would you like to add the recommended songs to the queue? React with the corresponding emoji to add the songs to the end of the queue, clear the queue and add the songs, or cancel the operation.&#34;
+
+        add_message += f&#34;\n\n{self.emoji_list[0]} **Add to the end of the queue**&#34;
+        add_message += f&#34;\n{self.emoji_list[1]} **Clear the queue and add the songs**&#34;
+        add_message += f&#34;\n{self.emoji_list[2]} **Cancel**&#34;
+
+        embedded_message = discord.Embed(
+            title=&#34;Add Recommendations to Queue&#34;, description=add_message, color=self.random_color())
+        message = await ctx.send(embed=embedded_message)
+
+        # Add the reactions to the message
+        for reaction in self.emoji_list[:3]:
+            await message.add_reaction(reaction)
+
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in self.emoji_list[:3]
+        # wait for the user&#39;s response
+        try:
+            reaction, user = await ctx.bot.wait_for(&#39;reaction_add&#39;, timeout=60.0, check=check)
+
+            if reaction.emoji == self.emoji_list[0]:
+                # Add the songs to the end of the queue
+                await ctx.send(&#34;Adding the songs to the end of the queue.&#34;)
+                self.queue.add_to_queue(recommendations)
+                await ctx.send(f&#34;Songs added to the queue. Current queue: {self.queue.queue}\nStart playback with the !start command.&#34;)
+            elif reaction.emoji == self.emoji_list[1]:
+                # Clear the queue and add the songs
+                await ctx.send(&#34;Clearing the queue and adding the songs.&#34;)
+                self.queue.clear()
+                self.queue.add_to_queue(recommendations)
+                await ctx.send(f&#34;Songs added to the queue. Current queue: {self.queue.queue}\nStart playback with the !start command.&#34;)
+            elif reaction.emoji == self.emoji_list[2]:
+                # Cancel the operation
+                await ctx.send(&#34;Operation cancelled.&#34;)
+            else:
+                await ctx.send(&#34;Invalid reaction. Please run the command again.&#34;)
+        except asyncio.TimeoutError:
+            await ctx.send(&#34;You did not respond in time. Please run the command again.&#34;)
+            return</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>discord.ext.commands.cog.Cog</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="cogs.recommender_cog.Recommender.poll"><code class="name">var <span class="ident">poll</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="cogs.recommender_cog.Recommender.recommend"><code class="name">var <span class="ident">recommend</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="cogs.recommender_cog.Recommender.random_color"><code class="name flex">
+<span>def <span class="ident">random_color</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to get a random color for the embed message</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="cogs" href="index.html">cogs</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="cogs.recommender_cog.setup" href="#cogs.recommender_cog.setup">setup</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cogs.recommender_cog.Recommender" href="#cogs.recommender_cog.Recommender">Recommender</a></code></h4>
+<ul class="">
+<li><code><a title="cogs.recommender_cog.Recommender.poll" href="#cogs.recommender_cog.Recommender.poll">poll</a></code></li>
+<li><code><a title="cogs.recommender_cog.Recommender.random_color" href="#cogs.recommender_cog.Recommender.random_color">random_color</a></code></li>
+<li><code><a title="cogs.recommender_cog.Recommender.recommend" href="#cogs.recommender_cog.Recommender.recommend">recommend</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

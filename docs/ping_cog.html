@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>cogs API documentation</title>
-<meta name="description" content="">
+<title>cogs.ping_cog API documentation</title>
+<meta name="description" content="A simple cog that pings the bot to check if it is online">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -22,46 +22,67 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>cogs</code></h1>
+<h1 class="title">Module <code>cogs.ping_cog</code></h1>
 </header>
 <section id="section-intro">
+<p>A simple cog that pings the bot to check if it is online</p>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="cogs.helper_cog" href="helper_cog.html">cogs.helper_cog</a></code></dt>
+<dt id="cogs.ping_cog.setup"><code class="name flex">
+<span>async def <span class="ident">setup</span></span>(<span>bot)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>This file contains some functions that get the help string for each command, and return it to the user</p></div>
-</dd>
-<dt><code class="name"><a title="cogs.helpers" href="helpers/index.html">cogs.helpers</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="cogs.ping_cog" href="ping_cog.html">cogs.ping_cog</a></code></dt>
-<dd>
-<div class="desc"><p>A simple cog that pings the bot to check if it is online</p></div>
-</dd>
-<dt><code class="name"><a title="cogs.queue_cog" href="queue_cog.html">cogs.queue_cog</a></code></dt>
-<dd>
-<div class="desc"><p>A cog that handles the queue commands for the bot.</p></div>
-</dd>
-<dt><code class="name"><a title="cogs.recommender_cog" href="recommender_cog.html">cogs.recommender_cog</a></code></dt>
-<dd>
-<div class="desc"><p>This file contains the recommender system for the bot. It will be used to poll the users for their preferences,
-and then recommend songs based on the …</p></div>
-</dd>
-<dt><code class="name"><a title="cogs.songs_cog" href="songs_cog.html">cogs.songs_cog</a></code></dt>
-<dd>
-<div class="desc"><p>This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
-/next_song for playing next song and so on</p></div>
+<div class="desc"><p>Function to setup the testing cog</p></div>
 </dd>
 </dl>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="cogs.ping_cog.Testing"><code class="flex name class">
+<span>class <span class="ident">Testing</span></span>
+<span>(</span><span>bot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class contains the commands to test the bot</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Testing(commands.Cog):
+    &#34;&#34;&#34;
+    This class contains the commands to test the bot
+    &#34;&#34;&#34;
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name=&#34;ping&#34;, help=&#34;Pings the bot to check if it is online&#34;)
+    async def ping(self, ctx):
+        &#34;&#34;&#34;
+        Function to ping the bot
+        &#34;&#34;&#34;
+        await ctx.send(&#34;Pong!&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>discord.ext.commands.cog.Cog</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="cogs.ping_cog.Testing.ping"><code class="name">var <span class="ident">ping</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -69,14 +90,24 @@ and then recommend songs based on the …</p></div>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="cogs.helper_cog" href="helper_cog.html">cogs.helper_cog</a></code></li>
-<li><code><a title="cogs.helpers" href="helpers/index.html">cogs.helpers</a></code></li>
-<li><code><a title="cogs.ping_cog" href="ping_cog.html">cogs.ping_cog</a></code></li>
-<li><code><a title="cogs.queue_cog" href="queue_cog.html">cogs.queue_cog</a></code></li>
-<li><code><a title="cogs.recommender_cog" href="recommender_cog.html">cogs.recommender_cog</a></code></li>
-<li><code><a title="cogs.songs_cog" href="songs_cog.html">cogs.songs_cog</a></code></li>
+<li><code><a title="cogs" href="index.html">cogs</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="cogs.ping_cog.setup" href="#cogs.ping_cog.setup">setup</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cogs.ping_cog.Testing" href="#cogs.ping_cog.Testing">Testing</a></code></h4>
+<ul class="">
+<li><code><a title="cogs.ping_cog.Testing.ping" href="#cogs.ping_cog.Testing.ping">ping</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

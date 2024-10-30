@@ -3,7 +3,7 @@ A cog that handles the queue commands for the bot.
 """
 
 from discord.ext import commands
-from helpers.songs_queue import Songs_Queue
+from cogs.helpers.songs_queue import Songs_Queue
 import asyncio
 
 

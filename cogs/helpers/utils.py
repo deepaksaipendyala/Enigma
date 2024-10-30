@@ -3,7 +3,7 @@ This file is responsible for all the helper functions that are used
 """
 
 from youtubesearchpython import VideosSearch
-from helpers.get_all import filtered_songs, get_all_songs, get_all_songs_alternate
+from cogs.helpers.get_all import filtered_songs, get_all_songs, get_all_songs_alternate
 import numpy as np
 
 

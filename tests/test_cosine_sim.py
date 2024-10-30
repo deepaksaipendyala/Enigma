@@ -1,4 +1,4 @@
-from helpers import utils
+from cogs.helpers import utils
 
 
 def test_retrieve_song_attributes():

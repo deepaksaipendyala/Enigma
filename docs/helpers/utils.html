@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>src.utils API documentation</title>
+<title>cogs.helpers.utils API documentation</title>
 <meta name="description" content="This file is responsible for all the helper functions that are used">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -22,7 +22,7 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.utils</code></h1>
+<h1 class="title">Module <code>cogs.helpers.utils</code></h1>
 </header>
 <section id="section-intro">
 <p>This file is responsible for all the helper functions that are used</p>
@@ -34,7 +34,7 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.utils.cosine_similarity"><code class="name flex">
+<dt id="cogs.helpers.utils.cosine_similarity"><code class="name flex">
 <span>def <span class="ident">cosine_similarity</span></span>(<span>songName1, artistName1, songName2, artistName2)</span>
 </code></dt>
 <dd>
@@ -45,7 +45,7 @@ artistName1 (str): The name of the artist of the first song
 songName2 (str): The name of the second song
 artistName2 (str): The name of the artist of the second song</p></div>
 </dd>
-<dt id="src.utils.get_full_song_name"><code class="name flex">
+<dt id="cogs.helpers.utils.get_full_song_name"><code class="name flex">
 <span>def <span class="ident">get_full_song_name</span></span>(<span>song_name, artist_name)</span>
 </code></dt>
 <dd>
@@ -55,13 +55,19 @@ It will first search the primary dataset, and if the song is not found, it will 
 <p>song_name (str): The partial name of the song
 artist_name (str): The name of the artist</p></div>
 </dd>
-<dt id="src.utils.random_25"><code class="name flex">
+<dt id="cogs.helpers.utils.random_25"><code class="name flex">
 <span>def <span class="ident">random_25</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This function returns random 25 songs for generating the poll for the user</p></div>
 </dd>
-<dt id="src.utils.retrieve_attributes_alternate"><code class="name flex">
+<dt id="cogs.helpers.utils.random_n"><code class="name flex">
+<span>def <span class="ident">random_n</span></span>(<span>n: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns random n songs for generating the poll for the user</p></div>
+</dd>
+<dt id="cogs.helpers.utils.retrieve_attributes_alternate"><code class="name flex">
 <span>def <span class="ident">retrieve_attributes_alternate</span></span>(<span>songName, artistName)</span>
 </code></dt>
 <dd>
@@ -71,7 +77,7 @@ that the song is not found in the main dataset</p>
 <p>songName (str): The name of the song
 artistName (str): The name of the artist</p></div>
 </dd>
-<dt id="src.utils.retrieve_song_attributes"><code class="name flex">
+<dt id="cogs.helpers.utils.retrieve_song_attributes"><code class="name flex">
 <span>def <span class="ident">retrieve_song_attributes</span></span>(<span>songName, artistName)</span>
 </code></dt>
 <dd>
@@ -80,7 +86,7 @@ artistName (str): The name of the artist</p></div>
 <p>songName (str): The name of the song
 artistName (str): The name of the artist</p></div>
 </dd>
-<dt id="src.utils.searchSong"><code class="name flex">
+<dt id="cogs.helpers.utils.searchSong"><code class="name flex">
 <span>def <span class="ident">searchSong</span></span>(<span>name_song)</span>
 </code></dt>
 <dd>
@@ -98,17 +104,18 @@ artistName (str): The name of the artist</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src" href="index.html">src</a></code></li>
+<li><code><a title="cogs.helpers" href="index.html">cogs.helpers</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.utils.cosine_similarity" href="#src.utils.cosine_similarity">cosine_similarity</a></code></li>
-<li><code><a title="src.utils.get_full_song_name" href="#src.utils.get_full_song_name">get_full_song_name</a></code></li>
-<li><code><a title="src.utils.random_25" href="#src.utils.random_25">random_25</a></code></li>
-<li><code><a title="src.utils.retrieve_attributes_alternate" href="#src.utils.retrieve_attributes_alternate">retrieve_attributes_alternate</a></code></li>
-<li><code><a title="src.utils.retrieve_song_attributes" href="#src.utils.retrieve_song_attributes">retrieve_song_attributes</a></code></li>
-<li><code><a title="src.utils.searchSong" href="#src.utils.searchSong">searchSong</a></code></li>
+<li><code><a title="cogs.helpers.utils.cosine_similarity" href="#cogs.helpers.utils.cosine_similarity">cosine_similarity</a></code></li>
+<li><code><a title="cogs.helpers.utils.get_full_song_name" href="#cogs.helpers.utils.get_full_song_name">get_full_song_name</a></code></li>
+<li><code><a title="cogs.helpers.utils.random_25" href="#cogs.helpers.utils.random_25">random_25</a></code></li>
+<li><code><a title="cogs.helpers.utils.random_n" href="#cogs.helpers.utils.random_n">random_n</a></code></li>
+<li><code><a title="cogs.helpers.utils.retrieve_attributes_alternate" href="#cogs.helpers.utils.retrieve_attributes_alternate">retrieve_attributes_alternate</a></code></li>
+<li><code><a title="cogs.helpers.utils.retrieve_song_attributes" href="#cogs.helpers.utils.retrieve_song_attributes">retrieve_song_attributes</a></code></li>
+<li><code><a title="cogs.helpers.utils.searchSong" href="#cogs.helpers.utils.searchSong">searchSong</a></code></li>
 </ul>
 </li>
 </ul>

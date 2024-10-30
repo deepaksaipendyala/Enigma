@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>src.songs_cog API documentation</title>
+<title>cogs.songs_cog API documentation</title>
 <meta name="description" content="This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
 /next_song for playing next song and so on">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
@@ -23,7 +23,7 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.songs_cog</code></h1>
+<h1 class="title">Module <code>cogs.songs_cog</code></h1>
 </header>
 <section id="section-intro">
 <p>This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
@@ -36,13 +36,13 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.songs_cog.get_audio_sorce"><code class="name flex">
-<span>def <span class="ident">get_audio_sorce</span></span>(<span>url: str)</span>
+<dt id="cogs.songs_cog.get_audio_sorce"><code class="name flex">
+<span>async def <span class="ident">get_audio_sorce</span></span>(<span>url: str, *, loop=None, stream=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.setup"><code class="name flex">
+<dt id="cogs.songs_cog.setup"><code class="name flex">
 <span>async def <span class="ident">setup</span></span>(<span>client: discord.client.Client)</span>
 </code></dt>
 <dd>
@@ -55,7 +55,7 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="src.songs_cog.Songs"><code class="flex name class">
+<dt id="cogs.songs_cog.Songs"><code class="flex name class">
 <span>class <span class="ident">Songs</span></span>
 <span>(</span><span>bot)</span>
 </code></dt>
@@ -72,69 +72,16 @@ hljs.highlightAll();
 
     def __init__(self, bot):
         self.bot = bot
+        self.manually_stopped = False
+        # Initialize the songs queue
+        self.songs_queue = Songs_Queue()
 
+    # -----------Helper Functions-----------#
 
-    @commands.command(name=&#39;join&#39;, help=&#39;To join the voice channel&#39;)
-    async def join(self, ctx, channel: discord.VoiceChannel = None):
-        &#34;&#34;&#34;
-        Function for joining the voice channel
-
-        Parameters:
-            channel (discord.VoiceChannel): The voice channel to join
-        &#34;&#34;&#34;
-
-        if not channel:
-            try:
-                channel = ctx.author.voice.channel
-            except AttributeError:
-                await ctx.send(&#34;No channel to join. Please specify a channel&#34;)
-                return
-            
-        if ctx.voice_client:
-            await ctx.voice_client.move_to(channel)
-        else: 
-            await channel.connect()
-        await ctx.send(f&#34;Successfully joined {channel.name} ({channel.id})&#34;)
-
-
-    @commands.command(name=&#39;resume&#39;, help=&#39;Resumes the song&#39;)
-    async def resume(self, ctx):
-        &#34;&#34;&#34;
-        Function for handling resume capability
-        &#34;&#34;&#34;
-        
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_paused():
-            await voice_client.resume()
-        else:
-            await ctx.send(
-                &#34;The bot was not playing anything before this. Use play command&#34;
-            )
-
-
-    @commands.command(name=&#39;play_custom&#39;, help=&#39;To play custom song&#39;)
-    async def play_custom(self, ctx):
-        &#34;&#34;&#34;
-        Function for playing a custom song
-        &#34;&#34;&#34;
-
-        user_message = str(ctx.message.content)
-        song_name = user_message.split(&#39; &#39;, 1)[1]
-        await self.play_song(song_name, ctx)
-
-
-    @commands.command(name=&#39;stop&#39;, help=&#39;Stops the song&#39;)
-    async def stop(self, ctx):
-        &#34;&#34;&#34;
-        Function to stop playing the music
-        &#34;&#34;&#34;
-        
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            voice_client.stop()
-        else:
-            await ctx.send(&#34;The bot is not playing anything at the moment.&#34;)
-
+    def handle_play_next(self, ctx):
+        if not self.manually_stopped and not ctx.voice_client.is_playing():
+            asyncio.run_coroutine_threadsafe(self.play_song(
+                self.songs_queue.next_song(), ctx), self.bot.loop)
 
     async def play_song(self, song_name, ctx):
         &#34;&#34;&#34;
@@ -143,156 +90,315 @@ hljs.highlightAll();
         Parameters:
             song_name (str): The name of the song to play
         &#34;&#34;&#34;
-        
+
         # Get the song URL
         url = searchSong(song_name)
         print(url)
 
-        # Check if bot is connected to a voice channel
-        if not ctx.voice_client:
+        bot_client = None
+
+        # Get the voice client for the guild
+        voice_client = discord.utils.get(
+            ctx.bot.voice_clients, guild=ctx.guild)
+
+        if not voice_client:
             await ctx.send(&#34;Bot is not connected to a voice channel&#34;)
             return
-        
+
         # Check if the bot is already playing a song, and stop it if it is
-        if ctx.voice_client.is_playing():
-            ctx.voice_client.stop()
+        if voice_client.is_playing():
+            self.manually_stopped = True
+            voice_client.stop()
 
         # Get and play the audio source
-        audio_source = get_audio_sorce(url)
-        ctx.voice_client.play(audio_source)
+        # audio_source = get_audio_sorce(url)
+        # ctx.voice_client.play(audio_source, after=lambda e: self.handle_play_next(ctx), )
+
+        async with ctx.typing():
+            print(&#34;Getting audio source&#34;)
+            player, data = await get_audio_sorce(url, loop=self.bot.loop, stream=True)
+            print(f&#34;Starting playback of {data[&#39;title&#39;]}&#34;)
+            voice_client.play(player, after=lambda e: print(
+                f&#34;player error {e}&#34;) if e else self.handle_play_next(ctx))
+
+            if not ctx.voice_client.is_playing():
+                print(&#34;Playback error&#34;)
+            else:
+                print(&#34;Playing&#34;)
+
         await ctx.send(f&#34;Now playing: {url}&#34;)
+        self.manually_stopped = False
 
+    # -----------Commands-----------#
 
-    async def handle_empty_queue(self, ctx):
+    @commands.command(name=&#34;join&#34;, help=&#34;To join the voice channel&#34;)
+    async def join(self, ctx, channel_name: str = commands.parameter(description=&#34;The voice channel to join (optional)&#34;, default=None)):
         &#34;&#34;&#34;
-        Helper function to handle empty song queue
+        Function for joining the voice channel
+
+        Parameters:
+            channel (discord.VoiceChannel): The voice channel to join
         &#34;&#34;&#34;
-        try:
-            songs_queue
-        except NameError:
+
+        if not channel_name:
+            try:
+                channel = ctx.author.voice.channel
+            except AttributeError:
+                await ctx.send(&#34;No channel to join. Please specify a channel&#34;)
+                return
+
+        # Get the voice channel object
+        channel = discord.utils.get(
+            ctx.guild.voice_channels, name=channel_name)
+
+        # Check if the bot is already connected to that channel
+        if channel:
+            # get the current voice client for the bot in the guild
+            bot_channel = discord.utils.get(
+                ctx.bot.voice_clients, guild=channel.guild)
+            if bot_channel and bot_channel.channel.name == channel.name:
+                await ctx.send(f&#34;Already connected to {channel_name}&#34;)
+                return
+            elif bot_channel:
+                try:
+                    await bot_channel.move_to(channel)
+                    await ctx.send(f&#34;Connected to {channel_name}&#34;)
+                except Exception as e:
+                    await ctx.send(f&#34;Error connecting to {channel_name}: {e}&#34;)
+            else:
+                try:
+                    await channel.connect()
+                    await ctx.send(f&#34;Connected to {channel_name}&#34;)
+                except Exception as e:
+                    await ctx.send(f&#34;Error connecting to {channel_name}: {e}&#34;)
+        else:
+            await ctx.send(f&#34;Channel {channel_name} not found&#34;)
+            return
+
+    @commands.command(name=&#34;resume&#34;, help=&#34;Resumes the song&#34;)
+    async def resume(self, ctx):
+        &#34;&#34;&#34;
+        Function for handling resume capability
+        &#34;&#34;&#34;
+
+        voice_client = discord.utils.get(
+            ctx.bot.voice_clients, guild=ctx.guild)
+        if voice_client.is_paused():
+            await voice_client.resume()
+        else:
             await ctx.send(
-                &#34;No recommendations present. First generate recommendations using /poll&#34;
+                &#34;The bot was not playing anything before this. Use play command&#34;
             )
-            return True
-        if songs_queue.get_len() == 0:
-            await ctx.send(
-                &#34;No recommendations present. First generate recommendations using /poll&#34;
-            )
-            return True
-        return False
 
-
-    @commands.command(name=&#39;next_song&#39;, help=&#39;To play next song in queue&#39;)
-    async def next_song(self, ctx):
+    @commands.command(name=&#34;start&#34;, help=&#34;Starts playing the current song in the queue&#34;)
+    async def start(self, ctx):
         &#34;&#34;&#34;
-        Function to play the next song in the queue
+        Function for starting the song
         &#34;&#34;&#34;
-        
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.next_song(), ctx)
 
+        if self.songs_queue.get_len() == 0:
+            await ctx.send(&#34;No songs in the queue. Please add songs to the queue&#34;)
+            return
 
-    @commands.command(name=&#39;prev_song&#39;, help=&#39;To play prev song in queue&#39;)
-    async def play(self, ctx):
+        await self.play_song(self.songs_queue.current_song(), ctx)
+
+    @commands.command(
+        name=&#34;play&#34;,
+        aliases=[&#34;play_song&#34;],
+        help=&#34;To play user defined song, does not need to be in the database.&#34;,
+    )
+    async def play_custom(self, ctx, song_name: str = commands.parameter(description=&#34;The name of the song to play&#34;), artist_name: str = commands.parameter(description=&#34;The name of the artist of the song&#34;)):
         &#34;&#34;&#34;
-        Function to play the previous song in the queue
+        Function for playing a custom song. PLaying a custom song will clear the queue and begin playing the custom song
         &#34;&#34;&#34;
-        
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(songs_queue.prev_song(), ctx)
 
+        # Check that a song was provided
+        if not song_name:
+            await ctx.send(&#34;Please provide a song to play&#34;)
+            return
 
-    @commands.command(name=&#39;pause&#39;, help=&#39;This command pauses the song&#39;)
+        if not artist_name:
+            await ctx.send(&#34;Please provide an artist name&#34;)
+            return
+
+        song = (song_name, artist_name)
+
+        self.songs_queue.clear()
+        self.songs_queue.add_to_queue(song)
+
+        current_song = self.songs_queue.current_song()
+        print(f&#34;Current song: {current_song}&#34;)
+        await self.play_song(current_song, ctx)
+
+    @commands.command(name=&#34;pause&#34;, help=&#34;This command pauses the song&#34;)
     async def pause(self, ctx):
         &#34;&#34;&#34;
         Function to pause the music that is playing
         &#34;&#34;&#34;
-        
+
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
-            await voice_client.pause()
+            await ctx.send(&#34;Pausing&#34;)
+            voice_client.pause()
         else:
             await ctx.send(&#34;The bot is not playing anything at the moment.&#34;)
 
+    @commands.command(name=&#34;stop&#34;, help=&#34;Stops the song&#34;)
+    async def stop(self, ctx):
+        &#34;&#34;&#34;
+        Function to stop playing the music
+        &#34;&#34;&#34;
 
-    @commands.command(name=&#39;poll&#39;, help=&#39;Poll for recommendation&#39;)
+        voice_client = ctx.message.guild.voice_client
+        if voice_client.is_playing():
+            self.manually_stopped = True
+            voice_client.stop()
+        else:
+            await ctx.send(&#34;The bot is not playing anything at the moment.&#34;)
+
+        # TODO: update queue implementation
+
+    @commands.command(name=&#34;skip&#34;, aliases=[&#34;next, next_song&#34;], help=&#34;To play next song in queue&#34;)
+    async def next_song(self, ctx):
+        &#34;&#34;&#34;
+        Function to play the next song in the queue
+        &#34;&#34;&#34;
+
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        if not empty_queue:
+            await self.play_song(self.songs_queue.next_song(), ctx)
+
+    @commands.command(name=&#34;prev&#34;, aliases=[&#34;prev_song&#34;], help=&#34;To play previous song in queue&#34;)
+    async def prev(self, ctx):
+        &#34;&#34;&#34;
+        Function to play the previous song in the queue
+        &#34;&#34;&#34;
+
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        if not empty_queue:
+            await self.play_song(self.songs_queue.prev_song(), ctx)
+
+    # TODO: update queue implementation
+
+    @commands.command(name=&#34;replay&#34;, help=&#34;This command replays the current song&#34;)
+    async def replay(self, ctx):
+        &#34;&#34;&#34;
+        Function to restart the current song in queue
+        &#34;&#34;&#34;
+
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        voice_client = ctx.message.guild.voice_client
+        if not empty_queue and voice_client.is_playing():
+            voice_client.stop()
+        await self.play_song(self.songs_queue.current_song, ctx)
+
+    @commands.command(
+        name=&#34;poll_old&#34;,
+        help=&#34;Generate a poll to create some recommendations. This is the old version&#34;,
+    )
     async def poll(self, ctx):
         &#34;&#34;&#34;
-        Function to generate poll for playing the recommendations
+        Function to generate poll for playing the recommendations. Clears the queue and adds the recommendations
         &#34;&#34;&#34;
 
-        reactions = [&#39;👍&#39;, &#39;👎&#39;]
+        reactions = [&#34;👍&#34;, &#34;👎&#34;]
         selected_songs = []
         count = 0
         bot_message = &#34;Select song preferences by reaction &#39;👍&#39; or &#39;👎&#39; to the choices. \nSelect 3 songs&#34;
         await ctx.send(bot_message)
         ten_random_songs = random_25()
-        for ele in zip(ten_random_songs[&#34;track_name&#34;],
-                       ten_random_songs[&#34;artist&#34;]):
+        for ele in zip(ten_random_songs[&#34;track_name&#34;], ten_random_songs[&#34;artist&#34;]):
             bot_message = str(ele[0]) + &#34; By &#34; + str(ele[1])
             description = []
-            poll_embed = discord.Embed(title=bot_message,
-                                       color=0x31FF00,
-                                       description=&#39;&#39;.join(description))
+            poll_embed = discord.Embed(
+                title=bot_message, color=0x31FF00, description=&#34;&#34;.join(description)
+            )
             react_message = await ctx.send(embed=poll_embed)
-            for reaction in reactions[:len(reactions)]:
+            for reaction in reactions[: len(reactions)]:
                 await react_message.add_reaction(reaction)
-            res, user = await self.bot.wait_for(&#39;reaction_add&#39;)
-            if (res.emoji == u&#39;👍&#39;):
+            res, user = await self.bot.wait_for(&#34;reaction_add&#34;)
+            if res.emoji == &#34;👍&#34;:
                 selected_songs.append(str(ele[0]))
                 count += 1
-            if (count == 3):
+            if count == 3:
                 bot_message = &#34;Selected songs are : &#34; + \
-                    &#39; , &#39;.join(selected_songs)
+                    &#34; , &#34;.join(selected_songs)
                 await ctx.send(bot_message)
                 break
-        global songs_queue
+
+        # Add recommendations to queue and play.
         recommended_songs = recommend(selected_songs)
-        songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue.next_song(), ctx)
+        self.songs_queue.clear()
+        self.songs_queue.add_to_queue(recommended_songs)
+        await self.play_song(self.songs_queue.current_song(), ctx)
 
+    @commands.command(name=&#39;mood&#39;, help=&#39;Recommend songs based on your mood or activity&#39;)
+    async def mood_recommend(self, ctx):
+        # Send an embed message with mood options.
+        mood_options = {
+            &#39;😊&#39;: &#39;happy&#39;,
+            &#39;😢&#39;: &#39;sad&#39;,
+            &#39;🎉&#39;: &#39;party&#39;,
+            &#39;😌&#39;: &#39;chill&#39;,
+            &#39;❤️&#39;: &#39;Romantic&#39;,
+        }
 
-    @commands.command(name=&#39;queue&#39;, help=&#39;Show active queue of recommendations&#39;)
-    async def queue(self, ctx):
-        &#34;&#34;&#34;
-        Function to display all the songs in the queue
-        &#34;&#34;&#34;
+        # Create an embed message with the options.
+        mood_embed = discord.Embed(
+            title=&#34;Choose Your Mood&#34;,
+            description=&#34;React with the corresponding emoji to select your mood:\n\n&#34;
+                        &#34;😊 - Happy\n&#34;
+                        &#34;😢 - Sad\n&#34;
+                        &#34;🎉 - Party\n&#34;
+                        &#34;😌 - Chill\n&#34;
+                        &#34;❤️ - Romantic&#34;,
+            color=discord.Color.blue()
+        )
 
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            queue, index = songs_queue.return_queue()
-            await ctx.send(&#34;Queue of recommendations: &#34;)
-            for i in range(len(queue)):
-                if i == index:
-                    await ctx.send(&#34;Currently Playing: &#34; + queue[i])
-                else:
-                    await ctx.send(queue[i])
+        # Send the embed message and add reaction options.
+        message = await ctx.send(embed=mood_embed)
+        for emoji in mood_options:
+            await message.add_reaction(emoji)
 
+        # Function to check if the reaction is one of the valid ones.
+        def check(reaction, user):
+            return user == ctx.message.author and str(reaction.emoji) in mood_options
 
-    @commands.command(name=&#39;shuffle&#39;, help=&#39;To shuffle songs in queue&#39;)
-    async def shuffle(self, ctx):
-        &#34;&#34;&#34;
-        Function to shuffle songs in the queue
-        &#34;&#34;&#34;
-        
-        empty_queue = await self.handle_empty_queue(ctx)
-        if not empty_queue:
-            songs_queue.shuffle_queue()
-            await ctx.send(&#34;Playlist shuffled&#34;)
+        try:
+            # Wait for a single reaction from the user.
+            reaction, _ = await self.bot.wait_for(&#39;reaction_add&#39;, timeout=30.0, check=check)
+            selected_mood = mood_options[str(reaction.emoji)]
 
+            # Confirm the selected mood to the user.
+            await ctx.send(f&#34;You selected: {selected_mood.capitalize()}&#34;)
 
-    @commands.command(name=&#39;add_song&#39;, help=&#39;To add custom song to the queue&#39;)
-    async def add_song(self, ctx):
-        &#34;&#34;&#34;
-        Function to add custom song to the queue
-        &#34;&#34;&#34;
-        
-        user_message = str(ctx.message.content)
-        song_name = user_message.split(&#39; &#39;, 1)[1]
-        songs_queue.add_to_queue(song_name)
-        await ctx.send(&#34;Song added to queue&#34;)</code></pre>
+            # Remove all reactions to prevent further selections.
+            await message.clear_reactions()
+
+        except asyncio.TimeoutError:
+            await ctx.send(&#34;You took too long to respond! Please try again.&#34;)
+            return
+
+        # Define mood filters based on EDA analysis.
+        mood_map = {
+            &#39;happy&#39;: {&#39;valence&#39;: (0.7, 1.0), &#39;energy&#39;: (0.5, 1.0)},
+            &#39;sad&#39;: {&#39;sadness&#39;: (0.5, 1), &#39;valence&#39;: (0.0, 0.3), &#39;energy&#39;: (0.2, 0.5)},
+            &#39;party&#39;: {&#39;danceability&#39;: (0.7, 1.0), &#39;valence&#39;: (0.6, 1.0), &#39;energy&#39;: (0.6, 1.0)},
+            &#39;chill&#39;: {&#39;acousticness&#39;: (0.6, 1.0), &#39;energy&#39;: (0.1, 0.5)},
+            &#39;Romantic&#39;: {&#39;romantic&#39;: (0.5, 1.0), &#39;valence&#39;: (0.2, 0.5)},
+        }
+
+        filters = mood_map[selected_mood]
+        recommended_songs = get_recommended_songs_based_on_mood(filters)
+
+        if not recommended_songs:
+            await ctx.send(&#34;No songs found for the selected mood.&#34;)
+            return
+
+        # Add recommendations to queue and play.
+        self.songs_queue.clear()
+        self.songs_queue.add_to_queue(recommended_songs)
+        await self.play_song(self.songs_queue.current_song(), ctx)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -300,60 +406,60 @@ hljs.highlightAll();
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="src.songs_cog.Songs.add_song"><code class="name">var <span class="ident">add_song</span></code></dt>
+<dt id="cogs.songs_cog.Songs.join"><code class="name">var <span class="ident">join</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.join"><code class="name">var <span class="ident">join</span></code></dt>
+<dt id="cogs.songs_cog.Songs.mood_recommend"><code class="name">var <span class="ident">mood_recommend</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.next_song"><code class="name">var <span class="ident">next_song</span></code></dt>
+<dt id="cogs.songs_cog.Songs.next_song"><code class="name">var <span class="ident">next_song</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.pause"><code class="name">var <span class="ident">pause</span></code></dt>
+<dt id="cogs.songs_cog.Songs.pause"><code class="name">var <span class="ident">pause</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.play"><code class="name">var <span class="ident">play</span></code></dt>
+<dt id="cogs.songs_cog.Songs.play_custom"><code class="name">var <span class="ident">play_custom</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.play_custom"><code class="name">var <span class="ident">play_custom</span></code></dt>
+<dt id="cogs.songs_cog.Songs.poll"><code class="name">var <span class="ident">poll</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.poll"><code class="name">var <span class="ident">poll</span></code></dt>
+<dt id="cogs.songs_cog.Songs.prev"><code class="name">var <span class="ident">prev</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.queue"><code class="name">var <span class="ident">queue</span></code></dt>
+<dt id="cogs.songs_cog.Songs.replay"><code class="name">var <span class="ident">replay</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.resume"><code class="name">var <span class="ident">resume</span></code></dt>
+<dt id="cogs.songs_cog.Songs.resume"><code class="name">var <span class="ident">resume</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.shuffle"><code class="name">var <span class="ident">shuffle</span></code></dt>
+<dt id="cogs.songs_cog.Songs.start"><code class="name">var <span class="ident">start</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.stop"><code class="name">var <span class="ident">stop</span></code></dt>
+<dt id="cogs.songs_cog.Songs.stop"><code class="name">var <span class="ident">stop</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="src.songs_cog.Songs.handle_empty_queue"><code class="name flex">
-<span>async def <span class="ident">handle_empty_queue</span></span>(<span>self, ctx)</span>
+<dt id="cogs.songs_cog.Songs.handle_play_next"><code class="name flex">
+<span>def <span class="ident">handle_play_next</span></span>(<span>self, ctx)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper function to handle empty song queue</p></div>
+<div class="desc"></div>
 </dd>
-<dt id="src.songs_cog.Songs.play_song"><code class="name flex">
+<dt id="cogs.songs_cog.Songs.play_song"><code class="name flex">
 <span>async def <span class="ident">play_song</span></span>(<span>self, song_name, ctx)</span>
 </code></dt>
 <dd>
@@ -373,33 +479,33 @@ hljs.highlightAll();
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src" href="index.html">src</a></code></li>
+<li><code><a title="cogs" href="index.html">cogs</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.songs_cog.get_audio_sorce" href="#src.songs_cog.get_audio_sorce">get_audio_sorce</a></code></li>
-<li><code><a title="src.songs_cog.setup" href="#src.songs_cog.setup">setup</a></code></li>
+<li><code><a title="cogs.songs_cog.get_audio_sorce" href="#cogs.songs_cog.get_audio_sorce">get_audio_sorce</a></code></li>
+<li><code><a title="cogs.songs_cog.setup" href="#cogs.songs_cog.setup">setup</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="src.songs_cog.Songs" href="#src.songs_cog.Songs">Songs</a></code></h4>
+<h4><code><a title="cogs.songs_cog.Songs" href="#cogs.songs_cog.Songs">Songs</a></code></h4>
 <ul class="two-column">
-<li><code><a title="src.songs_cog.Songs.add_song" href="#src.songs_cog.Songs.add_song">add_song</a></code></li>
-<li><code><a title="src.songs_cog.Songs.handle_empty_queue" href="#src.songs_cog.Songs.handle_empty_queue">handle_empty_queue</a></code></li>
-<li><code><a title="src.songs_cog.Songs.join" href="#src.songs_cog.Songs.join">join</a></code></li>
-<li><code><a title="src.songs_cog.Songs.next_song" href="#src.songs_cog.Songs.next_song">next_song</a></code></li>
-<li><code><a title="src.songs_cog.Songs.pause" href="#src.songs_cog.Songs.pause">pause</a></code></li>
-<li><code><a title="src.songs_cog.Songs.play" href="#src.songs_cog.Songs.play">play</a></code></li>
-<li><code><a title="src.songs_cog.Songs.play_custom" href="#src.songs_cog.Songs.play_custom">play_custom</a></code></li>
-<li><code><a title="src.songs_cog.Songs.play_song" href="#src.songs_cog.Songs.play_song">play_song</a></code></li>
-<li><code><a title="src.songs_cog.Songs.poll" href="#src.songs_cog.Songs.poll">poll</a></code></li>
-<li><code><a title="src.songs_cog.Songs.queue" href="#src.songs_cog.Songs.queue">queue</a></code></li>
-<li><code><a title="src.songs_cog.Songs.resume" href="#src.songs_cog.Songs.resume">resume</a></code></li>
-<li><code><a title="src.songs_cog.Songs.shuffle" href="#src.songs_cog.Songs.shuffle">shuffle</a></code></li>
-<li><code><a title="src.songs_cog.Songs.stop" href="#src.songs_cog.Songs.stop">stop</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.handle_play_next" href="#cogs.songs_cog.Songs.handle_play_next">handle_play_next</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.join" href="#cogs.songs_cog.Songs.join">join</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.mood_recommend" href="#cogs.songs_cog.Songs.mood_recommend">mood_recommend</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.next_song" href="#cogs.songs_cog.Songs.next_song">next_song</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.pause" href="#cogs.songs_cog.Songs.pause">pause</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.play_custom" href="#cogs.songs_cog.Songs.play_custom">play_custom</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.play_song" href="#cogs.songs_cog.Songs.play_song">play_song</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.poll" href="#cogs.songs_cog.Songs.poll">poll</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.prev" href="#cogs.songs_cog.Songs.prev">prev</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.replay" href="#cogs.songs_cog.Songs.replay">replay</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.resume" href="#cogs.songs_cog.Songs.resume">resume</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.start" href="#cogs.songs_cog.Songs.start">start</a></code></li>
+<li><code><a title="cogs.songs_cog.Songs.stop" href="#cogs.songs_cog.Songs.stop">stop</a></code></li>
 </ul>
 </li>
 </ul>

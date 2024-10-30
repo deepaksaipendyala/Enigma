@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>src.recommend_enhanced API documentation</title>
-<meta name="description" content="This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.">
+<title>cogs.helpers.get_all API documentation</title>
+<meta name="description" content="This file is responsible for handling all data operations such as showing songs that the user can select.
+Recommendation of songs filtering operations …">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -22,10 +23,11 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.recommend_enhanced</code></h1>
+<h1 class="title">Module <code>cogs.helpers.get_all</code></h1>
 </header>
 <section id="section-intro">
-<p>This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.</p>
+<p>This file is responsible for handling all data operations such as showing songs that the user can select.
+Recommendation of songs filtering operations etc.</p>
 </section>
 <section>
 </section>
@@ -34,15 +36,36 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.recommend_enhanced.recommend_enhanced"><code class="name flex">
-<span>def <span class="ident">recommend_enhanced</span></span>(<span>input_songs: list) ‑> list</span>
+<dt id="cogs.helpers.get_all.filtered_songs"><code class="name flex">
+<span>def <span class="ident">filtered_songs</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>This function returns recommended songs based on the songs that the user selected.
-It uses the cosine similarity to recommend songs. It will return a list of 10 songs that are the most
-similar to the input songs.</p>
-<h2 id="parameters">Parameters</h2>
-<p>input_songs (list): List of songs that the user selected. Each song is a tuple with the song name and the artist name.</p></div>
+<div class="desc"><p>This function returns songs and their track_name, artist, year and genre.</p></div>
+</dd>
+<dt id="cogs.helpers.get_all.get_all_songs"><code class="name flex">
+<span>def <span class="ident">get_all_songs</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns all songs in the dataset. Uses tcc_ceds_music.csv</p></div>
+</dd>
+<dt id="cogs.helpers.get_all.get_all_songs_alternate"><code class="name flex">
+<span>def <span class="ident">get_all_songs_alternate</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns all songs in the alternate dataset. Uses songs.csv</p></div>
+</dd>
+<dt id="cogs.helpers.get_all.get_recommended_songs_based_on_mood"><code class="name flex">
+<span>def <span class="ident">get_recommended_songs_based_on_mood</span></span>(<span>filters)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Filter the dataset based on the provided filter ranges for mood.
+The filters parameter is expected to be a dictionary with keys as feature names and values as a tuple of (min, max).</p></div>
+</dd>
+<dt id="cogs.helpers.get_all.recommend"><code class="name flex">
+<span>def <span class="ident">recommend</span></span>(<span>input_songs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns recommended songs based on the songs that the user selected.</p></div>
 </dd>
 </dl>
 </section>
@@ -56,12 +79,16 @@ similar to the input songs.</p>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src" href="index.html">src</a></code></li>
+<li><code><a title="cogs.helpers" href="index.html">cogs.helpers</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.recommend_enhanced.recommend_enhanced" href="#src.recommend_enhanced.recommend_enhanced">recommend_enhanced</a></code></li>
+<li><code><a title="cogs.helpers.get_all.filtered_songs" href="#cogs.helpers.get_all.filtered_songs">filtered_songs</a></code></li>
+<li><code><a title="cogs.helpers.get_all.get_all_songs" href="#cogs.helpers.get_all.get_all_songs">get_all_songs</a></code></li>
+<li><code><a title="cogs.helpers.get_all.get_all_songs_alternate" href="#cogs.helpers.get_all.get_all_songs_alternate">get_all_songs_alternate</a></code></li>
+<li><code><a title="cogs.helpers.get_all.get_recommended_songs_based_on_mood" href="#cogs.helpers.get_all.get_recommended_songs_based_on_mood">get_recommended_songs_based_on_mood</a></code></li>
+<li><code><a title="cogs.helpers.get_all.recommend" href="#cogs.helpers.get_all.recommend">recommend</a></code></li>
 </ul>
 </li>
 </ul>

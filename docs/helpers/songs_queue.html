@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>cogs.helpers.songs_queue API documentation</title>
+<meta name="description" content="This file is responsible for maintaining the song queue">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>cogs.helpers.songs_queue</code></h1>
+</header>
+<section id="section-intro">
+<p>This file is responsible for maintaining the song queue</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="cogs.helpers.songs_queue.Singleton"><code class="flex name class">
+<span>class <span class="ident">Singleton</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A metaclass that creates a Singleton base type when called.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Singleton(type):
+    &#34;&#34;&#34;A metaclass that creates a Singleton base type when called.&#34;&#34;&#34;
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        &#34;&#34;&#34;Create a new instance of the class if it does not exist.&#34;&#34;&#34;
+        if cls not in cls._instances:
+            cls._instances[cls] = super(
+                Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.type</li>
+</ul>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue"><code class="flex name class">
+<span>class <span class="ident">Songs_Queue</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class is responsible for maintaining the song queue. There will only be one instance of this class</p>
+<p>Get the instance of Songs_Queue, or create a new one if there is no instance.
+A new instance will have an empty queue so songs must be added using the add_to_queue method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Songs_Queue(metaclass=Singleton):
+    &#34;&#34;&#34;
+    This class is responsible for maintaining the song queue. There will only be one instance of this class
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        &#34;&#34;&#34;Get the instance of Songs_Queue, or create a new one if there is no instance. 
+        A new instance will have an empty queue so songs must be added using the add_to_queue method.
+        &#34;&#34;&#34;
+        self._queue = []
+        self._index = 0
+
+    @property
+    def queue(self):
+        &#34;&#34;&#34;Return the current queue.&#34;&#34;&#34;
+        return self._queue
+
+    @property
+    def index(self):
+        &#34;&#34;&#34;Return the current index.&#34;&#34;&#34;
+        return self._index
+
+    async def handle_empty_queue(self, ctx):
+        &#34;&#34;&#34;
+        Helper function to handle empty song queue
+        &#34;&#34;&#34;
+
+        if self.get_len() == 0:
+            await ctx.send(
+                &#34;No recommendations present. First generate recommendations using !poll or !mood.&#34;
+            )
+            return True
+        return False
+
+    def clear(self):
+        &#34;&#34;&#34;Clear the current queue.&#34;&#34;&#34;
+        self._queue.clear()
+        self._index = 0
+
+    def get_song_at_index(self, idx):
+        &#34;&#34;&#34;
+        This function returns the song at the given index in the queue. Returns the song as a string in format &#34;&lt;Song Name&gt; by &lt;Artist Name&gt;&#34;
+
+        Parameters:
+            idx(int): The index of the song in the queue
+
+        Returns:
+            str: The song at the given index in the queue, or -1 if the index is out of bounds
+        &#34;&#34;&#34;
+
+        if idx &lt; 0 or idx &gt;= len(self.queue):
+            return -1
+        song = self.queue[idx]
+        artist = song[1]
+        if artist == &#34;Unknown&#34;:
+            return song[0]
+        return f&#34;{song[0]} by {song[1]}&#34;
+
+    def current_song(self):
+        &#34;&#34;&#34;Return the current song.&#34;&#34;&#34;
+        return self.get_song_at_index(self._index)
+
+    def next_song(self):
+        &#34;&#34;&#34;
+        This function returns the next song in the queue
+        &#34;&#34;&#34;
+
+        print(self.queue)
+        if (self._index == len(self.queue) - 1):
+            self._index = 0
+        else:
+            self._index += 1
+        val = self._index
+        return self.get_song_at_index(val)
+
+    def prev_song(self):
+        &#34;&#34;&#34;
+        This function returns the previous song in the queue
+        &#34;&#34;&#34;
+
+        self._index -= 1
+        if (self._index &lt; 0):
+            self._index = len(self.queue) - 1
+        val = self._index
+        return self.get_song_at_index(val)
+
+    def move_song(self, song_name, idx):
+        &#34;&#34;&#34;
+        This function moves a song within the queue
+        &#34;&#34;&#34;
+
+        curr_idx = -1
+        if int(idx) &lt; 1 or int(idx) &gt; len(self.queue) - 1:
+            return -2
+        for index, s in enumerate(self.queue):
+            title = s[0]
+            if title.upper() == song_name.upper():
+                curr_idx = index
+        if curr_idx != -1:
+            # Remove the element from the old index
+            element = self.queue.pop(curr_idx)
+            # Insert the element at the new index
+            self.queue.insert(int(idx), element)
+            return int(idx)
+        else:
+            return -1
+
+    def get_len(self):
+        &#34;&#34;&#34;
+        This function returns the length of the song queue
+        &#34;&#34;&#34;
+
+        return len(self.queue)
+
+    def return_queue(self):
+        &#34;&#34;&#34;
+        This function returns song queue and the current index of the song that is playing
+        &#34;&#34;&#34;
+
+        return (self.queue, self._index)
+
+    def shuffle_queue(self):
+        &#34;&#34;&#34;
+        This function shuffles the song queue
+        &#34;&#34;&#34;
+        element = self.queue.pop(self._index)
+        shuffle(self.queue)
+        self.queue.insert(self._index, element)
+
+    def add_to_queue(self, songs: str | list[str]):
+        &#34;&#34;&#34;
+        This function adds a song to the queue
+
+        Parameters:
+            song_name(str | list[str]): The name of the song to be added to the queue, or a list of song names to be added to the queue
+        &#34;&#34;&#34;
+
+        if isinstance(songs, list) and not isinstance(songs, tuple):
+            for song in songs:
+                if isinstance(song, tuple):
+                    self.queue.append(song)
+                else:
+                    self.queue.append((song, &#34;Unknown&#34;))
+        else:
+            if (isinstance(songs, tuple)):
+                self.queue.append(songs)
+            else:
+                self.queue.append((songs, &#34;Unknown&#34;))
+
+    def remove_from_queue(self, song_name):
+        &#34;&#34;&#34;
+        This function removes a song from the queue
+
+        Parameters:
+            song_name(str): The name of the song to be removed from the queue
+
+        Returns:
+            int: The index of the song that was removed from the queue, or -1 if the song was not found in the queue
+        &#34;&#34;&#34;
+
+        for index, song in enumerate(self.queue):
+            title = song[0]
+            artist = song[1]
+            if title.upper() == song_name.upper():
+                if index != self.index:
+                    return self.queue.pop(index)
+                elif index == 0:
+                    # If the song to be removed is the first song in the queue
+                    self.queue.pop(index)
+                    if (self._index == len(self.queue)):
+                        self._index = 0
+                    return index
+                else:
+                    self.queue.pop(index)
+                    self._index -= 1
+                    if (self._index &lt; 0):
+                        self._index = len(self.queue) - 1
+                    return index
+        return -1</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.index"><code class="name">prop <span class="ident">index</span></code></dt>
+<dd>
+<div class="desc"><p>Return the current index.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def index(self):
+    &#34;&#34;&#34;Return the current index.&#34;&#34;&#34;
+    return self._index</code></pre>
+</details>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.queue"><code class="name">prop <span class="ident">queue</span></code></dt>
+<dd>
+<div class="desc"><p>Return the current queue.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def queue(self):
+    &#34;&#34;&#34;Return the current queue.&#34;&#34;&#34;
+    return self._queue</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.add_to_queue"><code class="name flex">
+<span>def <span class="ident">add_to_queue</span></span>(<span>self, songs: str | list[str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function adds a song to the queue</p>
+<h2 id="parameters">Parameters</h2>
+<p>song_name(str | list[str]): The name of the song to be added to the queue, or a list of song names to be added to the queue</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clear the current queue.</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.current_song"><code class="name flex">
+<span>def <span class="ident">current_song</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the current song.</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.get_len"><code class="name flex">
+<span>def <span class="ident">get_len</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns the length of the song queue</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.get_song_at_index"><code class="name flex">
+<span>def <span class="ident">get_song_at_index</span></span>(<span>self, idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns the song at the given index in the queue. Returns the song as a string in format "<Song Name> by <Artist Name>"</p>
+<h2 id="parameters">Parameters</h2>
+<p>idx(int): The index of the song in the queue</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The song at the given index in the queue, or -1 if the index is out of bounds</dd>
+</dl></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.handle_empty_queue"><code class="name flex">
+<span>async def <span class="ident">handle_empty_queue</span></span>(<span>self, ctx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function to handle empty song queue</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.move_song"><code class="name flex">
+<span>def <span class="ident">move_song</span></span>(<span>self, song_name, idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function moves a song within the queue</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.next_song"><code class="name flex">
+<span>def <span class="ident">next_song</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns the next song in the queue</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.prev_song"><code class="name flex">
+<span>def <span class="ident">prev_song</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns the previous song in the queue</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.remove_from_queue"><code class="name flex">
+<span>def <span class="ident">remove_from_queue</span></span>(<span>self, song_name)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function removes a song from the queue</p>
+<h2 id="parameters">Parameters</h2>
+<p>song_name(str): The name of the song to be removed from the queue</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The index of the song that was removed from the queue, or -1 if the song was not found in the queue</dd>
+</dl></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.return_queue"><code class="name flex">
+<span>def <span class="ident">return_queue</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function returns song queue and the current index of the song that is playing</p></div>
+</dd>
+<dt id="cogs.helpers.songs_queue.Songs_Queue.shuffle_queue"><code class="name flex">
+<span>def <span class="ident">shuffle_queue</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function shuffles the song queue</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="cogs.helpers" href="index.html">cogs.helpers</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cogs.helpers.songs_queue.Singleton" href="#cogs.helpers.songs_queue.Singleton">Singleton</a></code></h4>
+</li>
+<li>
+<h4><code><a title="cogs.helpers.songs_queue.Songs_Queue" href="#cogs.helpers.songs_queue.Songs_Queue">Songs_Queue</a></code></h4>
+<ul class="two-column">
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.add_to_queue" href="#cogs.helpers.songs_queue.Songs_Queue.add_to_queue">add_to_queue</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.clear" href="#cogs.helpers.songs_queue.Songs_Queue.clear">clear</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.current_song" href="#cogs.helpers.songs_queue.Songs_Queue.current_song">current_song</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.get_len" href="#cogs.helpers.songs_queue.Songs_Queue.get_len">get_len</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.get_song_at_index" href="#cogs.helpers.songs_queue.Songs_Queue.get_song_at_index">get_song_at_index</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.handle_empty_queue" href="#cogs.helpers.songs_queue.Songs_Queue.handle_empty_queue">handle_empty_queue</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.index" href="#cogs.helpers.songs_queue.Songs_Queue.index">index</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.move_song" href="#cogs.helpers.songs_queue.Songs_Queue.move_song">move_song</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.next_song" href="#cogs.helpers.songs_queue.Songs_Queue.next_song">next_song</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.prev_song" href="#cogs.helpers.songs_queue.Songs_Queue.prev_song">prev_song</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.queue" href="#cogs.helpers.songs_queue.Songs_Queue.queue">queue</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.remove_from_queue" href="#cogs.helpers.songs_queue.Songs_Queue.remove_from_queue">remove_from_queue</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.return_queue" href="#cogs.helpers.songs_queue.Songs_Queue.return_queue">return_queue</a></code></li>
+<li><code><a title="cogs.helpers.songs_queue.Songs_Queue.shuffle_queue" href="#cogs.helpers.songs_queue.Songs_Queue.shuffle_queue">shuffle_queue</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

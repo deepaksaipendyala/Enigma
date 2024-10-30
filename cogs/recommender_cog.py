@@ -7,9 +7,9 @@ import discord
 import random
 import asyncio
 from discord.ext import commands
-from helpers import utils
-from helpers.recommend_enhanced import recommend_enhanced as recommend
-from helpers.songs_queue import Songs_Queue
+from cogs.helpers import utils
+from cogs.helpers.recommend_enhanced import recommend_enhanced as recommend
+from cogs.helpers.songs_queue import Songs_Queue
 
 
 class Recommender(commands.Cog):
