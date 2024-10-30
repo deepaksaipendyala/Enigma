@@ -12,6 +12,8 @@ Installation Guides:
 -   [Set up a bot and have it join your channel](https://discordpy.readthedocs.io/en/stable/discord.html). For the purposes of testing this bot, when giving it permissions selecting admin is fine, but for a proper deployment, it is very important to give it only the strictly necessary permissions.
 -   After creating the bot, in the discord developer portal navigate to the 'Bot' tab for the application you made in the previous step, and select 'Reset Token'. Copy and paste this token into a file named `.env` with this format: `DISCORD_TOKEN=SECRET_TOKEN`, where `SECRET_TOKEN` is replaced with the token you just copied
 
+-   [Video Guide](https://youtu.be/jibnRsfhnug)
+
 ## 2. Running Code
 
 First, clone the repository and cd into the folder:
