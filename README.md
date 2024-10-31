@@ -57,6 +57,16 @@ If you want to get added to the music server on discord to test the bot, drop an
 </ul>
 </div>
 
+<h1> Features added by group 36, fall 2024 </h1>
+<div>
+<ul>
+  <li>New Poll Command</li>
+  <li>New Recommendation Algorithm</li>
+  <li>Use web scraping and EDA to get a better database for the discord bot</li>
+  <li>Improved Queue System</li>
+</ul>
+</div>
+
 <h1> ⚒️ Installation Procedure </h1>
 
 See the installation instructions listed in [`Install`](INSTALL.md)
@@ -75,7 +85,7 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
 
 <h1>📍RoadMap </h1>
 
-What We've Done:
+#### What We've Done:
 
 1. Created a Discord Bot via the Discord Developer Portal.
 2. Incorporated a [dataset](https://www.kaggle.com/datasets/leonardopena/top-spotify-songs-from-20102019-by-year) to our application.
@@ -88,19 +98,33 @@ What We've Done:
     - Add a custom song to the queue
     - Shuffle songs within the queue
 
-What We've Yet To Do:
+#### New in v3.0
 
-1. Make the song recommendations more sophisticated by using content-based recommendor systems.
-2. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
-3. Use web scraping and EDA to get a better database for the discord bot.
-4. Add some more functionality to the discord bot:
-    - Move a song within a queue or to the top of the queue
+9. New Poll Command: This new poll command allows you to select up to 10 songs you like in order to curate a custom playlist for you to listen to
+10. New Recommendation Algorithm: Our new and improved recommendation algorithm now uses cosine similarity to identify songs similar to songs you have indicated that you like.
+11. Use web scraping and EDA to get a better database for the discord bot.
+12. Improved Queue System:
+    - Queue command: Now outputs the queue in a much nicer format compared to last version where it was just a list of song names
+    - New Move Command: Users now have the ability to move songs within a queue by specifying the song and the position in queue
+    - New Clear Queue Command: New ability to clear queue of all songs
+    - Next Song Played Automatically: The next song in queue automatically starts playing once the current song stops instead of having to call next song command
+
+#### What We've Yet To Do:
+
+1. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
+2. Add some more functionality to the discord bot:
     - Jump to a specific song in the queue
     - Replay the song (instead of going to the next song and then coming back to the previous song)
+3. Fix Audio Quality:
+    - Current audio quality is pretty poor, and songs occasionally speed up/slow down.
+    - Look into FFmpeg documentation to test better parameters, experiment with different services for better quality.
+4. Playlists: Add a new feature to upload a list of songs in a .csv or .txt file to create a playlist that can be saved and played.
+5. Improved Polling: Instead of having the bot select 10 random songs for the user to choose from, have the user input the songs they like to send to the recommend algorithm
+6. Integrate Spotify/Apple Music: Instead of getting songs from YouTube (which has issues with playing audio that isn’t always songs) use other services such as Spotify or Apple Music to get audio.
 
 <h1>📖 Documentation</h1>
 
-Documentation for the code available at - <a href="https://saswat123.github.io/Enigma/">Enigma Docs</a>
+Documentation for the code available at - <a href="https://ncsu-csc-510-f2024.github.io/Enigma/">Enigma Docs</a>
 
 <h1> 👥 Contributors <a name="Contributors"></a> </h1>
 
@@ -113,7 +137,17 @@ Documentation for the code available at - <a href="https://saswat123.github.io/E
     <td align="center"><a href="https://github.com/cnangia-ncsu"><img src="https://avatars.githubusercontent.com/u/89174495?v=4" width="75px;" alt=""/><br /><sub><b>Chirrag Nangia</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/SASWAT123"><img src="https://avatars.githubusercontent.com/u/21155121?v=4" width="75px;" alt=""/><br /><sub><b>Saswat Priyadarshan</b></sub></a><br /></td>
   </tr>
+</table>
 
+### Group 36, Fall 2024
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/NicoField"><img src="" width="75px;" alt=""/><br /><sub><b>Nico Field</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Symplexity"><img src="" width="75px;" alt=""/><br /><sub><b>Riley Joncas</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/birukayalew"><img src="" width="75px;" alt=""/><br /><sub><b>Biruk Tadesse</b></sub></a><br /></td>
+
+  </tr>
 </table>
 
 <h1> Contributing </h1>
@@ -124,5 +158,5 @@ Please see [`CONTRIBUTING`](CONTRIBUTING.md) for contributing to this project.
 
 The data for this project is present [here](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019)
 
-<h1> Support </h1>
-For any support reach out to spriyad2@ncsu.edu
+<!-- <h1> Support </h1>
+For any support reach out to spriyad2@ncsu.edu -->
