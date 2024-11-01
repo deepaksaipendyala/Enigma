@@ -112,15 +112,12 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
 #### What We've Yet To Do:
 
 1. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
-2. Add some more functionality to the discord bot:
-    - Jump to a specific song in the queue
-    - Replay the song (instead of going to the next song and then coming back to the previous song)
-3. Fix Audio Quality:
+2. Fix Audio Quality:
     - Current audio quality is pretty poor, and songs occasionally speed up/slow down.
     - Look into FFmpeg documentation to test better parameters, experiment with different services for better quality.
-4. Playlists: Add a new feature to upload a list of songs in a .csv or .txt file to create a playlist that can be saved and played.
-5. Improved Polling: Instead of having the bot select 10 random songs for the user to choose from, have the user input the songs they like to send to the recommend algorithm
-6. Integrate Spotify/Apple Music: Instead of getting songs from YouTube (which has issues with playing audio that isn’t always songs) use other services such as Spotify or Apple Music to get audio.
+3. Playlists: Add a new feature to upload a list of songs in a .csv or .txt file to create a playlist that can be saved and played.
+4. Improved Polling: Instead of having the bot select 10 random songs for the user to choose from, have the user input the songs they like to send to the recommend algorithm
+5. Integrate Spotify/Apple Music: Instead of getting songs from YouTube (which has issues with playing audio that isn’t always songs) use other services such as Spotify or Apple Music to get audio.
 
 <h1>📖 Documentation</h1>
 
