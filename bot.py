@@ -63,7 +63,7 @@ async def on_ready():
 
     # voice_channel = client.get_channel(VOICE_CHANNEL_ID)
 
-    channel = discord.utils.get(bot.get_all_channels(), name="General")
+    channel = discord.utils.get(bot.get_all_channels(), name="Lounge")
 
     if channel is not None:
         bot_channel = discord.utils.get(bot.voice_clients, guild=channel.guild)
@@ -76,7 +76,7 @@ async def on_ready():
             except Exception as e:
                 print(f"Error connecting to voice channel: {e}")
     else:
-        print("Error connecting to General. See the 'join' command for help.")
+        print("Error connecting to general. See the 'join' command for help.")
 
 
 """
