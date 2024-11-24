@@ -1,85 +1,94 @@
+# cogs/helpers/recommend_enhanced.py
 """
 This file contains the enhanced recommendation function that uses cosine similarity to recommend songs.
 """
 
 from cogs.helpers.utils import retrieve_song_attributes, cosine_similarity
 from cogs.helpers.get_all import get_all_songs
+import logging
 
+# Initialize Logger
+logger = logging.getLogger(__name__)
 
 def recommend_enhanced(input_songs: list) -> list:
     """
-    This function returns recommended songs based on the songs that the user selected.
-    It uses the cosine similarity to recommend songs. It will return a list of 10 songs that are the most
+    Returns recommended songs based on the songs that the user selected.
+    It uses cosine similarity to recommend songs. It will return a list of 10 songs that are the most
     similar to the input songs.
 
     Parameters:
         input_songs (list): List of songs that the user selected. Format as (track_name, artist_name).
+
+    Returns:
+        list: List of recommended songs as tuples (track_name, artist_name).
     """
 
     # Get all songs
     all_songs = get_all_songs()
 
     # Iterate through all the songs and get the cosine similarity between the input songs and all the songs
-    # and store it in a dictionary with the song name as the key and the cosine similarity as the value
+    # and store it in a list with the song tuple and the similarity score
 
     # Get the song attributes for the input songs
     input_song_attributes = {}
     genres = []
     for song in input_songs:
-        song_name = song[0]
-        artist_name = song[1]
+        song_name, artist_name = song
         song_attributes = retrieve_song_attributes(song_name, artist_name)
-        if song_attributes is not None:
+        if song_attributes:
             input_song_attributes[(song_name, artist_name)] = song_attributes
 
-        # Get the genre of the song
-        genre = all_songs.loc[
-            (all_songs["track_name"] == song_name)
-            & (all_songs["artist_name"] == artist_name)
-        ]["genre"].values.tolist()
-        if len(genre) > 0:
-            genres.append(genre[0])
+            # Get the genre of the song
+            genre_series = all_songs.loc[
+                (all_songs["track_name"].str.lower() == song_name.lower()) &
+                (all_songs["artist_name"].str.lower() == artist_name.lower())
+            ]["genre"]
+            if not genre_series.empty:
+                genres.append(genre_series.iloc[0])
 
-    # Filter the songs based on the genre of the input songs
-    all_songs = all_songs[all_songs["genre"].isin(genres)]
+    if not input_song_attributes:
+        logger.warning("recommend_enhanced: No valid input songs found for recommendations.")
+        return []
 
-    # Get songs that are similar genres to the input songs
+    # Filter the songs based on the genres of the input songs
+    all_songs_filtered = all_songs[all_songs["genre"].isin(genres)]
+
+    # Get song attributes for filtered songs
     all_song_attributes = {}
     num_retrieved = 0
+    max_retrieved = 500  # Limit to first 500 songs for performance
 
     # Randomize the order of the songs
-    all_songs = all_songs.sample(frac=1).reset_index(drop=True)
+    all_songs_filtered = all_songs_filtered.sample(frac=1).reset_index(drop=True)
 
-    for index, row in all_songs.iterrows():
+    for index, row in all_songs_filtered.iterrows():
         song_name = row["track_name"]
         artist_name = row["artist_name"]
         song_attributes = retrieve_song_attributes(song_name, artist_name)
-        if song_attributes is not None:
-            num_retrieved += 1
+        if song_attributes:
             all_song_attributes[(song_name, artist_name)] = song_attributes
-
-        if num_retrieved >= 500:
+            num_retrieved += 1
+        if num_retrieved >= max_retrieved:
             break
 
-    # Calculate the cosine similarity between the input songs and all the songs. The final similarity score
-    # for each song will be the average of all the cosine similarities between the input songs and the song
-
-    # Create a list to store the cosine similarity for each song. Will be stored in the format ((song_name, artist_name), similarity_score)
+    # Calculate the cosine similarity between the input songs and all the songs
     similarity_scores = []
 
-    for song_name, artist_name in all_song_attributes.keys():
-        similarity_score = 0
-        for input_song_name, input_artist_name in input_song_attributes.keys():
-            similarity_score += cosine_similarity(
-                song_name, artist_name, input_song_name, input_artist_name
+    for song_tuple, attributes in all_song_attributes.items():
+        similarity_score = 0.0
+        for input_song_tuple, input_attributes in input_song_attributes.items():
+            sim = cosine_similarity(
+                song_tuple[0], song_tuple[1],
+                input_song_tuple[0], input_song_tuple[1]
             )
-
+            similarity_score += sim
         similarity_score /= len(input_song_attributes)
-        similarity_scores.append([(song_name, artist_name), similarity_score])
+        similarity_scores.append((song_tuple, similarity_score))
 
     # Sort the similarity scores in descending order
     similarity_scores.sort(key=lambda x: x[1], reverse=True)
 
-    # return the song name and artist name for the top 10 songs
+    # Return the top 10 recommended songs
     recommended_songs = [x[0] for x in similarity_scores[:10]]
+    logger.info(f"recommend_enhanced: Generated {len(recommended_songs)} recommendations.")
     return recommended_songs

@@ -27,6 +27,20 @@ def fetch_spotify_popularity(song_name, artist_name):
         return track['popularity']  # Popularity score (0-100).
     return None
 
+def fetch_spotify_metadata(query):
+    """
+    Fetch metadata of a song using the Spotify API.
+    """
+    results = sp.search(q=query, type='track', limit=1)
+    if results['tracks']['items']:
+        track = results['tracks']['items'][0]
+        return {
+            "track_name": track['name'],
+            "artist_name": track['artists'][0]['name'],
+            "album_name": track['album']['name'],
+            "popularity": track['popularity']
+        }
+    return None
 
 # Load dataset.
 songs_df = pd.read_csv('.\\data\\tcc_ceds_music.csv')

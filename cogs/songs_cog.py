@@ -1,19 +1,39 @@
+# cogs/songs_cog.py
 """
-This file is responsible for all bot commands regarding songs such /poll for generating recommendations,
-/next_song for playing next song and so on
+This file is responsible for all bot commands regarding songs such as /poll for generating recommendations,
+/next_song for playing next song, and so on.
 """
 
 import asyncio
 import discord
-from cogs.helpers.get_all import *
 from discord.ext import commands
+from cogs.helpers.get_all import *
 from cogs.helpers.utils import searchSong, random_25
 from cogs.helpers.songs_queue import Songs_Queue
 import yt_dlp as youtube_dl
+import logging
+from typing import Union
+from discord import PCMVolumeTransformer
 
+# Initialize Logger
+logger = logging.getLogger(__name__)
 
-FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-                  'options': '-vn -filter:a "volume=0.25"'}
+FFMPEG_OPTIONS = {
+    'before_options': (
+        '-reconnect 1 '                # Automatically reconnect if the stream drops
+        '-reconnect_streamed 1 '        # Reconnect for streamed media
+        '-reconnect_delay_max 5 '       # Maximum delay before reconnecting
+        '-thread_queue_size 512 '       # Increase input thread queue size
+    ),
+    'options': (
+        '-vn '                          # Disable video
+        '-ar 48000 '                    # Set audio sample rate to 48 kHz
+        '-ac 2 '                        # Set audio channels to stereo
+        '-b:a 160k '                    # Set audio bitrate to 160 kbps
+        '-bufsize 160k '                # Set buffer size
+        # Removed '-codec:a libopus' since PCMVolumeTransformer handles PCM
+    )
+}
 
 YDL_OPTIONS = {
     'format': 'bestaudio/best',
@@ -26,29 +46,56 @@ YDL_OPTIONS = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    # bind to ipv4 since ipv6 addresses cause issues sometimes
     'source_address': '0.0.0.0',
 }
 
 ytdl = youtube_dl.YoutubeDL(YDL_OPTIONS)
 
+async def get_audio_source(url: str, song_name: str, artist_name: str, *, loop=None, stream=False) -> Union[PCMVolumeTransformer, dict]:
+    """
+    Asynchronously retrieves the audio source from YouTube.
 
-async def get_audio_sorce(url: str, *, loop=None, stream=False):
+    Parameters:
+        url (str): YouTube URL of the song.
+        song_name (str): Name of the song.
+        artist_name (str): Name of the artist.
+        loop: Event loop.
+        stream (bool): Whether to stream the audio.
 
+    Returns:
+        Tuple[PCMVolumeTransformer, dict]: Audio source and video data.
+    """
     loop = loop or asyncio.get_event_loop()
-    data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
+    try:
+        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
+    except Exception as e:
+        logger.error(f"get_audio_source: Error extracting info from {url} - {e}")
+        return None
+
+    if data is None:
+        logger.error(f"get_audio_source: No data retrieved from {url}.")
+        return None
 
     if "entries" in data:
         data = data["entries"][0]
 
-    filename = data["url"] if stream else youtube_dl.prepare_filename(data)
-    print(f"filename: {filename}")
-    return (discord.FFmpegOpusAudio(filename, **FFMPEG_OPTIONS), data)
+    filename = data["url"] if stream else ytdl.prepare_filename(data)
+    logger.info(f"Fetching audio source for {data['title']} from URL: {url}")
 
+    try:
+        audio_source = discord.FFmpegPCMAudio(filename, **FFMPEG_OPTIONS)
+        # Wrap with PCMVolumeTransformer for volume control
+        volume = 1.0  # Default volume at 100%
+        audio_source = PCMVolumeTransformer(audio_source, volume=volume)
+    except Exception as e:
+        logger.error(f"get_audio_source: Error creating PCMVolumeTransformer - {e}")
+        return None
+
+    return (audio_source, data)
 
 class Songs(commands.Cog):
     """
-    Cog for bot that handles all commands related to songs
+    Cog for the bot that handles all commands related to songs.
     """
 
     def __init__(self, bot):
@@ -64,330 +111,305 @@ class Songs(commands.Cog):
             asyncio.run_coroutine_threadsafe(self.play_song(
                 self.songs_queue.next_song(), ctx), self.bot.loop)
 
-    async def play_song(self, song_name, ctx):
+    async def play_song(self, song_tuple: Union[tuple, int], ctx):
         """
-        Helper function for playing song on the voice channel
+        Helper function for playing song on the voice channel.
 
         Parameters:
-            song_name (str): The name of the song to play
+            song_tuple (tuple or int): The song to play as (song_name, artist_name) or an error code.
+            ctx: The context from Discord.
         """
 
-        # Get the song URL
-        url = searchSong(song_name)
-        print(url)
+        logger.debug(f"play_song: Received song_tuple: {song_tuple}, type: {type(song_tuple)}")
 
-        bot_client = None
-
-        # Get the voice client for the guild
-        voice_client = discord.utils.get(
-            ctx.bot.voice_clients, guild=ctx.guild)
-
-        if not voice_client:
-            await ctx.send("Bot is not connected to a voice channel")
+        if isinstance(song_tuple, int):
+            await ctx.send("❌ Unable to retrieve the next song.")
+            logger.error(f"play_song: Received error code {song_tuple}.")
             return
 
-        # Check if the bot is already playing a song, and stop it if it is
+        if not isinstance(song_tuple, tuple) or len(song_tuple) != 2:
+            await ctx.send("❌ Invalid song format.")
+            logger.error("play_song: Invalid song format received.")
+            return
+
+        song_name, artist_name = song_tuple
+        logger.debug(f"play_song: Playing '{song_name}' by '{artist_name}'.")
+
+        url = searchSong(song_name, artist_name)
+
+        if not url:
+            await ctx.send(f"❌ Unable to find a YouTube link for **{song_name}** by *{artist_name}*.")
+            logger.warning(f"play_song: No YouTube URL found for '{song_name}' by '{artist_name}'.")
+            return
+
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if not voice_client:
+            await ctx.send("❌ Bot is not connected to a voice channel.")
+            logger.warning("play_song: Bot is not connected to any voice channel.")
+            return
+
+        # Stop current playback if any
         if voice_client.is_playing():
             self.manually_stopped = True
             voice_client.stop()
+            logger.info("play_song: Stopped current playback.")
 
-        # Get and play the audio source
-        # audio_source = get_audio_sorce(url)
-        # ctx.voice_client.play(audio_source, after=lambda e: self.handle_play_next(ctx), )
+        # Fetch and play the audio source
+        try:
+            async with ctx.typing():
+                audio_data = await get_audio_source(url, song_name, artist_name, loop=self.bot.loop, stream=True)
+                if audio_data is None:
+                    await ctx.send("❌ Failed to retrieve audio source.")
+                    logger.error("play_song: Failed to retrieve audio source.")
+                    return
+                player, data = audio_data
+                voice_client.play(player, after=lambda e: logger.error(f"Playback error: {e}") if e else self.handle_play_next(ctx))
+                logger.info(f"play_song: Playing '{data['title']}' by '{artist_name}'.")
+        except Exception as e:
+            await ctx.send("❌ An error occurred while trying to play the song.")
+            logger.error(f"play_song: Exception occurred - {e}")
+            return
 
-        async with ctx.typing():
-            print("Getting audio source")
-            player, data = await get_audio_sorce(url, loop=self.bot.loop, stream=True)
-            print(f"Starting playback of {data['title']}")
-            voice_client.play(player, after=lambda e: print(
-                f"player error {e}") if e else self.handle_play_next(ctx))
-
-            if not ctx.voice_client.is_playing():
-                print("Playback error")
-            else:
-                print("Playing")
-
-        await ctx.send(f"Now playing: {url}")
+        await ctx.send(f"🎶 Now playing: **{song_name}** by *{artist_name}*")
         self.manually_stopped = False
 
     # -----------Commands-----------#
 
-    @commands.command(name="join", help="To join the voice channel")
-    async def join(self, ctx, channel_name: str = commands.parameter(description="The voice channel to join (optional)", default=None)):
+    @commands.command(name="join", help="To join the voice channel.\nUsage: !join <channel_name> (optional)")
+    async def join(self, ctx, channel_name: str = None):
         """
-        Function for joining the voice channel
+        Function for joining the voice channel.
 
         Parameters:
-            channel (discord.VoiceChannel): The voice channel to join
+            channel_name (str): The voice channel to join (optional). If not provided, joins the author's current channel.
         """
 
-        if not channel_name:
+        if channel_name is None:
             try:
                 channel = ctx.author.voice.channel
             except AttributeError:
-                await ctx.send("No channel to join. Please specify a channel")
+                await ctx.send("❌ You are not connected to a voice channel.")
+                logger.warning("join: Author is not connected to any voice channel.")
                 return
-
-        # Get the voice channel object
-        channel = discord.utils.get(
-            ctx.guild.voice_channels, name=channel_name)
-
-        # Check if the bot is already connected to that channel
-        if channel:
-            # get the current voice client for the bot in the guild
-            bot_channel = discord.utils.get(
-                ctx.bot.voice_clients, guild=channel.guild)
-            if bot_channel and bot_channel.channel.name == channel.name:
-                await ctx.send(f"Already connected to {channel_name}")
-                return
-            elif bot_channel:
-                try:
-                    await bot_channel.move_to(channel)
-                    await ctx.send(f"Connected to {channel_name}")
-                except Exception as e:
-                    await ctx.send(f"Error connecting to {channel_name}: {e}")
-            else:
-                try:
-                    await channel.connect()
-                    await ctx.send(f"Connected to {channel_name}")
-                except Exception as e:
-                    await ctx.send(f"Error connecting to {channel_name}: {e}")
         else:
-            await ctx.send(f"Channel {channel_name} not found")
-            return
+            channel = discord.utils.get(ctx.guild.voice_channels, name=channel_name)
+            if not channel:
+                await ctx.send(f"❌ Voice channel '{channel_name}' not found.")
+                logger.warning(f"join: Voice channel '{channel_name}' not found.")
+                return
 
-    @commands.command(name="resume", help="Resumes the song")
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if voice_client:
+            if voice_client.channel == channel:
+                await ctx.send(f"✅ Already connected to '{channel.name}'.")
+                logger.info(f"join: Already connected to '{channel.name}'.")
+                return
+            else:
+                await voice_client.move_to(channel)
+                await ctx.send(f"✅ Moved to voice channel: '{channel.name}'.")
+                logger.info(f"join: Moved to voice channel '{channel.name}'.")
+                return
+        else:
+            try:
+                await channel.connect()
+                await ctx.send(f"✅ Connected to voice channel: '{channel.name}'.")
+                logger.info(f"join: Connected to voice channel '{channel.name}'.")
+            except Exception as e:
+                await ctx.send(f"❌ Error connecting to voice channel: {e}")
+                logger.error(f"join: Error connecting to voice channel '{channel.name}': {e}")
+
+    @commands.command(name="resume", help="Resumes the paused song.\nUsage: !resume")
     async def resume(self, ctx):
         """
-        Function for handling resume capability
+        Function to resume the paused music.
         """
 
-        voice_client = discord.utils.get(
-            ctx.bot.voice_clients, guild=ctx.guild)
-        if voice_client.is_paused():
-            await voice_client.resume()
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if voice_client and voice_client.is_paused():
+            voice_client.resume()
+            await ctx.send("▶️ Resumed the song.")
+            logger.info("resume: Resumed the song.")
         else:
-            await ctx.send(
-                "The bot was not playing anything before this. Use play command"
-            )
+            await ctx.send("❌ The bot is not paused or not playing anything.")
+            logger.warning("resume: Bot is not paused or not playing.")
 
-    @commands.command(name="start", help="Starts playing the current song in the queue")
+    @commands.command(name="start", help="Starts playing the current song in the queue.\nUsage: !start")
     async def start(self, ctx):
         """
-        Function for starting the song
+        Function for starting the song.
         """
 
         if self.songs_queue.get_len() == 0:
-            await ctx.send("No songs in the queue. Please add songs to the queue")
+            await ctx.send("❌ No songs in the queue. Please add songs to the queue.")
+            logger.warning("start: No songs in the queue to play.")
             return
-
-        await self.play_song(self.songs_queue.current_song(), ctx)
-
-    @commands.command(
-        name="play",
-        aliases=["play_song"],
-        help="To play user defined song, does not need to be in the database.",
-    )
-    async def play_custom(self, ctx, song_name: str = commands.parameter(description="The name of the song to play"), artist_name: str = commands.parameter(description="The name of the artist of the song")):
-        """
-        Function for playing a custom song. PLaying a custom song will clear the queue and begin playing the custom song
-        """
-
-        # Check that a song was provided
-        if not song_name:
-            await ctx.send("Please provide a song to play")
-            return
-
-        if not artist_name:
-            await ctx.send("Please provide an artist name")
-            return
-
-        song = (song_name, artist_name)
-
-        self.songs_queue.clear()
-        self.songs_queue.add_to_queue(song)
 
         current_song = self.songs_queue.current_song()
-        print(f"Current song: {current_song}")
+        if isinstance(current_song, int):
+            await ctx.send("❌ Unable to retrieve the current song.")
+            logger.error(f"start: Received error code {current_song}.")
+            return
+
         await self.play_song(current_song, ctx)
+        logger.info("start: Started playing the current song.")
 
-    @commands.command(name="pause", help="This command pauses the song")
-    async def pause(self, ctx):
+    @commands.command(name="play", aliases=["play_song"], help="To play a user-defined song.\nUsage: !play <song_name> <artist_name>")
+    async def play_custom(self, ctx, song_name: str, artist_name: str):
         """
-        Function to pause the music that is playing
+        Function for playing a custom song. Playing a custom song will clear the queue and begin playing the custom song.
+
+        Parameters:
+            song_name (str): Name of the song to play.
+            artist_name (str): Name of the artist.
         """
-
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            await ctx.send("Pausing")
-            voice_client.pause()
-        else:
-            await ctx.send("The bot is not playing anything at the moment.")
-
-    @commands.command(name="stop", help="Stops the song")
-    async def stop(self, ctx):
-        """
-        Function to stop playing the music
-        """
-
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_playing():
-            self.manually_stopped = True
-            voice_client.stop()
-        else:
-            await ctx.send("The bot is not playing anything at the moment.")
-
-        # TODO: update queue implementation
-
-    @commands.command(name="skip", aliases=["next, next_song"], help="To play next song in queue")
-    async def next_song(self, ctx):
-        """
-        Function to play the next song in the queue
-        """
-
-        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(self.songs_queue.next_song(), ctx)
-
-    @commands.command(name="prev", aliases=["prev_song"], help="To play previous song in queue")
-    async def prev(self, ctx):
-        """
-        Function to play the previous song in the queue
-        """
-
-        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
-        if not empty_queue:
-            await self.play_song(self.songs_queue.prev_song(), ctx)
-
-    # TODO: update queue implementation
-
-    @commands.command(name="replay", help="This command replays the current song")
-    async def replay(self, ctx):
-        """
-        Function to restart the current song in queue
-        """
-
-        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
-        voice_client = ctx.message.guild.voice_client
-        if not empty_queue and voice_client.is_playing():
-            voice_client.stop()
-        await self.play_song(self.songs_queue.current_song, ctx)
-
-    @commands.command(
-        name="poll_old",
-        help="Generate a poll to create some recommendations. This is the old version",
-    )
-    async def poll(self, ctx):
-        """
-        Function to generate poll for playing the recommendations. Clears the queue and adds the recommendations
-        """
-
-        reactions = ["👍", "👎"]
-        selected_songs = []
-        count = 0
-        bot_message = "Select song preferences by reaction '👍' or '👎' to the choices. \nSelect 3 songs"
-        await ctx.send(bot_message)
-        ten_random_songs = random_25()
-        for ele in zip(ten_random_songs["track_name"], ten_random_songs["artist"]):
-            bot_message = str(ele[0]) + " By " + str(ele[1])
-            description = []
-            poll_embed = discord.Embed(
-                title=bot_message, color=0x31FF00, description="".join(description)
-            )
-            react_message = await ctx.send(embed=poll_embed)
-            for reaction in reactions[: len(reactions)]:
-                await react_message.add_reaction(reaction)
-            res, user = await self.bot.wait_for("reaction_add")
-            if res.emoji == "👍":
-                selected_songs.append(str(ele[0]))
-                count += 1
-            if count == 3:
-                bot_message = "Selected songs are : " + \
-                    " , ".join(selected_songs)
-                await ctx.send(bot_message)
-                break
-
-        # Add recommendations to queue and play.
-        recommended_songs = recommend(selected_songs)
-        self.songs_queue.clear()
-        self.songs_queue.add_to_queue(recommended_songs)
-        await self.play_song(self.songs_queue.current_song(), ctx)
-
-    @commands.command(name='mood', help='Recommend songs based on your mood or activity')
-    async def mood_recommend(self, ctx):
-        # Send an embed message with mood options.
-        mood_options = {
-            '😊': 'happy',
-            '😢': 'sad',
-            '🎉': 'party',
-            '😌': 'chill',
-            '❤️': 'Romantic',
-        }
-
-        # Create an embed message with the options.
-        mood_embed = discord.Embed(
-            title="Choose Your Mood",
-            description="React with the corresponding emoji to select your mood:\n\n"
-                        "😊 - Happy\n"
-                        "😢 - Sad\n"
-                        "🎉 - Party\n"
-                        "😌 - Chill\n"
-                        "❤️ - Romantic",
-            color=discord.Color.blue()
-        )
-
-        # Send the embed message and add reaction options.
-        message = await ctx.send(embed=mood_embed)
-        for emoji in mood_options:
-            await message.add_reaction(emoji)
-
-        # Function to check if the reaction is one of the valid ones.
-        def check(reaction, user):
-            return user == ctx.message.author and str(reaction.emoji) in mood_options
 
         try:
-            # Wait for a single reaction from the user.
-            reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
-            selected_mood = mood_options[str(reaction.emoji)]
+            if not song_name or not artist_name:
+                await ctx.send("❌ Please provide both the song name and the artist name.")
+                logger.warning("play_custom: Missing song name or artist name.")
+                return
 
-            # Confirm the selected mood to the user.
-            await ctx.send(f"You selected: {selected_mood.capitalize()}")
+            song = (song_name, artist_name)
 
-            # Remove all reactions to prevent further selections.
-            await message.clear_reactions()
+            self.songs_queue.clear()
+            self.songs_queue.add_to_queue(song)
 
-        except asyncio.TimeoutError:
-            await ctx.send("You took too long to respond! Please try again.")
+            logger.info(f"play_custom: Playing custom song '{song_name}' by '{artist_name}'.")
+            logger.debug(f"play_custom: Current queue: {self.songs_queue.queue}")
+            current_song = self.songs_queue.current_song()
+            logger.debug(f"play_custom: Current song retrieved: {current_song}")
+            await self.play_song(current_song, ctx)
+        except Exception as e:
+            await ctx.send("❌ An unexpected error occurred while trying to play the song.")
+            logger.error(f"play_custom: Exception occurred - {e}")
+
+    @commands.command(name="pause", help="Pauses the currently playing song.\nUsage: !pause")
+    async def pause(self, ctx):
+        """
+        Function to pause the currently playing music.
+        """
+
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if voice_client and voice_client.is_playing():
+            voice_client.pause()
+            await ctx.send("⏸️ Paused the song.")
+            logger.info("pause: Paused the song.")
+        else:
+            await ctx.send("❌ The bot is not playing anything at the moment.")
+            logger.warning("pause: Attempted to pause when the bot is not playing.")
+
+    @commands.command(name="stop", help="Stops the currently playing song.\nUsage: !stop")
+    async def stop(self, ctx):
+        """
+        Function to stop playing the music.
+        """
+
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if voice_client and voice_client.is_playing():
+            self.manually_stopped = True
+            voice_client.stop()
+            await ctx.send("⏹️ Stopped the song.")
+            logger.info("stop: Stopped the song.")
+        else:
+            await ctx.send("❌ The bot is not playing anything at the moment.")
+            logger.warning("stop: Attempted to stop when the bot is not playing.")
+
+    @commands.command(name="skip", aliases=["next", "next_song"], help="To play the next song in the queue.\nUsage: !skip")
+    async def next_song(self, ctx):
+        """
+        Function to play the next song in the queue.
+        """
+
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        if empty_queue:
             return
 
-        # Define mood filters based on EDA analysis.
-        mood_map = {
-            'happy': {'valence': (0.7, 1.0), 'energy': (0.5, 1.0)},
-            'sad': {'sadness': (0.5, 1), 'valence': (0.0, 0.3), 'energy': (0.2, 0.5)},
-            'party': {'danceability': (0.7, 1.0), 'valence': (0.6, 1.0), 'energy': (0.6, 1.0)},
-            'chill': {'acousticness': (0.6, 1.0), 'energy': (0.1, 0.5)},
-            'Romantic': {'romantic': (0.5, 1.0), 'valence': (0.2, 0.5)},
-        }
-
-        filters = mood_map[selected_mood]
-        recommended_songs = get_recommended_songs_based_on_mood(filters)
-
-        if not recommended_songs:
-            await ctx.send("No songs found for the selected mood.")
+        next_song = self.songs_queue.next_song()
+        if isinstance(next_song, int):
+            await ctx.send("❌ Unable to retrieve the next song.")
+            logger.error(f"next_song: Received error code {next_song}.")
             return
 
-        # Add recommendations to queue and play.
-        self.songs_queue.clear()
-        self.songs_queue.add_to_queue(recommended_songs)
-        await self.play_song(self.songs_queue.current_song(), ctx)
+        await self.play_song(next_song, ctx)
+        logger.info("next_song: Skipped to the next song.")
 
+    @commands.command(name="prev", aliases=["prev_song"], help="To play the previous song in the queue.\nUsage: !prev")
+    async def prev(self, ctx):
+        """
+        Function to play the previous song in the queue.
+        """
 
-async def setup(client: discord.Client):
-    """
-    Function to add the cog to the bot
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        if empty_queue:
+            return
 
-    Parameters:
-        client (discord.Client): The bot client
-    """
+        prev_song = self.songs_queue.prev_song()
+        if isinstance(prev_song, int):
+            await ctx.send("❌ Unable to retrieve the previous song.")
+            logger.error(f"prev: Received error code {prev_song}.")
+            return
 
-    await client.add_cog(Songs(client))
+        await self.play_song(prev_song, ctx)
+        logger.info("prev: Moved to the previous song.")
+
+    @commands.command(name="replay", help="Replays the current song.\nUsage: !replay")
+    async def replay(self, ctx):
+        """
+        Function to replay the current song in the queue.
+        """
+
+        empty_queue = await self.songs_queue.handle_empty_queue(ctx)
+        if empty_queue:
+            return
+
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if voice_client and voice_client.is_playing():
+            voice_client.stop()
+            current_song = self.songs_queue.current_song()
+            if isinstance(current_song, int):
+                await ctx.send("❌ Unable to retrieve the current song.")
+                logger.error(f"replay: Received error code {current_song}.")
+                return
+            await self.play_song(current_song, ctx)
+            await ctx.send("🔄 Replayed the current song.")
+            logger.info("replay: Replayed the current song.")
+        else:
+            await ctx.send("❌ The bot is not playing anything at the moment.")
+            logger.warning("replay: Attempted to replay when the bot is not playing.")
+
+    @commands.command(name="volume", help="Adjusts the playback volume.\nUsage: !volume <0-100>")
+    async def volume(self, ctx, volume: int):
+        """
+        Adjusts the playback volume.
+
+        Parameters:
+            volume (int): Volume level (0-100).
+        """
+        voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if not voice_client or not voice_client.is_connected():
+            await ctx.send("❌ Bot is not connected to a voice channel.")
+            logger.warning("volume: Bot is not connected to any voice channel.")
+            return
+
+        if not voice_client.is_playing():
+            await ctx.send("❌ No audio is playing currently.")
+            logger.warning("volume: No audio is playing.")
+            return
+
+        if not 0 <= volume <= 100:
+            await ctx.send("❌ Please provide a volume between 0 and 100.")
+            logger.warning(f"volume: Invalid volume level {volume}.")
+            return
+
+        # Access the PCMVolumeTransformer
+        if isinstance(voice_client.source, PCMVolumeTransformer):
+            voice_client.source.volume = volume / 100.0
+            await ctx.send(f"🔊 Volume set to {volume}%")
+            logger.info(f"volume: Volume set to {volume}%.")
+        else:
+            await ctx.send("❌ Unable to adjust volume.")
+            logger.error("volume: Current audio source is not a PCMVolumeTransformer.")
+
+async def setup(bot):
+    """Add the cog to the bot."""
+    await bot.add_cog(Songs(bot))

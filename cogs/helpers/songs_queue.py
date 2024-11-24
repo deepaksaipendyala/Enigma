@@ -1,10 +1,14 @@
+# cogs/helpers/songs_queue.py
 """
 This file is responsible for maintaining the song queue
 """
+
+from typing import Tuple, List, Union
 from random import shuffle
+import logging
 
-# Make a singleton class for the song queue
-
+# Initialize Logger
+logger = logging.getLogger(__name__)
 
 class Singleton(type):
     """A metaclass that creates a Singleton base type when called."""
@@ -13,187 +17,221 @@ class Singleton(type):
     def __call__(cls, *args, **kwargs):
         """Create a new instance of the class if it does not exist."""
         if cls not in cls._instances:
-            cls._instances[cls] = super(
-                Singleton, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+            logger.info(f"Creating new instance of {cls.__name__}")
         return cls._instances[cls]
-
 
 class Songs_Queue(metaclass=Singleton):
     """
-    This class is responsible for maintaining the song queue. There will only be one instance of this class
+    Singleton class responsible for maintaining the song queue.
+    Songs are stored as tuples: (track_name, artist_name).
     """
 
     def __init__(self):
-        """Get the instance of Songs_Queue, or create a new one if there is no instance. 
-        A new instance will have an empty queue so songs must be added using the add_to_queue method.
-        """
-        self._queue = []
-        self._index = 0
+        if not hasattr(self, '_initialized'):
+            self._queue: List[Tuple[str, str]] = []
+            self._index: int = 0
+            self._initialized = True
+            logger.info("Songs_Queue initialized with an empty queue.")
 
     @property
-    def queue(self):
-        """Return the current queue."""
+    def queue(self) -> List[Tuple[str, str]]:
+        """Returns the current song queue."""
         return self._queue
 
     @property
-    def index(self):
-        """Return the current index."""
+    def index(self) -> int:
+        """Returns the current index in the queue."""
         return self._index
 
-    async def handle_empty_queue(self, ctx):
+    async def handle_empty_queue(self, ctx) -> bool:
         """
-        Helper function to handle empty song queue
-        """
+        Helper function to handle empty song queue.
 
+        Parameters:
+            ctx: The context from Discord.
+
+        Returns:
+            bool: True if the queue is empty, False otherwise.
+        """
         if self.get_len() == 0:
             await ctx.send(
                 "No recommendations present. First generate recommendations using !poll or !mood."
             )
+            logger.info("handle_empty_queue: Queue is empty.")
             return True
         return False
 
     def clear(self):
-        """Clear the current queue."""
+        """Clears the entire queue and resets the index."""
         self._queue.clear()
         self._index = 0
+        logger.info("Queue cleared and index reset to 0.")
+        logger.debug(f"clear: Current queue: {self._queue}")
 
-    def get_song_at_index(self, idx):
+    def get_song_at_index(self, idx: int) -> Union[Tuple[str, str], int]:
         """
-        This function returns the song at the given index in the queue. Returns the song as a string in format "<Song Name> by <Artist Name>"
+        Retrieves the song at a specific index.
 
         Parameters:
-            idx(int): The index of the song in the queue
+            idx (int): Index of the song in the queue.
 
         Returns:
-            str: The song at the given index in the queue, or -1 if the index is out of bounds
+            Tuple[str, str]: (track_name, artist_name)
+            int: -1 if index is invalid.
         """
-
         if idx < 0 or idx >= len(self.queue):
+            logger.warning(f"get_song_at_index: Invalid index {idx}.")
             return -1
-        song = self.queue[idx]
-        artist = song[1]
-        if artist == "Unknown":
-            return song[0]
-        return f"{song[0]} by {song[1]}"
+        song = self._queue[idx]
+        logger.debug(f"get_song_at_index: Retrieved song {song} at index {idx}.")
+        return song
 
-    def current_song(self):
-        """Return the current song."""
-        return self.get_song_at_index(self._index)
+    def current_song(self) -> Union[Tuple[str, str], int]:
+        """Returns the current song without modifying the queue."""
+        current = self.get_song_at_index(self._index)
+        logger.debug(f"current_song: Current song is {current}.")
+        return current
 
-    def next_song(self):
+    def next_song(self) -> Union[Tuple[str, str], int]:
         """
-        This function returns the next song in the queue
-        """
+        Advances to the next song in the queue.
 
-        print(self.queue)
-        if (self._index == len(self.queue) - 1):
-            self._index = 0
-        else:
-            self._index += 1
-        val = self._index
-        return self.get_song_at_index(val)
-
-    def prev_song(self):
+        Returns:
+            Tuple[str, str]: Next song tuple.
+            int: -1 if queue is empty.
         """
-        This function returns the previous song in the queue
-        """
+        if not self._queue:
+            logger.info("next_song: Queue is empty.")
+            return -1
+        self._index = (self._index + 1) % len(self._queue)
+        logger.info(f"next_song: Moved to index {self._index}.")
+        next_song = self.get_song_at_index(self._index)
+        logger.debug(f"next_song: Next song is {next_song}.")
+        return next_song
 
-        self._index -= 1
-        if (self._index < 0):
-            self._index = len(self.queue) - 1
-        val = self._index
-        return self.get_song_at_index(val)
-
-    def move_song(self, song_name, idx):
+    def prev_song(self) -> Union[Tuple[str, str], int]:
         """
-        This function moves a song within the queue
-        """
+        Goes back to the previous song in the queue.
 
-        curr_idx = -1
-        if int(idx) < 1 or int(idx) > len(self.queue) - 1:
+        Returns:
+            Tuple[str, str]: Previous song tuple.
+            int: -1 if queue is empty.
+        """
+        if not self._queue:
+            logger.info("prev_song: Queue is empty.")
+            return -1
+        self._index = (self._index - 1) % len(self._queue)
+        logger.info(f"prev_song: Moved to index {self._index}.")
+        prev_song = self.get_song_at_index(self._index)
+        logger.debug(f"prev_song: Previous song is {prev_song}.")
+        return prev_song
+
+    def move_song(self, song_name: str, new_position: int) -> int:
+        """
+        Moves a song to a new position in the queue.
+
+        Parameters:
+            song_name (str): Name of the song to move.
+            new_position (int): New index position (1-based).
+
+        Returns:
+            int: New index if successful, -1 if song not found, -2 if position invalid.
+        """
+        if new_position < 1 or new_position > len(self._queue):
+            logger.warning(f"move_song: Invalid new_position {new_position}.")
             return -2
-        for index, s in enumerate(self.queue):
-            title = s[0]
-            if title.upper() == song_name.upper():
-                curr_idx = index
-        if curr_idx != -1:
-            # Remove the element from the old index
-            element = self.queue.pop(curr_idx)
-            # Insert the element at the new index
-            self.queue.insert(int(idx), element)
-            return int(idx)
-        else:
+
+        # Find the song index
+        current_idx = next((i for i, song in enumerate(self._queue) if song[0].lower() == song_name.lower()), -1)
+        if current_idx == -1:
+            logger.warning(f"move_song: Song '{song_name}' not found in queue.")
             return -1
 
-    def get_len(self):
-        """
-        This function returns the length of the song queue
-        """
+        # Remove and insert the song
+        song = self._queue.pop(current_idx)
+        self._queue.insert(new_position - 1, song)
+        logger.info(f"move_song: Moved '{song_name}' to position {new_position}.")
 
-        return len(self.queue)
+        # Adjust current index if necessary
+        if current_idx < self._index < new_position - 1:
+            self._index -= 1
+        elif new_position - 1 <= self._index < current_idx:
+            self._index += 1
+        elif self._index == current_idx:
+            self._index = new_position - 1
 
-    def return_queue(self):
-        """
-        This function returns song queue and the current index of the song that is playing
-        """
+        logger.debug(f"move_song: Current index is now {self._index}.")
+        logger.debug(f"move_song: Current queue: {self._queue}")
+        return self._index
 
-        return (self.queue, self._index)
+    def get_len(self) -> int:
+        """Returns the number of songs in the queue."""
+        return len(self._queue)
+
+    def return_queue(self) -> Tuple[List[Tuple[str, str]], int]:
+        """
+        Returns the entire queue and the current index.
+
+        Returns:
+            Tuple[List[Tuple[str, str]], int]: (queue, current_index)
+        """
+        return (self._queue.copy(), self._index)
 
     def shuffle_queue(self):
-        """
-        This function shuffles the song queue
-        """
-        element = self.queue.pop(self._index)
-        shuffle(self.queue)
-        self.queue.insert(self._index, element)
+        """Shuffles the queue while keeping the current song in place."""
+        if not self._queue:
+            logger.info("shuffle_queue: Queue is empty. Nothing to shuffle.")
+            return
+        current_song = self._queue.pop(self._index)
+        shuffle(self._queue)
+        self._queue.insert(self._index, current_song)
+        logger.info("shuffle_queue: Queue shuffled while keeping the current song in place.")
+        logger.debug(f"shuffle_queue: Current queue: {self._queue}")
 
-    def add_to_queue(self, songs: str | list[str]):
+    def add_to_queue(self, songs: Union[Tuple[str, str], List[Tuple[str, str]]]):
         """
-        This function adds a song to the queue
+        Adds one or multiple songs to the queue.
 
         Parameters:
-            song_name(str | list[str]): The name of the song to be added to the queue, or a list of song names to be added to the queue
+            songs (Tuple[str, str] or List[Tuple[str, str]]): Song(s) to add.
         """
-
-        if isinstance(songs, list) and not isinstance(songs, tuple):
+        if isinstance(songs, list):
             for song in songs:
-                if isinstance(song, tuple):
-                    self.queue.append(song)
+                if isinstance(song, tuple) and len(song) == 2:
+                    self._queue.append(song)
+                    logger.info(f"add_to_queue: Added '{song[0]}' by '{song[1]}' to the queue.")
                 else:
-                    self.queue.append((song, "Unknown"))
+                    self._queue.append((song, "Unknown"))
+                    logger.warning(f"add_to_queue: Added '{song}' by 'Unknown' to the queue.")
+        elif isinstance(songs, tuple) and len(songs) == 2:
+            self._queue.append(songs)
+            logger.info(f"add_to_queue: Added '{songs[0]}' by '{songs[1]}' to the queue.")
         else:
-            if (isinstance(songs, tuple)):
-                self.queue.append(songs)
-            else:
-                self.queue.append((songs, "Unknown"))
+            self._queue.append((songs, "Unknown"))
+            logger.warning(f"add_to_queue: Added '{songs}' by 'Unknown' to the queue.")
 
-    def remove_from_queue(self, song_name):
+        logger.debug(f"add_to_queue: Current queue: {self._queue}")
+
+    def remove_from_queue(self, song_name: str) -> Union[Tuple[str, str], int]:
         """
-        This function removes a song from the queue
+        Removes a song from the queue by name.
 
         Parameters:
-            song_name(str): The name of the song to be removed from the queue
+            song_name (str): Name of the song to remove.
 
         Returns:
-            int: The index of the song that was removed from the queue, or -1 if the song was not found in the queue
+            Tuple[str, str]: Removed song.
+            int: -1 if not found.
         """
-
-        for index, song in enumerate(self.queue):
-            title = song[0]
-            artist = song[1]
-            if title.upper() == song_name.upper():
-                if index != self.index:
-                    return self.queue.pop(index)
-                elif index == 0:
-                    # If the song to be removed is the first song in the queue
-                    self.queue.pop(index)
-                    if (self._index == len(self.queue)):
-                        self._index = 0
-                    return index
-                else:
-                    self.queue.pop(index)
-                    self._index -= 1
-                    if (self._index < 0):
-                        self._index = len(self.queue) - 1
-                    return index
+        for index, song in enumerate(self._queue):
+            if song[0].lower() == song_name.lower():
+                removed_song = self._queue.pop(index)
+                logger.info(f"remove_from_queue: Removed '{removed_song[0]}' by '{removed_song[1]}' from the queue.")
+                # Adjust current index if necessary
+                if index < self._index or self._index >= len(self._queue):
+                    self._index = max(0, self._index - 1)
+                logger.debug(f"remove_from_queue: Current queue: {self._queue}")
+                return removed_song
+        logger.warning(f"remove_from_queue: Song '{song_name}' not found in queue.")
         return -1
