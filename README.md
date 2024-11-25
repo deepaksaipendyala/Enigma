@@ -166,6 +166,17 @@ Documentation for the code available at - <a href="https://ncsu-csc-510-f2024.gi
   </tr>
 </table>
 
+### Group 19, Fall 2024
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Captain-Tim"><img src="" width="75px;" alt=""/><br /><sub><b>Nico Field</b></sub></a></td>
+    <td align="center"><a href="https://github.com/deepaksaipendyala"><img src="" width="75px;" alt=""/><br /><sub><b>Riley Joncas</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/LiuKang-11"><img src="" width="75px;" alt=""/><br /><sub><b>Biruk Tadesse</b></sub></a><br /></td>
+
+  </tr>
+</table>
+
 <h1> Contributing </h1>
 
 Please see [`CONTRIBUTING`](CONTRIBUTING.md) for contributing to this project.
