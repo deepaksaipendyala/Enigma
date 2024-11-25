@@ -41,9 +41,12 @@ thread.start()
 load_dotenv(".env")
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-# Initialize Bot with all intents and disable default help command
-intents = discord.Intents.all()
+# Initialize Bot with necessary intents and disable default help command
+intents = discord.Intents.default()
+intents.message_content = True
 intents.members = True
+intents.reactions = True
+intents.voice_states = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 
 """

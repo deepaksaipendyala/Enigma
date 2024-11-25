@@ -8,30 +8,30 @@ import asyncio
 import discord
 from discord.ext import commands
 from cogs.helpers.get_all import *
-from cogs.helpers.utils import searchSong, random_25
+from cogs.helpers.utils import searchSong
 from cogs.helpers.songs_queue import Songs_Queue
 import yt_dlp as youtube_dl
 import logging
 from typing import Union
 from discord import PCMVolumeTransformer
+from cogs.helpers.utils import fetch_spotify_metadata
 
 # Initialize Logger
 logger = logging.getLogger(__name__)
 
 FFMPEG_OPTIONS = {
     'before_options': (
-        '-reconnect 1 '                # Automatically reconnect if the stream drops
-        '-reconnect_streamed 1 '        # Reconnect for streamed media
-        '-reconnect_delay_max 5 '       # Maximum delay before reconnecting
-        '-thread_queue_size 512 '       # Increase input thread queue size
+        '-reconnect 1 '
+        '-reconnect_streamed 1 '
+        '-reconnect_delay_max 5 '
+        '-thread_queue_size 512 '
     ),
     'options': (
-        '-vn '                          # Disable video
-        '-ar 48000 '                    # Set audio sample rate to 48 kHz
-        '-ac 2 '                        # Set audio channels to stereo
-        '-b:a 160k '                    # Set audio bitrate to 160 kbps
-        '-bufsize 160k '                # Set buffer size
-        # Removed '-codec:a libopus' since PCMVolumeTransformer handles PCM
+        '-vn '
+        '-ar 48000 '
+        '-ac 2 '
+        '-b:a 160k '
+        '-bufsize 160k '
     )
 }
 
@@ -51,16 +51,14 @@ YDL_OPTIONS = {
 
 ytdl = youtube_dl.YoutubeDL(YDL_OPTIONS)
 
-async def get_audio_source(url: str, song_name: str, artist_name: str, *, loop=None, stream=False) -> Union[PCMVolumeTransformer, dict]:
+async def get_audio_source(url: str, song_name: str, artist: str, *, loop=None, stream=False) -> Union[PCMVolumeTransformer, dict]:
     """
     Asynchronously retrieves the audio source from YouTube.
 
     Parameters:
         url (str): YouTube URL of the song.
         song_name (str): Name of the song.
-        artist_name (str): Name of the artist.
-        loop: Event loop.
-        stream (bool): Whether to stream the audio.
+        artist (str): Name of the artist.
 
     Returns:
         Tuple[PCMVolumeTransformer, dict]: Audio source and video data.
@@ -116,7 +114,7 @@ class Songs(commands.Cog):
         Helper function for playing song on the voice channel.
 
         Parameters:
-            song_tuple (tuple or int): The song to play as (song_name, artist_name) or an error code.
+            song_tuple (tuple or int): The song to play as (song_name, artist) or an error code.
             ctx: The context from Discord.
         """
 
@@ -132,14 +130,14 @@ class Songs(commands.Cog):
             logger.error("play_song: Invalid song format received.")
             return
 
-        song_name, artist_name = song_tuple
-        logger.debug(f"play_song: Playing '{song_name}' by '{artist_name}'.")
+        song_name, artist = song_tuple
+        logger.debug(f"play_song: Playing '{song_name}' by '{artist}'.")
 
-        url = searchSong(song_name, artist_name)
+        url = searchSong(song_name, artist)
 
         if not url:
-            await ctx.send(f"❌ Unable to find a YouTube link for **{song_name}** by *{artist_name}*.")
-            logger.warning(f"play_song: No YouTube URL found for '{song_name}' by '{artist_name}'.")
+            await ctx.send(f"❌ Unable to find a YouTube link for **{song_name}** by *{artist}*.")
+            logger.warning(f"play_song: No YouTube URL found for '{song_name}' by '{artist}'.")
             return
 
         voice_client = discord.utils.get(self.bot.voice_clients, guild=ctx.guild)
@@ -157,20 +155,20 @@ class Songs(commands.Cog):
         # Fetch and play the audio source
         try:
             async with ctx.typing():
-                audio_data = await get_audio_source(url, song_name, artist_name, loop=self.bot.loop, stream=True)
+                audio_data = await get_audio_source(url, song_name, artist, loop=self.bot.loop, stream=True)
                 if audio_data is None:
                     await ctx.send("❌ Failed to retrieve audio source.")
                     logger.error("play_song: Failed to retrieve audio source.")
                     return
                 player, data = audio_data
                 voice_client.play(player, after=lambda e: logger.error(f"Playback error: {e}") if e else self.handle_play_next(ctx))
-                logger.info(f"play_song: Playing '{data['title']}' by '{artist_name}'.")
+                logger.info(f"play_song: Playing '{data['title']}' by '{artist}'.")
         except Exception as e:
             await ctx.send("❌ An error occurred while trying to play the song.")
             logger.error(f"play_song: Exception occurred - {e}")
             return
 
-        await ctx.send(f"🎶 Now playing: **{song_name}** by *{artist_name}*")
+        await ctx.send(f"🎶 Now playing: **{song_name}** by *{artist}*")
         self.manually_stopped = False
 
     # -----------Commands-----------#
@@ -253,28 +251,34 @@ class Songs(commands.Cog):
         await self.play_song(current_song, ctx)
         logger.info("start: Started playing the current song.")
 
-    @commands.command(name="play", aliases=["play_song"], help="To play a user-defined song.\nUsage: !play <song_name> <artist_name>")
-    async def play_custom(self, ctx, song_name: str, artist_name: str):
+    @commands.command(name="play", aliases=["play_song"], help="To play a song.\nUsage: !play <song_name>")
+    async def play_custom(self, ctx, *, song_name: str):
         """
-        Function for playing a custom song. Playing a custom song will clear the queue and begin playing the custom song.
+        Function for playing a song. It fetches artist details from Spotify.
 
         Parameters:
             song_name (str): Name of the song to play.
-            artist_name (str): Name of the artist.
         """
 
         try:
-            if not song_name or not artist_name:
-                await ctx.send("❌ Please provide both the song name and the artist name.")
-                logger.warning("play_custom: Missing song name or artist name.")
+            if not song_name:
+                await ctx.send("❌ Please provide the song name.")
+                logger.warning("play_custom: Missing song name.")
                 return
 
-            song = (song_name, artist_name)
+            # Fetch artist name and song details from Spotify
+            metadata = fetch_spotify_metadata(song_name)
+            if not metadata:
+                await ctx.send(f"❌ Unable to find the song **{song_name}** on Spotify.")
+                logger.warning(f"play_custom: Song '{song_name}' not found on Spotify.")
+                return
+
+            song = (metadata['track_name'], metadata['artist'])
 
             self.songs_queue.clear()
             self.songs_queue.add_to_queue(song)
 
-            logger.info(f"play_custom: Playing custom song '{song_name}' by '{artist_name}'.")
+            logger.info(f"play_custom: Playing song '{song[0]}' by '{song[1]}'.")
             logger.debug(f"play_custom: Current queue: {self.songs_queue.queue}")
             current_song = self.songs_queue.current_song()
             logger.debug(f"play_custom: Current song retrieved: {current_song}")

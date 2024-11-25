@@ -56,7 +56,7 @@ class Songs_Queue(metaclass=Singleton):
         """
         if self.get_len() == 0:
             await ctx.send(
-                "No recommendations present. First generate recommendations using !poll or !mood."
+                "No songs present in the queue. Please add songs using !play or !add."
             )
             logger.info("handle_empty_queue: Queue is empty.")
             return True

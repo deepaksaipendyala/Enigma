@@ -17,10 +17,10 @@ def recommend_enhanced(input_songs: list) -> list:
     similar to the input songs.
 
     Parameters:
-        input_songs (list): List of songs that the user selected. Format as (track_name, artist_name).
+        input_songs (list): List of songs that the user selected. Format as (track_name, artist).
 
     Returns:
-        list: List of recommended songs as tuples (track_name, artist_name).
+        list: List of recommended songs as tuples (track_name, artist).
     """
 
     # Get all songs
@@ -33,15 +33,15 @@ def recommend_enhanced(input_songs: list) -> list:
     input_song_attributes = {}
     genres = []
     for song in input_songs:
-        song_name, artist_name = song
-        song_attributes = retrieve_song_attributes(song_name, artist_name)
+        song_name, artist = song
+        song_attributes = retrieve_song_attributes(song_name, artist)
         if song_attributes:
-            input_song_attributes[(song_name, artist_name)] = song_attributes
+            input_song_attributes[(song_name, artist)] = song_attributes
 
             # Get the genre of the song
             genre_series = all_songs.loc[
                 (all_songs["track_name"].str.lower() == song_name.lower()) &
-                (all_songs["artist_name"].str.lower() == artist_name.lower())
+                (all_songs["artist"].str.lower() == artist.lower())
             ]["genre"]
             if not genre_series.empty:
                 genres.append(genre_series.iloc[0])
@@ -63,10 +63,10 @@ def recommend_enhanced(input_songs: list) -> list:
 
     for index, row in all_songs_filtered.iterrows():
         song_name = row["track_name"]
-        artist_name = row["artist_name"]
-        song_attributes = retrieve_song_attributes(song_name, artist_name)
+        artist = row["artist"]
+        song_attributes = retrieve_song_attributes(song_name, artist)
         if song_attributes:
-            all_song_attributes[(song_name, artist_name)] = song_attributes
+            all_song_attributes[(song_name, artist)] = song_attributes
             num_retrieved += 1
         if num_retrieved >= max_retrieved:
             break

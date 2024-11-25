@@ -106,22 +106,29 @@ class Queue(commands.Cog):
         await ctx.send("🔀 Playlist shuffled.")
         logger.info("shuffle: Queue shuffled.")
 
-    @commands.command(name="add", aliases=["add_song"], help="To add a custom song to the queue.\nUsage: !add <song_name> <artist_name>")
-    async def add_song(self, ctx, song_name: str, artist_name: str):
+    @commands.command(name="add", aliases=["add_song"], help="To add a custom song to the queue.\nUsage: !add <song_name>")
+    async def add_song(self, ctx, *, song_name: str):
         """
         Function to add a custom song to the queue.
 
         Parameters:
             song_name (str): Name of the song to add.
-            artist_name (str): Name of the artist.
         """
 
-        self.songs_queue.add_to_queue((song_name, artist_name))
-        await ctx.send(f"✅ Added **{song_name}** by *{artist_name}* to the queue.")
-        logger.info(f"add_song: Added '{song_name}' by '{artist_name}' to the queue.")
+        # Fetch artist name and song details from Spotify
+        metadata = utils.fetch_spotify_metadata(song_name)
+        if not metadata:
+            await ctx.send(f"❌ Unable to find the song **{song_name}** on Spotify.")
+            logger.warning(f"add_song: Song '{song_name}' not found on Spotify.")
+            return
+
+        song = (metadata['track_name'], metadata['artist'])
+        self.songs_queue.add_to_queue(song)
+        await ctx.send(f"✅ Added **{song[0]}** by *{song[1]}* to the queue.")
+        logger.info(f"add_song: Added '{song[0]}' by '{song[1]}' to the queue.")
 
     @commands.command(name="remove", aliases=["remove_song"], help="To remove a song from the queue.\nUsage: !remove <song_name>")
-    async def remove_song(self, ctx, song_name: str):
+    async def remove_song(self, ctx, *, song_name: str):
         """
         Function to remove a song from the queue.
 
