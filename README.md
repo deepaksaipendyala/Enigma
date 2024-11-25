@@ -170,9 +170,9 @@ Documentation for the code available at - <a href="https://ncsu-csc-510-f2024.gi
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/Captain-Tim"><img src="" width="75px;" alt=""/><br /><sub><b>Nico Field</b></sub></a></td>
-    <td align="center"><a href="https://github.com/deepaksaipendyala"><img src="" width="75px;" alt=""/><br /><sub><b>Riley Joncas</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/LiuKang-11"><img src="" width="75px;" alt=""/><br /><sub><b>Biruk Tadesse</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/Captain-Tim"><img src="https://avatars.githubusercontent.com/u/62422680?v=4" width="75px;" alt=""/><br /><sub><b>YiTing Hou</b></sub></a></td>
+    <td align="center"><a href="https://github.com/deepaksaipendyala"><img src="https://avatars.githubusercontent.com/u/76196490?v=4" width="75px;" alt=""/><br /><sub><b>Deepak Sai Pendyala</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/LiuKang-11"><img src="https://avatars.githubusercontent.com/u/13636671?v=4" width="75px;" alt=""/><br /><sub><b>Leslie Liu</b></sub></a><br /></td>
 
   </tr>
 </table>
