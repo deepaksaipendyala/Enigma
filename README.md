@@ -67,6 +67,17 @@ If you want to get added to the music server on discord to test the bot, drop an
 </ul>
 </div>
 
+<h1> Features added by group 19, fall 2024 </h1>
+<div>
+<ul>
+  <li>Search song from different sources</li>
+  <li>Search optimation using spotify</li>
+  <li>Give your own songs to playlist</li>
+  <li>Improved audio quality and playback</li>
+  <li>Add loggin</li>
+</ul>
+</div>
+
 <h1> ⚒️ Installation Procedure </h1>
 
 See the installation instructions listed in [`Install`](INSTALL.md)
@@ -108,6 +119,14 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
     - New Move Command: Users now have the ability to move songs within a queue by specifying the song and the position in queue
     - New Clear Queue Command: New ability to clear queue of all songs
     - Next Song Played Automatically: The next song in queue automatically starts playing once the current song stops instead of having to call next song command
+
+#### New in v4.0
+
+13. Search song from different sources: We're now support to search songs from both Youtube and SoundCloud plarform.
+14. optimation using spotify: Use spotify api to find all details of song with just song names and search it from youtube.
+15. Improved audio quality and playback: Added volume command to adjust volume
+16. Added logging, Code debugging
+
 
 #### What We've Yet To Do:
 
