@@ -1,7 +1,7 @@
 # cogs/recommender_cog.py
 """
-This file contains the recommender system for the bot. It polls users for their preferences
-and recommends songs based on those preferences using an enhanced recommender system.
+This cog manages the recommendation system, ensuring that all recommended songs have the `source` set to `"dataset"`.
+Additionally, if no recommendations are available, the bot will automatically generate 10 random songs from the dataset.
 """
 
 import discord
@@ -16,6 +16,7 @@ import logging
 
 # Initialize Logger
 logger = logging.getLogger(__name__)
+
 
 class Recommender(commands.Cog):
     """
@@ -104,7 +105,7 @@ class Recommender(commands.Cog):
         logger.info("poll: Poll created and reactions added.")
 
     @commands.command(name="recommend", aliases=["get_songs"], help="Recommends songs based on your preferences. Must first call the !poll command.\nUsage: !recommend")
-    async def recommend(self, ctx):
+    async def recommend_command(self, ctx):
         """
         Function to recommend songs based on the user's preferences.
         """
@@ -129,14 +130,14 @@ class Recommender(commands.Cog):
         # Get the user's preferences
         preferences = []
         for reaction in reactions:
-            if str(reaction.emoji) in self.emoji_list:
+            if str(reaction.emoji) in self.emoji_list[:len(self.songs)]:
                 # Get the users who reacted to this reaction
                 users = [u async for u in reaction.users() if not u.bot]
                 if ctx.author in users:
                     index = self.emoji_list.index(str(reaction.emoji))
                     if index < len(self.songs):
                         song = self.songs.iloc[index]
-                        preferences.append(song)
+                        preferences.append((song['track_name'], song['artist']))
                         logger.debug(f"recommend: User selected song '{song['track_name']}' by '{song['artist']}'.")
 
         # Send the user the chosen songs
@@ -148,7 +149,7 @@ class Recommender(commands.Cog):
         else:
             choose_message = "✅ You have chosen the following song(s):\n\n"
             for song in preferences:
-                choose_message += f"**{song['track_name']}** by *{song['artist']}*\n"
+                choose_message += f"**{song[0]}** by *{song[1]}*\n"
 
         # Clear the message references
         self.message_id = None
@@ -162,7 +163,7 @@ class Recommender(commands.Cog):
         await ctx.send(embed=embedded_message)
 
         # Get the user preferences as a list of tuples
-        user_input = [(song["track_name"], song["artist"]) for song in preferences]
+        user_input = preferences
 
         # Get the recommendations
         await ctx.send("🔄 Generating recommendations, please wait...")
@@ -170,9 +171,21 @@ class Recommender(commands.Cog):
         recommendations = await loop.run_in_executor(None, recommend, user_input)
 
         if not recommendations:
-            await ctx.send("❌ No recommendations found based on your preferences.")
-            logger.warning("recommend: No recommendations generated.")
-            return
+            logger.warning("recommend_command: No recommendations generated. Selecting 10 random songs.")
+            # Generate 10 random songs as fallback
+            recommendations = utils.random_n(10).filter(["track_name", "artist"]).reset_index(drop=True)
+            if recommendations.empty:
+                await ctx.send("❌ No songs available to recommend.")
+                logger.error("recommend_command: Fallback random selection failed due to empty dataset.")
+                return
+            # Convert to list of tuples with source 'dataset'
+            recommendations = [(row['track_name'], row['artist']) for index, row in recommendations.iterrows()]
+            source = 'dataset'
+            logger.info("recommend_command: Fallback random songs selected.")
+        else:
+            # Convert recommendations to list of tuples
+            recommendations = [(song[0], song[1]) for song in recommendations]
+            source = 'dataset'  # Recommendations are from 'dataset'
 
         # Send the recommendations to the user
         recommend_message = ""
@@ -216,26 +229,32 @@ class Recommender(commands.Cog):
             if reaction.emoji == self.emoji_list[0]:
                 # Add the songs to the end of the queue
                 await ctx.send("✅ Adding the songs to the end of the queue.")
-                self.queue.add_to_queue(recommendations)
+                # Add songs with the appropriate source
+                for song in recommendations:
+                    if isinstance(song, tuple) and len(song) == 2:
+                        self.queue.add_to_queue((song[0], song[1], 'dataset', None))
                 await ctx.send(f"Songs added to the queue. Start playback with the `!start` command.")
-                logger.info("recommend: Added recommended songs to the end of the queue.")
+                logger.info("recommend_command: Added recommended songs to the end of the queue.")
             elif reaction.emoji == self.emoji_list[1]:
                 # Clear the queue and add the songs
                 await ctx.send("🗑️ Clearing the queue and adding the songs.")
                 self.queue.clear()
-                self.queue.add_to_queue(recommendations)
+                # Add songs with the appropriate source
+                for song in recommendations:
+                    if isinstance(song, tuple) and len(song) == 2:
+                        self.queue.add_to_queue((song[0], song[1], 'dataset', None))
                 await ctx.send(f"Songs added to the queue. Start playback with the `!start` command.")
-                logger.info("recommend: Cleared the queue and added recommended songs.")
+                logger.info("recommend_command: Cleared the queue and added recommended songs.")
             elif reaction.emoji == self.emoji_list[2]:
                 # Cancel the operation
                 await ctx.send("❌ Operation cancelled.")
-                logger.info("recommend: User cancelled the add recommendations operation.")
+                logger.info("recommend_command: User cancelled the add recommendations operation.")
             else:
                 await ctx.send("❌ Invalid reaction. Please run the command again.")
-                logger.warning(f"recommend: User reacted with an invalid emoji: {reaction.emoji}")
+                logger.warning(f"recommend_command: User reacted with an invalid emoji: {reaction.emoji}")
         except asyncio.TimeoutError:
             await ctx.send("⏰ You did not respond in time. Please run the command again.")
-            logger.info("recommend: User did not respond to add recommendations prompt.")
+            logger.info("recommend_command: User did not respond to add recommendations prompt.")
             return
 
     @commands.command(name="myrecommend", help="Adds up to 10 user-specified songs to the queue.\nUsage: !myrecommend <song1> [<song2> ...]")
@@ -297,7 +316,7 @@ class Recommender(commands.Cog):
         loop = asyncio.get_event_loop()
         metadata = await loop.run_in_executor(None, utils.fetch_spotify_metadata, song_name)
         if metadata:
-            song_tuple = (metadata['track_name'], metadata['artist'])
+            song_tuple = ( metadata['track_name'], metadata['artist'], 'yt', None)
             self.queue.add_to_queue(song_tuple)
             logger.info(f"myrecommend: Added '{song_tuple[0]}' by '{song_tuple[1]}' to the queue.")
             return song_tuple

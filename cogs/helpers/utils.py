@@ -43,7 +43,7 @@ def load_datasets() -> Tuple[pd.DataFrame, pd.DataFrame]:
         SONGS = SONGS[['track_name', 'artist', 'genre', 'year', 'bpm', 'nrgy', 'dnce', 'dB', 'live', 'val', 'dur', 'acous', 'spch', 'pop']]
         SONGS['track_name'] = SONGS['track_name'].str.strip()
         SONGS['artist'] = SONGS['artist'].str.strip()
-        logger.info(f"SONGS DataFrame loaded with columns: {SONGS.columns.tolist()}")
+        # logger.info(f"SONGS DataFrame loaded with columns: {SONGS.columns.tolist()}")
     except FileNotFoundError:
         SONGS = pd.DataFrame(columns=['track_name', 'artist', 'genre', 'year', 'bpm', 'nrgy', 'dnce', 'dB', 'live', 'val', 'dur', 'acous', 'spch', 'pop'])
         logger.error("songs.csv not found. SONGS dataset is empty.")
@@ -55,7 +55,7 @@ def load_datasets() -> Tuple[pd.DataFrame, pd.DataFrame]:
         if 'artist' in TCC_CEDS_MUSIC.columns:
             TCC_CEDS_MUSIC.rename(columns={'artist': 'artist'}, inplace=True)
         TCC_CEDS_MUSIC = TCC_CEDS_MUSIC[['track_name', 'artist', 'release_date', 'genre', 'lyrics', 'len', 'dating', 'violence', 'world/life', 'night/time', 'shake the audience', 'family/gospel', 'romantic', 'communication', 'obscene', 'music', 'movement/places', 'light/visual perceptions', 'family/spiritual', 'like/girls', 'sadness', 'feelings', 'danceability', 'loudness', 'acousticness', 'instrumentalness', 'valence', 'energy', 'topic', 'age']]
-        logger.info(f"TCC_CEDS_MUSIC DataFrame loaded with columns: {TCC_CEDS_MUSIC.columns.tolist()}")
+        # logger.info(f"TCC_CEDS_MUSIC DataFrame loaded with columns: {TCC_CEDS_MUSIC.columns.tolist()}")
     except FileNotFoundError:
         TCC_CEDS_MUSIC = pd.DataFrame(columns=['track_name', 'artist', 'release_date', 'genre', 'lyrics', 'len', 'dating', 'violence', 'world/life', 'night/time', 'shake the audience', 'family/gospel', 'romantic', 'communication', 'obscene', 'music', 'movement/places', 'light/visual perceptions', 'family/spiritual', 'like/girls', 'sadness', 'feelings', 'danceability', 'loudness', 'acousticness', 'instrumentalness', 'valence', 'energy', 'topic', 'age'])
         logger.error("tcc_ceds_music.csv not found. TCC_CEDS_MUSIC dataset is empty.")
