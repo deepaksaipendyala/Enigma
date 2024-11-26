@@ -67,6 +67,17 @@ If you want to get added to the music server on discord to test the bot, drop an
 </ul>
 </div>
 
+<h1> Features added by group 19, fall 2024 </h1>
+<div>
+<ul>
+  <li>Search song from different sources</li>
+  <li>Search optimation using spotify</li>
+  <li>Give your own songs to playlist</li>
+  <li>Improved audio quality and playback</li>
+  <li>Add loggin</li>
+</ul>
+</div>
+
 <h1> ⚒️ Installation Procedure </h1>
 
 See the installation instructions listed in [`Install`](INSTALL.md)
@@ -109,6 +120,14 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
     - New Clear Queue Command: New ability to clear queue of all songs
     - Next Song Played Automatically: The next song in queue automatically starts playing once the current song stops instead of having to call next song command
 
+#### New in v4.0
+
+13. Search song from different sources: We're now support to search songs from both Youtube and SoundCloud plarform.
+14. optimation using spotify: Use spotify api to find all details of song with just song names and search it from youtube.
+15. Improved audio quality and playback: Added volume command to adjust volume
+16. Added logging, Code debugging
+
+
 #### What We've Yet To Do:
 
 1. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
@@ -143,6 +162,17 @@ Documentation for the code available at - <a href="https://ncsu-csc-510-f2024.gi
     <td align="center"><a href="https://github.com/NicoField"><img src="" width="75px;" alt=""/><br /><sub><b>Nico Field</b></sub></a></td>
     <td align="center"><a href="https://github.com/Symplexity"><img src="" width="75px;" alt=""/><br /><sub><b>Riley Joncas</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/birukayalew"><img src="" width="75px;" alt=""/><br /><sub><b>Biruk Tadesse</b></sub></a><br /></td>
+
+  </tr>
+</table>
+
+### Group 19, Fall 2024
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/Captain-Tim"><img src="https://avatars.githubusercontent.com/u/62422680?v=4" width="75px;" alt=""/><br /><sub><b>YiTing Hou</b></sub></a></td>
+    <td align="center"><a href="https://github.com/deepaksaipendyala"><img src="https://avatars.githubusercontent.com/u/76196490?v=4" width="75px;" alt=""/><br /><sub><b>Deepak Sai Pendyala</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/LiuKang-11"><img src="https://avatars.githubusercontent.com/u/13636671?v=4" width="75px;" alt=""/><br /><sub><b>Leslie Liu</b></sub></a><br /></td>
 
   </tr>
 </table>
