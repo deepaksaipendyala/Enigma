@@ -69,7 +69,7 @@ async def on_ready():
                 logger.error(f"Error loading cog {cog_path}: {e}")
 
     # Connect to the "Lounge" voice channel if not already connected
-    channel = discord.utils.get(bot.get_all_channels(), name="General")
+    channel = discord.utils.get(bot.get_all_channels(), name="Lounge")
     if channel:
         existing_voice_client = discord.utils.get(bot.voice_clients, guild=channel.guild)
         if existing_voice_client and existing_voice_client.channel == channel:
