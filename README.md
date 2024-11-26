@@ -1,5 +1,5 @@
 <h1 align="center">
-  Enigma 🤖 - A music recommender bot for Discord
+  Enigma 🤖 - A music recommender bot for Discord1
   
  [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 </h1>
