@@ -2,9 +2,9 @@ name: Get coverage report
 
 on:
     push:
-        branches: [main]
+        branches: ["main", "fall_2024"]
     pull_request:
-        branches: [main]
+        branches: ["main", "fall_2024"]
 
 permissions:
     contents: write
