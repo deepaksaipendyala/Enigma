@@ -2,7 +2,6 @@ from cogs.helpers.songs_queue import Songs_Queue
 import warnings
 import sys
 from discord.ext.commands import Bot, Context
-from cogs.songs_cog import Songs  
 
 
 
