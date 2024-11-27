@@ -1,4 +1,4 @@
-# Project Name: Schedule Bot
+# Project Name: Enigma
 ## SE Group 19
 - Leslie - tliu33
 - Yi Ting Hou - yhou9
