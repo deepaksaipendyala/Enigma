@@ -4,9 +4,18 @@ import sys
 from unittest.mock import AsyncMock, MagicMock
 from discord.ext.commands import Bot, Context
 from cogs.songs_cog import Songs  
-sys.path.append("../")
+from unittest.mock import patch
+import os
+import logging
 
+
+
+sys.path.append("../")
 warnings.filterwarnings("ignore")
+
+# Mock the SpotifyClientCredentials during the test
+patch("cogs.helpers.utils.spotify_auth_manager", MagicMock()).start()
+patch("cogs.helpers.utils.spotify", MagicMock()).start()
 
 
 def test_singleton():
