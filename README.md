@@ -14,7 +14,7 @@
 <!-- [![GitHub Repo Size](https://img.shields.io/github/repo-size/rahulgautam21/Enigma.svg)](https://img.shields.io/github/repo-size/rahulgautam21/Enigma.svg) -->
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![GitHub contributors](https://img.shields.io/badge/contributors-4-green)](https://github.com/NCSU-CSC-510-F2024/Enigma/graphs/contributors)
+[![GitHub contributors](https://img.shields.io/badge/contributors-4-green)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/graphs/contributors)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/NCSU-CSC-510-F2024/Enigma)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/NCSU-CSC-510-F2024/Enigma)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
