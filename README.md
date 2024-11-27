@@ -122,10 +122,14 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
 
 #### New in v4.0
 
-13. Search song from different sources: We're now support to search songs from both Youtube and SoundCloud plarform.
-14. optimation using spotify: Use spotify api to find all details of song with just song names and search it from youtube.
-15. Improved audio quality and playback: Added volume command to adjust volume
-16. Added logging, Code debugging
+🎧  Choose Your Source: Stream from YouTube (yt) or SoundCloud (sc) with ease! 
+🔗  Add Songs Instantly: Simply paste the URL to queue your favorite tracks. 
+🎶  Accurate Song Titles: Played songs automatically update with official titles from websites for easy recognition. 
+🔍  Spotify-Powered Searches: Find the exact song you want using Spotify’s accurate search info! 
+🔊  Volume Control: Take full control of the volume for the perfect listening experience. 
+✨  Enhanced Music Quality: Enjoy superior sound for every beat and melody.
+📋  Improved Code Logging and Debugging: Streamlined and efficient logging for seamless troubleshooting and performance monitoring.
+✅  Enhanced Code Coverage and Testing: Comprehensive test cases ensure reliability and maintainability of the bot.
 
 
 #### What We've Yet To Do:
