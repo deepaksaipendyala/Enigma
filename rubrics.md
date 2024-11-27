@@ -11,10 +11,10 @@
 | :- | :- | :- | :- | :- |
 | Workload is spread over the whole team (one team member is often X times more productive than the others... | 3 | 3 | 3 | [Collaborators Commits Link](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/commits/fall_2024/) |
 | But nevertheless, here is a track record that everyone is contributing a lot) | 3 | 3 | 3 | [Collaborators Commits Link](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/commits/fall_2024/) |
-| Number of commits | 3 | 3 | 3 | commits<br>753 in GH |
-| Number of commits: by different people | 3 | 3 | 3 | <p>Leslie - 11</p><p>Yiting - 16</p><p>Deepak – 11</p><p></p><p>Command: git shortlog -s -n</p> |
+| Number of commits | 3 | 3 | 3 | commits<br>236 in GH |
+| Number of commits: by different people | 3 | 3 | 3 | <p>Leslie - 12</p><p>Yiting - 6</p><p>Deepak – 5</p><p></p><p>Command: git shortlog -s -n</p> |
 | Issues reports: there are many | 3 | 3 | 3 | <p>0</p><p>[Open Issues](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/issues?q=is%3Aopen+is%3Aissue)</p> |
-| Issues are being closed | 3 | 3 | 3 | <p>7</p><p></p><p>[Closed Issues](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/issues?q=is%3Aissue+is%3Aclosed)</p> |
+| Issues are being closed | 3 | 3 | 3 | <p>2</p><p></p><p>[Closed Issues](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/issues?q=is%3Aissue+is%3Aclosed)</p> |
 | Docs: docs generated, format not ugly | 3 | 3 | 3 | [Documentation](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/tree/fall_2024/docs) |
 | Docs: what: point descriptions of each class/function (in isolation) | 3 | 3 | 3 | [Functionality](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/tree/fall_2024/docs) |
 | Docs: how: for common use cases X,Y,Z mini-tutorials showing worked examples on how to do X,Y,Z | 3 | 3 | 3 | <p>Screenshots were placed for all the features newly added and placed in the README.md</p><p></p><p>[doc page entries](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/blob/fall_2024/README.md)</p> |
@@ -23,7 +23,7 @@
 | Use of version control tools | 3 | 3 | 3 | [Github](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma) |
 | Test cases exist | 3 | 3 | 3 | [CodeCov](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/tree/fall_2024/tests) |
 | Test cases are routinely executed | 3 | 3 | 3 | <br>[File1](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/tree/fall_2024/tests) |
-| Issues are discussed before they are closed | 3 | 3 | 3 | <p>[Discussion1](https://github.com/CSC510-Leslie-Tim-Deepak/SEProj-ScheduleBot/issues/2)</p><p>[Discussion2](https://github.com/CSC510-Leslie-Tim-Deepak/SEProj-ScheduleBot/issues/1)</p> |
+| Issues are discussed before they are closed | 3 | 3 | 3 | <p>[Discussion1](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/issues/2)</p><p>[Discussion2](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/issues/3)</p> |
 | Chat channel: exists | 3 | 3 | 3 | [Chat Channel](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/tree/fall_2024/docs/Discord) |
 | Test cases: a large proportion of the issues related to handling failing cases. | 3 | 3 | 3 | [Test Cases](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/tree/fall_2024/tests) |
 | Evidence that the whole team is using the same tools: everyone can get to all tools and files | 3 | 3 | 3 | [CheckCommits](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/blob/fall_2024/requirements.txt) |
