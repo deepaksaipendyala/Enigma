@@ -20,9 +20,13 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv(".env")
 
-# Spotify API Setup
-client_id = os.getenv("SPOTIFY_CLIENT_ID")
-client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
+# Spotify API Setup with default fallback values for testing
+client_id = os.getenv("SPOTIPY_CLIENT_ID", "test_client_id")
+client_secret = os.getenv("SPOTIPY_CLIENT_SECRET", "test_client_secret")
+
+if client_id == "test_client_id" or client_secret == "test_client_secret":
+    logging.warning("Using default Spotify client credentials. Ensure actual credentials are set for production.")
+
 spotify_auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 spotify = spotipy.Spotify(auth_manager=spotify_auth_manager)
 
