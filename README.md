@@ -122,25 +122,22 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
 
 #### New in v4.0
 
-🎧  Choose Your Source: Stream from YouTube (yt) or SoundCloud (sc) with ease! 
-🔗  Add Songs Instantly: Simply paste the URL to queue your favorite tracks. 
-🎶  Accurate Song Titles: Played songs automatically update with official titles from websites for easy recognition. 
-🔍  Spotify-Powered Searches: Find the exact song you want using Spotify’s accurate search info! 
-🔊  Volume Control: Take full control of the volume for the perfect listening experience. 
-✨  Enhanced Music Quality: Enjoy superior sound for every beat and melody.
-📋  Improved Code Logging and Debugging: Streamlined and efficient logging for seamless troubleshooting and performance monitoring.
-✅  Enhanced Code Coverage and Testing: Comprehensive test cases ensure reliability and maintainability of the bot.
+🎧  Choose Your Source: Stream from YouTube (yt) or SoundCloud (sc) with ease!   
+🔗  Add Songs Instantly: Simply paste the URL to queue your favorite tracks.   
+🎶  Accurate Song Titles: Played songs automatically update with official titles from websites for easy recognition.   
+🔍  Spotify-Powered Searches: Find the exact song you want using Spotify’s accurate search info!   
+🔊  Volume Control: Take full control of the volume for the perfect listening experience.   
+✨  Enhanced Music Quality: Enjoy superior sound for every beat and melody.  
+📋  Improved Code Logging and Debugging: Streamlined and efficient logging for seamless troubleshooting and performance monitoring.  
+✅  Enhanced Code Coverage and Testing: Comprehensive test cases ensure reliability and maintainability of the bot.  
 
 
 #### What We've Yet To Do:
 
 1. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
-2. Fix Audio Quality:
-    - Current audio quality is pretty poor, and songs occasionally speed up/slow down.
-    - Look into FFmpeg documentation to test better parameters, experiment with different services for better quality.
-3. Playlists: Add a new feature to upload a list of songs in a .csv or .txt file to create a playlist that can be saved and played.
-4. Improved Polling: Instead of having the bot select 10 random songs for the user to choose from, have the user input the songs they like to send to the recommend algorithm
-5. Integrate Spotify/Apple Music: Instead of getting songs from YouTube (which has issues with playing audio that isn’t always songs) use other services such as Spotify or Apple Music to get audio.
+2. Playlists: Add a new feature to upload a list of songs in a .csv or .txt file to create a playlist that can be saved and played.
+3. Improved Polling: Instead of having the bot select 10 random songs for the user to choose from, have the user input the songs they like to send to the recommend algorithm
+4. Integrate Spotify/Apple Music: Instead of getting songs from YouTube (which has issues with playing audio that isn’t always songs) use other services such as Spotify or Apple Music to get audio.
 
 <h1>📖 Documentation</h1>
 
