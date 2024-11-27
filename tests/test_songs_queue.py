@@ -205,3 +205,33 @@ def test_remove_song_3():
     assert sq.index == 0
     assert sq.queue == [("Baby", "Unknown"), ("Marry You", "Unknown"),
                         ("Telephone", "Unknown"), ("Secrets", "Unknown")]
+
+
+async def test_volume_command():
+    # Mock the bot
+    bot = Bot(command_prefix="!")
+    
+    # Add the Songs cog
+    cog = Songs(bot)
+    await bot.add_cog(cog)
+    
+    # Mock the Discord context and voice client
+    ctx = MagicMock(spec=Context)
+    ctx.guild = MagicMock()
+    ctx.send = AsyncMock()
+    ctx.voice_client = MagicMock()
+    
+    # Set up the mocked voice client
+    ctx.voice_client.is_connected.return_value = True
+    ctx.voice_client.is_playing.return_value = True
+    ctx.voice_client.source = MagicMock()
+    ctx.voice_client.source.volume = 1.0  # Initial volume
+
+    # Case 1: Valid volume
+    volume = 50  # Set volume to 50%
+    await cog.volume(ctx, volume)
+    ctx.voice_client.source.volume = volume / 100.0  # Volume should be updated
+    ctx.send.assert_called_once_with("🔊 Volume set to 50%")
+
+    # Reset mocks for the next case
+    ctx.send.reset_mock()
