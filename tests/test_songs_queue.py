@@ -2,6 +2,8 @@ from cogs.helpers.songs_queue import Songs_Queue
 import warnings
 import sys
 from discord.ext.commands import Bot, Context
+from cogs.songs_cog import Songs  
+
 
 
 
@@ -208,3 +210,16 @@ def test_remove_song_3():
     assert sq.index == 0
     assert sq.queue == [("Baby", "Unknown"), ("Marry You", "Unknown"),
                         ("Telephone", "Unknown"), ("Secrets", "Unknown")]
+
+def test_shuffle_queue_empty():
+    sq = Songs_Queue()
+    sq.clear()
+    sq.shuffle_queue()
+    assert sq.queue == []
+
+def test_shuffle_queue_single_song():
+    sq = Songs_Queue()
+    sq.clear()
+    sq.add_to_queue([("Song1", "Artist1", "source", None)])
+    sq.shuffle_queue()
+    assert sq.queue == [("Song1", "Artist1", "source", None)]

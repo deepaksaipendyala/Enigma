@@ -22,7 +22,7 @@ class TestSongsCog(unittest.TestCase):
 
         result = get_recommended_songs_based_on_mood(filters)
 
-        self.assertEqual(result, ['Song1', 'Song2', 'Song4', 'Song5'])
+        assert result == ['Song1', 'Song2', 'Song4', 'Song5']
 
     @patch('pandas.read_csv')
     def test_get_recommended_songs_based_on_mood_sad(self, mock_read_csv):
