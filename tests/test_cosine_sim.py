@@ -1,3 +1,14 @@
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Ensure the required environment variables are set
+if not os.getenv("SPOTIPY_CLIENT_ID") or not os.getenv("SPOTIPY_CLIENT_SECRET"):
+    raise EnvironmentError("Spotify credentials are missing. Please set SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET.")
+
+# Rest of the imports
 from cogs.helpers import utils
 
 
