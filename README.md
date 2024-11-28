@@ -1,5 +1,5 @@
 <h1 align="center">
-  Enigma 🤖 - A music recommender bot for Discord1
+  Enigma 🤖 - A music recommender bot for Discord
   
  [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 </h1>
@@ -133,6 +133,9 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
     - New Clear Queue Command: New ability to clear queue of all songs
     - Next Song Played Automatically: The next song in queue automatically starts playing once the current song stops instead of having to call next song command
 
+### Team 19 -  Fall 2024
+[![V4: Fall 2024 Demo](https://img.youtube.com/vi/4pq8weKVvBk/0.jpg)](https://www.youtube.com/watch?v=4pq8weKVvBk)
+
 #### New in v4.0
 
 🎧  Choose Your Source: Stream from YouTube (yt) or SoundCloud (sc) with ease!   
@@ -144,7 +147,129 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
 📋  Improved Code Logging and Debugging: Streamlined and efficient logging for seamless troubleshooting and performance monitoring.  
 ✅  Enhanced Code Coverage and Testing: Comprehensive test cases ensure reliability and maintainability of the bot.  
 
+## 🎵 Enigma Discord Bot Commands Guide 🎵
 
+### **General Commands**
+
+#### `!help`
+- **Description:** Displays a list of all available commands with their descriptions.
+- **Usage:** `!help`
+
+#### `!showCommands`
+- **Description:** Provides a quick overview of all commands.
+- **Usage:** `!showCommands`
+
+#### `!help <command>`
+- **Description:** Provides detailed help about a specific command.
+- **Usage:** `!help <command>`  
+  Example: `!help add`
+
+---
+
+### **Queue Management Commands**
+
+#### `!queue`
+- **Description:** Displays the current song queue.
+- **Usage:** `!queue`
+
+#### `!add <source> <song_name_or_url>`
+- **Description:** Adds a song to the queue from various sources. Supported sources:
+  - `yt`: YouTube
+  - `sc`: SoundCloud
+  - `url`: Direct URL  
+- **Usage:**  
+  - `!add yt <song_name>`  
+    Example: `!add yt shape of you`  
+  - `!add sc <song_name>`  
+    Example: `!add sc closer chainsmokers`  
+  - `!add url <song_url>`  
+    Example: `!add url https://www.youtube.com/watch?v=dQw4w9WgXcQ`
+
+#### `!myrecommend <song1> [<song2> ...]`
+- **Description:** Adds up to 10 specific songs directly to the queue using accurate Spotify metadata.
+- **Usage:** `!myrecommend <song1> [<song2> ...]`  
+  Example: `!myrecommend "closer chainsmokers" "shape of you"`
+
+#### `!skip`
+- **Description:** Skips the currently playing song and moves to the next one in the queue.
+- **Usage:** `!skip`
+
+#### `!clear`
+- **Description:** Clears all songs from the queue.
+- **Usage:** `!clear`
+
+#### `!shuffle`
+- **Description:** Randomizes the order of songs in the queue.
+- **Usage:** `!shuffle`
+
+---
+
+### **Playback Commands**
+
+### `!start`
+- **Description:** Starts playback of the first song in the queue. If the bot is not in a voice channel, it joins the user's current channel.
+- **Usage:** `!start`
+
+#### `!pause`
+- **Description:** Pauses the current playback.
+- **Usage:** `!pause`
+
+#### `!resume`
+- **Description:** Resumes paused playback.
+- **Usage:** `!resume`
+
+#### `!volume`
+- **Description:** Adjusts the playback volume.
+- **Usage:** `!volume`  
+  *(Further volume adjustments may require an additional parameter based on your bot's setup.)*
+
+#### `!play <source> <song_name>`
+- **Description:** Plays a specific song directly from the specified source.
+- **Usage:**  
+  - `!play yt <song_name>`  
+    Example: `!play yt shape of you`
+
+---
+
+### **Recommendation Commands**
+
+#### `!poll`
+- **Description:** Creates a poll with 10 random songs for users to vote on.
+- **Usage:** `!poll`
+
+#### `!recommend`
+- **Description:** Generates personalized song recommendations based on poll results or previous preferences.
+- **Usage:** `!recommend`
+
+---
+### **Examples of Usage**
+
+1. **Adding Songs to the Queue:**
+   ```plaintext
+   !add yt shape of you
+   !add sc closer chainsmokers
+   !add url https://www.youtube.com/watch?v=dQw4w9WgXcQ
+   ```
+
+2. **Managing Playback:**
+   ```plaintext
+   !start
+   !pause
+   !resume
+   ```
+
+3. **Curating Your Playlist:**
+   ```plaintext
+   !myrecommend "closer chainsmokers" "baby justin bieber"
+   !shuffle
+   ```
+
+4. **Generating Recommendations:**
+   ```plaintext
+   !poll
+   !recommend
+   ```
+   
 #### What We've Yet To Do:
 
 1. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
