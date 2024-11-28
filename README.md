@@ -21,7 +21,7 @@
 ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/CSC510-Leslie-Tim-Deepak/Enigma)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
 [![style: autopep8](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/actions/workflows/code-formatter.yml)
-[![Coverage Status](https://coveralls.io/repos/github/CSC510-Leslie-Tim-Deepak/Enigma/badge.svg?branch=fall_2024)](https://coveralls.io/github/CSC510-Leslie-Tim-Deepak/Enigma?branch=fall_2024)
+[![Coverage Status](https://coveralls.io/repos/github/CSC510-Leslie-Tim-Deepak/Enigma/badge.svg?branch=fall_2024&cache_bust=1688243023)](https://coveralls.io/github/CSC510-Leslie-Tim-Deepak/Enigma?branch=fall_2024)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14009527.svg)](https://doi.org/10.5281/zenodo.14009527)
 
 </div> 
