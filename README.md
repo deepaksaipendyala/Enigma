@@ -28,7 +28,7 @@
 [![Platform](https://img.shields.io/badge/platform-discord-blue)](https://discord.com/)
 [![Contributors Activity](https://img.shields.io/github/commit-activity/m/CSC510-Leslie-Tim-Deepak/Enigma)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/pulse)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/CSC510-Leslie-Tim-Deepak/Enigma)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/CSC510-Leslie-Tim-Deepak/Enigma)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/CSC510-Leslie-Tim-Deepak/Enigma)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/releases/tag/V4)
 [![GitHub all releases](https://img.shields.io/github/downloads/CSC510-Leslie-Tim-Deepak/Enigma/total)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/releases)
 
 </div> 
