@@ -13,6 +13,8 @@
 <!-- [![GitHub Release](https://img.shields.io/github/release/rahulgautam21/Enigma.svg)](https://github.com/rahulgautam21/Enigma/releases) -->
 <!-- [![GitHub Repo Size](https://img.shields.io/github/repo-size/rahulgautam21/Enigma.svg)](https://img.shields.io/github/repo-size/rahulgautam21/Enigma.svg) -->
 
+![Python v3.10](https://img.shields.io/badge/python-v3.10-blue)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/edit/fall_2024/graphs/commit-activity) 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![GitHub contributors](https://img.shields.io/badge/contributors-4-green)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/graphs/contributors)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/CSC510-Leslie-Tim-Deepak/Enigma)
@@ -23,6 +25,11 @@
 [![style: autopep8](https://github.com/NCSU-CSC-510-F2024/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/actions/workflows/code-formatter.yml)
 [![Coverage Status](https://coveralls.io/repos/github/CSC510-Leslie-Tim-Deepak/Enigma/badge.svg?branch=fall_2024&cache_bust=1688243023)](https://coveralls.io/github/CSC510-Leslie-Tim-Deepak/Enigma?branch=fall_2024)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14009527.svg)](https://doi.org/10.5281/zenodo.14009527)
+[![Platform](https://img.shields.io/badge/platform-discord-blue)](https://discord.com/)
+[![Contributors Activity](https://img.shields.io/github/commit-activity/m/CSC510-Leslie-Tim-Deepak/Enigma)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/pulse)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/CSC510-Leslie-Tim-Deepak/Enigma)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/CSC510-Leslie-Tim-Deepak/Enigma)
+[![GitHub all releases](https://img.shields.io/github/downloads/CSC510-Leslie-Tim-Deepak/Enigma/total)](https://github.com/CSC510-Leslie-Tim-Deepak/Enigma/releases)
 
 </div> 
 
